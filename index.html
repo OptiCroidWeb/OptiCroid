@@ -237,44 +237,59 @@
     </section>
 
     <section id="Bewertung" class="content">
-      <div id="bewertung-section" class="bewertung-container">
-        <h2><p style="color:#65FE08;text-align: center;">Ihre Bewertung abgeben ⭐</h2>
-        <input type="email" id="userEmail" placeholder="Deine E-Mail-Adresse" required />
-        <textarea id="mailInput" placeholder="Schreib hier deine Bewertung..." required></textarea>
-        <button id="mailSendBtn">☑️</button>
-        <p style="color:#FF10F0;text-align: center;">💡bitte beachten:<br>
-        <p style="color:#FFC0CB.;text-align: center">Sie müssen sich zuerst im Web bei ihrer entsprechender <br>
-          email anmelden um eine Bewertung abzugeben: <a class="gmail" href="https://mail.google.com/mail/">gmail</a>
-          <a href="https://www.gmx.net/" target="_blank" class="gmx">gmx</a><br>
-          (lassen sie dan das entsprechende email tab offen und kehren sie zu diser Seite zurück)
-      </div>
-      <style>
-        #userEmail { width: 90%; height: 55px; font-size: 20px; padding: 10px; border-radius: 7px; border: 3px solid #ccc; }
-        #mailInput { width: 90%; height: 300px; font-size: 20px; padding: 10px; border-radius: 7px; border: 3px solid #ccc; resize: vertical; margin-bottom: 25px; }
-        #mailSendBtn { background-color: #ffd43b; color: gelb; font-weight: bold; padding: 10px 20px; border: none; border-radius: 6px; font-size: 20px; cursor: pointer; transition: background-color 0.3s ease; }
-        #mailSendBtn:hover { background-color: #e0b82f; }
-      </style>
-      <script>
-        (function(){
-          const btn = document.getElementById('mailSendBtn');
-          const input = document.getElementById('mailInput');
-          const emailField = document.getElementById('userEmail');
-          const targetEmail = 'opticroid@gmail.com';
-          const subject = 'Neue Bewertung ⭐️';
-          btn.addEventListener('click', function() {
-            const text = input.value.trim();
-            const userEmail = emailField.value.trim();
-            if (!userEmail || !text) { alert('Bitte gib eine email an und bewerte uns.'); return; }
-            const encodedTo = encodeURIComponent(targetEmail);
-            const encodedSubject = encodeURIComponent(subject);
-            const encodedBody = encodeURIComponent('Bewertung von: ' + userEmail + '\n\n' + text);
-            window.open(`mailto:${targetEmail}?subject=${encodedSubject}&body=${encodedBody}`, '_blank');
-            input.value = '';
-          });
-        })();
-      </script>
-    </section>
+  <div id="bewertung-section" class="bewertung-container">
+    <h2><p style="color:#65FE08;text-align: center;">Ihre Bewertung abgeben ⭐</h2>
 
+    <div id="pop-warnung" style="display:none; background:#fff; color:#000; padding:15px; border-radius:10px; margin: 10px auto; width: 90%; max-width: 500px; font-size: 16px; border: 3px solid red; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+      <p>Sie müssen sich zuerst im Web bei ihrer entsprechenden Email anmelden, um eine Bewertung abzugeben: 
+      <br><br>
+      <a href="https://mail.google.com/" target="_blank" style="color: blue; font-weight: bold;">Gmail</a> | 
+      <a href="https://www.gmx.net/" target="_blank" style="color: blue; font-weight: bold;">GMX</a></p>
+      <p>(Lassen Sie dann das entsprechende Email-Tab offen und kehren Sie zu dieser Seite zurück)</p>
+      <button onclick="this.parentElement.style.display='none'" 
+              style="background:yellow; border:2px solid #000; cursor:pointer; font-weight:bold; padding:10px 25px; border-radius:5px; transition: background 0.5s ease;"
+              onmousedown="this.style.background='#556B2F'" 
+              onmouseup="this.style.background='yellow'">Okay</button>
+    </div>
+
+    <input type="email" id="userEmail" placeholder="Deine E-Mail-Adresse" onfocus="document.getElementById('pop-warnung').style.display='block'" required />
+    <textarea id="mailInput" placeholder="Schreib hier deine Bewertung..." onfocus="document.getElementById('pop-warnung').style.display='block'" required></textarea>
+    <button id="mailSendBtn">☑️</button>
+
+    <p style="color:#FF10F0;text-align: center;">💡bitte beachten:<br>
+    <p style="color:#FFC0CB;text-align: center">Sie müssen sich zuerst im Web bei ihrer entsprechenden <br>
+      Email anmelden um eine Bewertung abzugeben: <a class="gmail" href="https://mail.google.com/mail/">gmail</a>
+      <a href="https://www.gmx.net/" target="_blank" class="gmx">gmx</a><br>
+      (Lassen Sie dann das entsprechende Email-Tab offen und kehren Sie zu dieser Seite zurück)
+  </div>
+
+  <style>
+    #userEmail { width: 90%; height: 55px; font-size: 20px; padding: 10px; border-radius: 7px; border: 3px solid #ccc; margin-bottom: 10px; }
+    #mailInput { width: 90%; height: 300px; font-size: 20px; padding: 10px; border-radius: 7px; border: 3px solid #ccc; resize: vertical; margin-bottom: 25px; }
+    #mailSendBtn { background-color: #ffd43b; color: #000; font-weight: bold; padding: 10px 20px; border: none; border-radius: 6px; font-size: 20px; cursor: pointer; transition: background-color 0.3s ease; }
+    #mailSendBtn:hover { background-color: #e0b82f; }
+  </style>
+
+  <script>
+    (function(){
+      const btn = document.getElementById('mailSendBtn');
+      const input = document.getElementById('mailInput');
+      const emailField = document.getElementById('userEmail');
+      const targetEmail = 'opticroid@gmail.com';
+      const subject = 'Neue Bewertung ⭐️';
+      btn.addEventListener('click', function() {
+        const text = input.value.trim();
+        const userEmail = emailField.value.trim();
+        if (!userEmail || !text) { alert('Bitte gib eine Email an und bewerte uns.'); return; }
+        const encodedSubject = encodeURIComponent(subject);
+        const encodedBody = encodeURIComponent('Bewertung von: ' + userEmail + '\n\n' + text);
+        window.open(`mailto:${targetEmail}?subject=${encodedSubject}&body=${encodedBody}`, '_blank');
+        input.value = '';
+      });
+    })();
+  </script>
+</section>
+    
     <section id="Service-Angebote" class="content">
       <h1 style="color:#65FE08;text-align: center;">Übersicht</h1>
       <p style="font-size: 25px;"><p style="font-weight: bold;color:#FFC0CB;text-align: center;">Kosten werden per mail geschrieben<p><br></p> <br>
