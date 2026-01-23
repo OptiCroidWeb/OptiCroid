@@ -2,142 +2,389 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>OptiCroid</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OptiCorid</title>
   <style>
-    /* Fixiert das Layout auf die Bildschirmhöhe gegen Scrollen */
-    html, body { height: 100%; width: 100%; overflow: hidden; margin: 0; padding: 0; background: #000; }
-    body { font-family: Arial, sans-serif; color: white; display: flex; flex-direction: column; }
-
-    header { background: #00AAAA; padding: 8px 0; flex-shrink: 0; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
-    nav { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
-    nav a { text-decoration: none; color: #00FF7F; font-weight: bold; font-size: 0.9em; }
-
-    main { flex-grow: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    
-    .content { 
-      display: none; width: 90%; max-width: 800px; padding: 15px; text-align: center; 
-      background-color: #00AAAA; border-radius: 12px; box-sizing: border-box;
+    /* Verhindert seitliches Wischen */
+    html, body {
+      width: 100%;
+      overflow-x: hidden;
+      margin: 0;
     }
-    .content.active { display: block; animation: fadeIn 0.3s; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* Bilder passen sich an die verfügbare Resthöhe an */
-    .content img { max-height: 25vh; width: auto; max-width: 80%; border-radius: 8px; margin: 10px 0; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: linear-gradient(to right, #000000,#0000Ff);
+    }
     
-    h1 { font-size: 1.4em; margin: 5px 0; }
-    p { font-size: 1em !important; line-height: 1.2; margin: 5px 0; }
+    /* LOADER STYLES */
+    #loader {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
 
-    /* Eingabefelder */
-    #userEmail { width: 90%; height: 40px; font-size: 16px; margin-bottom: 8px; border-radius: 8px; border: 2px solid #ccc; }
-    #mailInput { width: 90%; height: 100px; font-size: 16px; margin-bottom: 10px; border-radius: 8px; border: 2px solid #ccc; resize: none; }
-    
-    .btn { padding: 10px 20px; border-radius: 8px; text-decoration: none; color: white; font-weight: bold; cursor: pointer; border: none; display: inline-block; margin: 5px; }
-    .btn-red { background: #FF0000; }
-    .btn-blue { background: #0000FF; border: 1px solid #ADD8E6; }
-    .btn-yellow { background: #ffd43b; color: #000; }
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 8px solid transparent;
+      border-top: 8px solid #0000FF;
+      border-bottom: 8px solid #ADD8E6;
+      border-radius: 50%;
+      animation: spin 1.5s linear infinite, colorChange 3s linear infinite;
+    }
 
-    /* Modal / Warnung */
-    #modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,50,0.8); backdrop-filter: blur(10px); z-index:3000; justify-content:center; align-items:center; }
-    .modal-box { background: white; padding: 20px; border-radius: 20px; width: 85%; max-width: 400px; text-align: center; color: black; border: 4px solid #0000FF; }
-
-    /* Loader */
-    #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
-    .spinner { width: 45px; height: 45px; border: 6px solid transparent; border-top: 6px solid #0000FF; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
+    @keyframes colorChange {
+      50% { border-top-color: #FF0000; border-bottom-color: #FFFF00; }
+    }
+
+    .loader-text {
+      position: absolute;
+      font-size: 30px;
+      font-weight: bold;
+      color: white;
+      opacity: 0;
+      transform: scale(0.5);
+      animation: textAppear 3.5s forwards 1.5s;
+    }
+
+    @keyframes textAppear {
+      to { opacity: 1; transform: scale(1.2); }
+    }
+
+    .fire-wind {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(45deg, yellow, red, blue);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .burn-away {
+      animation: burn 2s forwards;
+    }
+
+    @keyframes burn {
+      0% { opacity: 0.9; clip-path: circle(0% at 50% 50%); }
+      100% { opacity: 0; clip-path: circle(150% at 50% 50%); }
+    }
+
+    header {
+      background: #00AAAA;
+      display: flex;
+      justify-content: center;
+      padding: 15px 0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+      transition: background 0.3s ease;
+    }
+
+    header:hover {
+      background: #00AAAA;
+    }
+
+    nav a {
+      margin: 0 20px;
+      text-decoration: none;
+      color: #00FF7F;
+      font-weight: bold;
+      font-size: 1.1em;
+      padding: 5px 0;
+      position: relative;
+      transition: color 0.3s ease;
+      cursor: pointer;
+    }
+    
+    nav a:hover {
+      color: #ffd43b;
+    }
+
+    .content {
+      display: none;
+      padding: 30px;
+      text-align: center;
+      background-color: #00AAAA;
+      margin: 20px auto;
+      max-width: 900px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+    .content.active {
+      display: block;
+    }
+    .email-button {
+      background-color: #FF0000;
+      border: 2px solid #FF0000;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 8px;
+      display: inline-block;
+    }
+    
+    .Werbespot-button {
+      background-color: blue;
+      border: 2px solid #ADD8E6;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 8px;
+      display: inline-block;
+    }
+    
+    .instagram-btn {
+      background-color: #FFB6C1;
+      border: 2px solid #FF69B4;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    .youtube-btn {
+      background-color: #FF0000;
+      border: 2px solid #B20000;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 8px;
+      display: inline-block;
+    }
+    
+    .content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .ueber-uns-logo {
+      width: 200px;
+      float: right;
+      margin-left: 20px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      nav a {
+        margin: 0 10px;
+        font-size: 0.9em;
+      }
+      .content {
+        padding: 15px;
+      }
+      .ueber-uns-logo {
+        float: none;
+        display: block;
+        margin: 20px auto;
+        width: 150px;
+      }
+      #ueberuns p {
+        font-size: 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      nav a {
+        margin: 0 5px;
+        font-size: 0.8em;
+      }
+      .email-button, .Werbespot-button {
+        padding: 8px 15px;
+        font-size: 14px;
+      }
+      .ueber-uns-logo {
+        width: 120px;
+      }
+    }
   </style>
 </head>
 <body>
-
-  <div id="loader"><div class="spinner"></div></div>
+  <div id="loader">
+    <div class="spinner"></div>
+    <div class="loader-text">OptiCroid</div>
+    <div class="fire-wind"></div>
+  </div>
 
   <header>
     <nav>
-      <a href="#" onclick="showSection('startseite')">Startseite</a>
-      <a href="#" onclick="showSection('Bewertung')">Bewertung</a>
-      <a href="#" onclick="showSection('Service-Angebote')">Service</a>
-      <a href="#" onclick="showSection('Infos')">Infos</a>
-      <a href="#" onclick="showSection('Partner')">Partner</a>
+      <a href="#" onclick="showSection('startseite')" id="link-startseite">Startseite</a>
+      <a href="#" onclick="showSection('Bewertung')" id="link-Bewertung">Bewertung</a>
+      <a href="#" onclick="showSection('Service-Angebote')" id="link-Service-Angebote">Service-Angebote</a>
+      <a href="#" onclick="showSection('Infos')" id="link-Infos">Infos</a>
+      <a href="#" onclick="showSection('Partner')" id="link-Partner">Partner</a>
     </nav>
   </header>
 
   <main>
     <section id="startseite" class="content active">
       <img src="1768734429139.png" alt="Startseite" />
-      <h1 style="color:#40E0D0;">Willkommen bei OptiCroid</h1>
-      <a href="mailto:opticroid@gmail.com" class="btn btn-red">E-Mail senden</a>
-      <a href="https://www.youtube.com/@OptiCroid1" target="_blank" class="btn btn-blue">Werbespot</a>
+      <h1><p style="color:#40E0D0;font-size: 20px;">Herzlich willkommen bei OptiCroid</h1>
+      <br />
+      <a class="email-button" href="mailto:opticroid@gmail.com">E-Mail senden</a>
+      <a href="https://www.youtube.com/@OptiCroid1" target="_blank" class="Werbespot-button">Werbespot</a>
     </section>
 
-    <section id="Bewertung" class="content">
-      <h2 style="color:#65FE08;">Ihre Bewertung abgeben ⭐</h2>
-      
-      <div id="modal-overlay">
-        <div class="modal-box">
-          <h3 style="color: #0000FF;">Wichtige Info</h3>
-          <p>Bitte erst beim Anbieter anmelden:</p>
-          <div style="margin: 10px 0;">
-            <a href="https://mail.google.com/" target="_blank" style="padding:8px; background:#DB4437; color:white; border-radius:5px; text-decoration:none;">Gmail</a> 
-            <a href="https://www.gmx.net/" target="_blank" style="padding:8px; background:#000066; color:white; border-radius:5px; text-decoration:none;">GMX</a>
-            <a href="https://outlook.live.com/" target="_blank" style="padding:8px; background:#0078D4; color:white; border-radius:5px; text-decoration:none;">Outlook</a>
-          </div>
-          <button id="close-modal" class="btn btn-yellow" style="width:100%; border:2px solid #000;">Okay</button>
+   <section id="Bewertung" class="content">
+  <div id="bewertung-section" class="bewertung-container">
+    <h2 style="color:#65FE08; text-align: center;">Ihre Bewertung abgeben ⭐</h2>
+
+    <div id="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 50, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index:3000; justify-content:center; align-items:center;">
+      <div style="background: white; padding: 30px; border-radius: 25px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.6); border: 4px solid #0000FF; animation: popIn 0.4s ease-out;">
+        <h3 style="color: #0000FF; font-size: 22px; margin-bottom: 15px;">Wichtige Info</h3>
+        <p style="color: #333; font-size: 16px; line-height: 1.5;">Bitte melden Sie sich zuerst bei Ihrem Anbieter an:</p>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 15px;">
+          <a href="https://mail.google.com/" target="_blank" class="p-btn" style="background:#DB4437;">Gmail</a> 
+          <a href="https://www.gmx.net/" target="_blank" class="p-btn" style="background:#000066;">GMX</a>
+          <a href="https://www.freenet.de/" target="_blank" class="p-btn" style="background:#003366;">Freenet</a>
+          <a href="https://www.arcor.de/" target="_blank" class="p-btn" style="background:#ff0000;">Arcor</a>
+          <a href="https://outlook.live.com/" target="_blank" class="p-btn" style="background:#0078D4;">Outlook</a>
         </div>
+        <p style="color: #666; font-size: 14px; margin-top: 20px; font-style: italic;">Lassen Sie den Tab offen und kehren Sie hierher zurück.</p>
+        <br>
+        <button id="close-modal" class="ok-btn">Okay</button>
       </div>
+    </div>
 
-      <input type="email" id="userEmail" placeholder="Deine E-Mail-Adresse" onfocus="showModal()" required />
-      <textarea id="mailInput" placeholder="Deine Bewertung..." onfocus="showModal()" required></textarea>
-      <button id="mailSendBtn" class="btn btn-yellow" style="font-size: 1.2em;">☑️</button>
-    </section>
+    <input type="email" id="userEmail" placeholder="Deine E-Mail-Adresse" required />
+    <textarea id="mailInput" placeholder="Schreib hier deine Bewertung..." required></textarea>
+    <button id="mailSendBtn">☑️</button>
 
+    <div style="margin-top: 30px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+      <h4 style="color: #FF10F0; margin-bottom: 10px;">💡 Login-Links der Anbieter</h4>
+      <table style="width: 100%; border-collapse: collapse; color: white; font-size: 14px;">
+        <tr style="border-bottom: 1px solid #444;">
+          <td style="padding: 8px; text-align: left;"><strong>Dienst</strong></td>
+          <td style="padding: 8px; text-align: right;"><strong>Direktlink</strong></td>
+        </tr>
+        <tr><td style="padding: 8px; text-align: left;">Google Mail</td><td style="padding: 8px; text-align: right;"><a href="https://mail.google.com/" target="_blank" style="color: #FFC0CB;">Anmelden</a></td></tr>
+        <tr><td style="padding: 8px; text-align: left;">GMX Mail</td><td style="padding: 8px; text-align: right;"><a href="https://www.gmx.net/" target="_blank" style="color: #FFC0CB;">Anmelden</a></td></tr>
+        <tr><td style="padding: 8px; text-align: left;">Freenet / Arcor</td><td style="padding: 8px; text-align: right;"><a href="https://www.freenet.de/" target="_blank" style="color: #FFC0CB;">Anmelden</a></td></tr>
+        <tr><td style="padding: 8px; text-align: left;">Outlook / Hotmail</td><td style="padding: 8px; text-align: right;"><a href="https://outlook.live.com/" target="_blank" style="color: #FFC0CB;">Anmelden</a></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <style>
+    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .p-btn { text-decoration:none; color:white; padding:8px 12px; border-radius:8px; font-weight:bold; font-size:13px; transition: opacity 0.3s; }
+    .ok-btn { background:yellow; border:2px solid #000; cursor:pointer; font-weight:bold; padding:12px 35px; border-radius:12px; font-size:18px; transition: background 0.5s ease; }
+    .ok-btn:active { background:#556B2F !important; color:white; }
+    #userEmail { width: 90%; height: 55px; font-size: 20px; padding: 10px; border-radius: 7px; border: 3px solid #ccc; margin-bottom: 10px; }
+    #mailInput { width: 90%; height: 300px; font-size: 20px; padding: 10px; border-radius: 7px; border: 3px solid #ccc; resize: vertical; margin-bottom: 25px; }
+    #mailSendBtn { background-color: #ffd43b; color: #000; font-weight: bold; padding: 10px 20px; border: none; border-radius: 6px; font-size: 20px; cursor: pointer; }
+  </style>
+
+  <script>
+    (function(){
+      const overlay = document.getElementById('modal-overlay');
+      const emailField = document.getElementById('userEmail');
+      const mailInput = document.getElementById('mailInput');
+      let warningShown = false;
+
+      const showWarning = () => { if (!warningShown) { overlay.style.display = 'flex'; warningShown = true; } };
+      emailField.addEventListener('focus', showWarning);
+      mailInput.addEventListener('focus', showWarning);
+
+      document.getElementById('close-modal').addEventListener('click', () => { 
+        overlay.style.display = 'none'; 
+        emailField.focus(); 
+      });
+
+      document.getElementById('mailSendBtn').addEventListener('click', function() {
+        const text = mailInput.value.trim();
+        const userEmail = emailField.value.trim();
+        if (!userEmail || !text) { alert('Bitte alles ausfüllen.'); return; }
+        window.open(`mailto:opticroid@gmail.com?subject=Bewertung&body=${encodeURIComponent("Von: "+userEmail+"\n\n"+text)}`, '_blank');
+      });
+    })();
+  </script>
+</section>
+    
     <section id="Service-Angebote" class="content">
-      <h2 style="color:#65FE08;">Übersicht</h2>
-      <p style="color:#FFC0CB; font-weight:bold;">Kosten per Mailanfrage</p>
-      <p>• Websiten Programmierung</p>
-      <p>• Windows 11 Installation</p>
-      <p>• PC Scan & Reparaturen</p>
-      <p>• Systeminspektion & Reinigung</p>
+      <h1 style="color:#65FE08;text-align: center;">Übersicht</h1>
+      <p style="font-size: 25px;"><p style="font-weight: bold;color:#FFC0CB;text-align: center;">Kosten werden per mail geschrieben<p><br></p> <br>
+      <p style="font-size: 25px;"><br /><br />Websiten Programmierung (Wir Erwecken ihre eigene Website)<br></p><br>
+      <p style="font-size: 25px;"><br /><br />Windows 11 Installation bei Geräten ohne Vervollständigung<br>der Mindestanforderungen</p><br><br>
+      <p style="font-size: 25px;"><br /><br />2-in-1 PC Scan mit Entfernung von beschädigter Dateien<br></p><br>
+      <p style="font-size: 25px;"><br /><br />Gaming Tastatur Reperatur der Leertaste + Dimmung<br></p><br>
+      <p style="font-size: 25px;"><br /><br />Komplette Computer Systeminspektion + Intigration<br></p><br>
+      <p style="font-size: 25px;"><br /><br />PC Zurücksetzung neuinstailation und Neuaufbau<br></p><br>
+      <p style="font-size: 25px;"><br /><br />Maustasten Reparatur<br></p><br>
+      <p style="font-size: 25px;"><br /><br />Druckereinrichtung inkl. Treiberinstallation<br></p><br>
+      <p style="color:#E6E6FA;text-align: center;">Natürlich wird sich auch um Aufträge gekümmert die nicht den genannten Aufträgen entsprechen❗<p><br></p> <br>
     </section>
-
+    
     <section id="Infos" class="content">
-      <h2 style="color:#65FE08;">Informationen</h2>
-      <p>Fehlerbehebung und Zusammenarbeit</p>
-      <p style="color:#FFE4E1;">Wir unterstützen Sie bei Systeminstallationen und Optimierung.</p>
-      <p style="color:#FF0000; font-weight:bold;">OptiCroid | opticroid@gmail.com</p>
+      <h1 style="color:#65FE08;text-align: center;">Informationen</h1>
+      <p style="font-size: 25px;"><br /><br />Fehlerbehebung und gute Zusammenarbeit</p>
+      <p style="font-size: 25px;"><br />___________</p><br />
+      <p style="color:#FFE4E1;font-size: 25px;">
+        Doch die Tätigkeiten gehen weit darüber hinaus.<br />
+        Auch bei der Einrichtung neuer Geräte übernehmen wir Systeminstallationen,<br />
+        richten Software ein und machen alles dafür, dass ihr Computer optimal läuft. Also ob Neuaufbau,<br />
+        Erweiterung oder Optimierung – Wir stehen Ihnen mit<br />
+        persönlicher Unterstützung zur Verfügung.
+        <br><br>
+        <p style="color:#FF0000;font-size: 25px;">Deutschland<br>
+        OptiCroid<br>
+        opticroid@gmail.com
+      </p>
     </section>
 
     <section id="Partner" class="content">
-      <h2 style="color:#65FE08;">Partnerschaft</h2>
-      <p style="color: #FFC0CB;">Kooperation mit @Tbrasstracks</p>
-      <img src="IMG_0107.png" alt="Partner" />
-      <br>
-      <a href="https://www.instagram.com/tbrasstracks" target="_blank" class="btn" style="background:#FFB6C1;">Instagram</a>
+      <h1 style="color:#65FE08;text-align: center;">Partnerschaft</h1>
+      <p style="font-size: 25px; color: #FFC0CB;">
+        In Arbeit mit dem YouTube & Instagram Kanal<br />
+        @Tbrasstracks bieten wir auch<br />
+        kreative Trompeten Videos<br />
+      </p>
+      <a href="https://www.instagram.com/tbrasstracks?igsh=MXd1MzI3d3Bka2pqYQ==" target="_blank" class="instagram-btn">Instagram</a>
+      <a href="https://youtube.com/@tbrasstracks?si=6t80yVRvs1cRSYDc" target="_blank" class="youtube-btn">YouTube</a>
+      <img src="IMG_0107.png" alt="Über uns Bild" class="ueber-uns-logo" />
     </section>
   </main>
 
   <script>
-    let warningShown = false;
-    const overlay = document.getElementById('modal-overlay');
-
-    window.addEventListener('load', () => { setTimeout(() => { document.getElementById('loader').style.display = 'none'; }, 600); });
+    /* ANIMATIONS LOGIC */
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const fw = document.querySelector('.fire-wind');
+        fw.classList.add('burn-away');
+        setTimeout(() => {
+          document.getElementById('loader').style.display = 'none';
+        }, 1500);
+      }, 5500);
+    });
 
     function showSection(id) {
       document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
       document.getElementById(id).classList.add('active');
+      document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
+      document.getElementById('link-' + id).classList.add('active');
     }
 
-    function showModal() { if (!warningShown) { overlay.style.display = 'flex'; warningShown = true; } }
-    
-    document.getElementById('close-modal').addEventListener('click', () => { 
-      overlay.style.display = 'none'; 
-      document.getElementById('userEmail').focus(); 
-    });
-
-    document.getElementById('mailSendBtn').addEventListener('click', function() {
-      const email = document.getElementById('userEmail').value;
-      const text = document.getElementById('mailInput').value;
-      if (email && text) window.open(`mailto:opticroid@gmail.com?subject=Bewertung&body=Von: ${email}%0A%0A${encodeURIComponent(text)}`);
+    document.addEventListener('DOMContentLoaded', () => {
+      showSection('startseite');
     });
   </script>
 </body>
-</html>
+                                                                                                                                                  </html>
+                                                                                                                                                  
+
+
+
+
+
+
