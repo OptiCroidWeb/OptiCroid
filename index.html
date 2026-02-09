@@ -241,80 +241,8 @@
     </section>
 
    <section id="Bewertung" class="content">
-  <div id="bewertung-section" class="bewertung-container">
-    <h2 style="color:#65FE08; text-align: center;">Bewerten Sie uns⭐</h2>
+    <h2 style="color:#65FE08; text-align: center;">Bewerten sie bei Google<br>⭐</h2>
 
-    <div id="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 50, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index:3000; justify-content:center; align-items:center;">
-      <div style="background: white; padding: 30px; border-radius: 25px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.6); border: 4px solid #0000FF; animation: popIn 0.4s ease-out;">
-        <h3 style="color: #0000FF; font-size: 22px; margin-bottom: 15px;">Wichtige Info</h3>
-        <p style="color: #333; font-size: 16px; line-height: 1.5;">Bitte melden Sie sich zuerst bei Ihrem Anbieter an:</p>
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 15px;">
-          <a href="https://mail.google.com/" target="_blank" class="p-btn" style="background:#DB4437;">Gmail</a> 
-          <a href="https://www.gmx.net/" target="_blank" class="p-btn" style="background:#000066;">GMX</a>
-          <a href="https://www.freenet.de/" target="_blank" class="p-btn" style="background:#003366;">Freenet</a>
-          <a href="https://www.arcor.de/" target="_blank" class="p-btn" style="background:#ff0000;">Arcor</a>
-          <a href="https://outlook.live.com/" target="_blank" class="p-btn" style="background:#0078D4;">Outlook</a>
-        </div>
-        <p style="color: #666; font-size: 14px; margin-top: 20px; font-style: italic;">Lassen Sie den Tab offen und kehren Sie hierher zurück.</p>
-        <br>
-        <button id="close-modal" class="ok-btn">Okay</button>
-      </div>
-    </div>
-
-    <input type="email" id="userEmail" placeholder="Deine E-Mail-Adresse" required />
-    <textarea id="mailInput" placeholder="Schreib hier deine Bewertung..." required></textarea>
-    <button id="mailSendBtn">☑️</button>
-
-    <div style="margin-top: 30px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
-      <h4 style="color: #FF10F0; margin-bottom: 10px;">💡 Login bei ihrem Anbieter</h4>
-      <table style="width: 100%; border-collapse: collapse; color: white; font-size: 14px;">
-        <tr style="border-bottom: 1px solid #444;">
-          <td style="padding: 8px; text-align: left;"><strong>Dienst</strong></td>
-          <td style="padding: 8px; text-align: right;"><strong>Direktlink</strong></td>
-        </tr>
-        <tr><td style="padding: 8px; text-align: left;">Google Mail</td><td style="padding: 8px; text-align: right;"><a href="https://mail.google.com/" target="_blank" style="color: #FFC0CB;">Anmelden</a></td></tr>
-        <tr><td style="padding: 8px; text-align: left;">GMX Mail</td><td style="padding: 8px; text-align: right;"><a href="https://www.gmx.net/" target="_blank" style="color: #FFC0CB;">Anmelden</a></td></tr>
-        <tr><td style="padding: 8px; text-align: left;">Freenet / Arcor</td><td style="padding: 8px; text-align: right;"><a href="https://www.freenet.de/" target="_blank" style="color: #FFC0CB;">Anmelden</a></td></tr>
-        <tr><td style="padding: 8px; text-align: left;">Outlook / Hotmail</td><td style="padding: 8px; text-align: right;"><a href="https://outlook.live.com/" target="_blank" style="color: #FFC0CB;">Anmelden</a></td></tr>
-      </table>
-    </div>
-  </div>
-
-  <style>
-    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .p-btn { text-decoration:none; color:white; padding:8px 12px; border-radius:8px; font-weight:bold; font-size:13px; transition: opacity 0.3s; }
-    .ok-btn { background:yellow; border:2px solid #000; cursor:pointer; font-weight:bold; padding:12px 35px; border-radius:12px; font-size:18px; transition: background 0.5s ease; }
-    .ok-btn:active { background:#556B2F !important; color:white; }
-    #userEmail { width: 90%; height: 55px; font-size: 20px; padding: 10px; border-radius: 7px; border: 3px solid #ccc; margin-bottom: 10px; }
-    #mailInput { width: 90%; height: 300px; font-size: 20px; padding: 10px; border-radius: 7px; border: 3px solid #ccc; resize: vertical; margin-bottom: 25px; }
-    #mailSendBtn { background-color: #ffd43b; color: #000; font-weight: bold; padding: 10px 20px; border: none; border-radius: 6px; font-size: 20px; cursor: pointer; }
-  </style>
-
-  <script>
-    (function(){
-      const overlay = document.getElementById('modal-overlay');
-      const emailField = document.getElementById('userEmail');
-      const mailInput = document.getElementById('mailInput');
-      let warningShown = false;
-
-      const showWarning = () => { if (!warningShown) { overlay.style.display = 'flex'; warningShown = true; } };
-      emailField.addEventListener('focus', showWarning);
-      mailInput.addEventListener('focus', showWarning);
-
-      document.getElementById('close-modal').addEventListener('click', () => { 
-        overlay.style.display = 'none'; 
-        emailField.focus(); 
-      });
-
-      document.getElementById('mailSendBtn').addEventListener('click', function() {
-        const text = mailInput.value.trim();
-        const userEmail = emailField.value.trim();
-        if (!userEmail || !text) { alert('Bitte alles ausfüllen.'); return; }
-        window.open(`mailto:opticroid@gmail.com?subject=Bewertung&body=${encodeURIComponent("Von: "+userEmail+"\n\n"+text)}`, '_blank');
-      });
-    })();
-  </script>
-</section>
     
     <section id="Service-Angebote" class="content">
       <h1 style="color:#65FE08;text-align: center;">Übersicht</h1>
