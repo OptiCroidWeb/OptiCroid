@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
@@ -154,6 +154,7 @@
       text-decoration: none;
       border-radius: 8px;
       display: inline-block;
+      cursor: pointer;
     }
     
     .instagram-btn {
@@ -190,7 +191,7 @@
     }
 
     /* NEU: MODAL STYLE */
-    #mailModal {
+    #contactModal {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -202,7 +203,7 @@
       z-index: 2000;
     }
 
-    .modal-content {
+    .modal-box {
       background: white;
       padding: 25px;
       border-radius: 12px;
@@ -247,9 +248,9 @@
 </head>
 <body>
 
-  <div id="mailModal">
-    <div class="modal-content">
-      <p style="color: #333; font-weight: bold; margin-bottom: 20px;">opticroid@gmail.com</p>
+  <div id="contactModal">
+    <div class="modal-box">
+      <p id="modalText" style="color: #333; font-weight: bold; margin-bottom: 20px;"></p>
       <button onclick="closeModal()" style="background:#007BFF; color:white; border:none; padding:8px 25px; border-radius:5px; cursor:pointer;">Okay</button>
     </div>
   </div>
@@ -271,96 +272,7 @@
 
   <main>
     <section id="startseite" class="content active">
-      <p style="color: white; font-size: 14px; margin-bottom: 10px;">Letzte Aktualisierung: <strong>11.02.2026</strong></p>
+      <p style="color: white; font-size: 14px; margin-bottom: 10px;">Letzte Aktualisierung: <strong>08.02.2026</strong></p>
       <img src="1768734429139.png" alt="Startseite" />
-      <h1><p style="color:#40E0D0;font-size: 20px;">Herzlich Willkommen bei OptiCroid</h1>
-      <br />
-      <a class="email-button" onclick="openMail()">E-Mail senden</a>
-      <a href="tel:+4915206821179" target="_blank" class="Anrufen-button">Anrufen</a>
-    </section>
-    
-    <section id="Service-Angebote" class="content">
-      <h1 style="color:#65FE08;text-align: center;">Übersicht</h1>
-      <p style="font-size: 25px;"><p style="font-weight: bold;color:#FFC0CB;text-align: center;">Alle zuletzt erledigten Aufträge<p><br></p> <br>
-      <p style="font-size: 25px;"><br /><br />Websiten Programmierung (Wir Erwecken ihre eigene Website)<br></p><br>
-      <p style="font-size: 25px;"><br /><br />Windows 11 Installation bei Geräten ohne Vervollständigung<br>der Mindestanforderungen</p><br><br>
-      <p style="font-size: 25px;"><br /><br />2-in-1 PC Scan mit Entfernung von beschädigter Dateien<br></p><br>
-      <p style="font-size: 25px;"><br /><br />Gaming Tastatur Reperatur der Leertaste + Dimmung<br></p><br>
-      <p style="font-size: 25px;"><br /><br />Komplette Computer Systeminspektion + Intigration<br></p><br>
-      <p style="font-size: 25px;"><br /><br />PC Zurücksetzung neuinstailation und Neuaufbau<br></p><br>
-      <p style="font-size: 25px;"><br /><br />Maustasten Reparatur<br></p><br>
-      <p style="font-size: 25px;"><br /><br />Druckereinrichtung inkl. Treiberinstallation<br></p><br>
-      <p style="font-size: 25px;"><br /><br />SmartWatch Akku Kalibrierung (Hervorragendere Akkulaufzeit)<br></p><br>
-      <p style="color:#E6E6FA;text-align: center;">Alles wird auf Spendenbasis erledigt😃<p><br></p> <br>
-    </section>
-    
-    <section id="Infos" class="content">
-      <h1 style="color:#65FE08;text-align: center;">Informationen</h1>
-      <p style="font-size: 25px;"><br /><br />Fehlerbehebung und gute Zusammenarbeit</p>
-      <p style="font-size: 25px;"><br />___________</p><br />
-      <p style="color:#FFE4E1;font-size: 25px;">
-        Doch die Tätigkeiten gehen weit darüber hinaus.<br />
-        Auch bei der Einrichtung neuer Geräte übernehmen wir Systeminstallationen,<br />
-        richten Software ein und machen alles dafür, dass ihr Computer optimal läuft. Also ob Neuaufbau,<br />
-        Erweiterung oder Optimierung – Wir stehen Ihnen mit<br />
-        persönlicher Unterstützung zur Verfügung.<br><br>Alles auf Spendenbasierte Zahlung🤩
-        <br><br>
-        <p style="color:#FF0000;font-size: 25px;">Deutschland<br>
-        OptiCroid<br>
-        Markus Sieber<br>
-        opticroid@gmail.com<br>
-        +49 (0) 15206821179
-      </p>
-    </section>
-
-    <section id="Partner" class="content">
-      <h1 style="color:#65FE08;text-align: center;">Partnerschaft</h1>
-      <p style="font-size: 25px; color: #FFC0CB;">
-        In Arbeit mit dem YouTube & Instagram Kanal<br />
-        @Tbrasstracks bieten wir auch<br />
-        kreative Trompeten Videos<br>
-        🎺◀️<br />
-      </p>
-      <a href="https://www.instagram.com/tbrasstracks?igsh=MXd1MzI3d3Bka2pqYQ==" target="_blank" class="instagram-btn">Instagram</a>
-      <a href="https://youtube.com/@tbrasstracks?si=6t80yVRvs1cRSYDc" target="_blank" class="youtube-btn">YouTube</a>
-      <img src="IMG_0107.png" alt="Über uns Bild" class="ueber-uns-logo" />
-    </section>
-  </main>
-
-  <script>
-    /* NEU: MODAL LOGIK */
-    function openMail() {
-      window.location.href = "mailto:opticroid@gmail.com";
-      setTimeout(function() {
-        document.getElementById('mailModal').style.display = 'flex';
-      }, 500);
-    }
-    function closeModal() {
-      document.getElementById('mailModal').style.display = 'none';
-    }
-
-    /* ANIMATIONS LOGIC */
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        const fw = document.querySelector('.fire-wind');
-        fw.classList.add('burn-away');
-        setTimeout(() => {
-          document.getElementById('loader').style.display = 'none';
-        }, 1500);
-      }, 5500);
-    });
-
-    function showSection(id) {
-      document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
-      document.getElementById('link-' + id).classList.add('active');
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      showSection('startseite');
-    });
-  </script>
-</body>
-  </html>
-  
+      <h1><p style="color:#40E0D0;font-size: 20
+            
