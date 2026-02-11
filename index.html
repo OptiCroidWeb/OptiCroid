@@ -21,64 +21,6 @@
       background-color: linear-gradient(to right, #000000,#0000Ff);
     }
     
-    /* LOADER STYLES */
-    #loader {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: #000;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-
-    .spinner {
-      width: 60px;
-      height: 60px;
-      border: 8px solid transparent;
-      border-top: 8px solid #0000FF;
-      border-bottom: 8px solid #ADD8E6;
-      border-radius: 50%;
-      animation: spin 1.5s linear infinite, colorChange 3s linear infinite;
-    }
-
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    @keyframes colorChange {
-      50% { border-top-color: #FF0000; border-bottom-color: #FFFF00; }
-    }
-
-    .loader-text {
-      position: absolute;
-      font-size: 30px;
-      font-weight: bold;
-      color: white;
-      opacity: 0;
-      transform: scale(0.5);
-      animation: textAppear 3.5s forwards 1.5s;
-    }
-
-    @keyframes textAppear {
-      to { opacity: 1; transform: scale(1.2); }
-    }
-
-    .fire-wind {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(45deg, yellow, red, blue);
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .burn-away {
-      animation: burn 2s forwards;
-    }
-
-    @keyframes burn {
-      0% { opacity: 0.9; clip-path: circle(0% at 50% 50%); }
-      100% { opacity: 0; clip-path: circle(150% at 50% 50%); }
-    }
-
     header {
       background: #00AAAA;
       display: flex;
@@ -190,7 +132,7 @@
       margin-bottom: 20px;
     }
 
-    /* NEU: MODAL STYLE */
+    /* MODAL STYLE */
     #contactModal {
       display: none;
       position: fixed;
@@ -255,12 +197,6 @@
     </div>
   </div>
 
-  <div id="loader">
-    <div class="spinner"></div>
-    <div class="loader-text">OptiCroid</div>
-    <div class="fire-wind"></div>
-  </div>
-
   <header>
     <nav>
       <a href="#" onclick="showSection('startseite')" id="link-startseite">Startseite</a>
@@ -274,5 +210,83 @@
     <section id="startseite" class="content active">
       <p style="color: white; font-size: 14px; margin-bottom: 10px;">Letzte Aktualisierung: <strong>08.02.2026</strong></p>
       <img src="1768734429139.png" alt="Startseite" />
-      <h1><p style="color:#40E0D0;font-size: 20
-        
+      <h1><p style="color:#40E0D0;font-size: 20px;">Herzlich Willkommen bei OptiCroid</h1>
+      <br />
+      <a class="email-button" onclick="handleContact('mailto:opticroid@gmail.com', 'opticroid@gmail.com')">E-Mail senden</a>
+      <a class="Anrufen-button" onclick="handleContact('tel:+4915206821179', '+49 15206821179')">Anrufen</a>
+    </section>
+    
+    <section id="Service-Angebote" class="content">
+      <h1 style="color:#65FE08;text-align: center;">Übersicht</h1>
+      <p style="font-size: 25px;"><p style="font-weight: bold;color:#FFC0CB;text-align: center;">Alle zuletzt erledigten Aufträge<p><br></p> <br>
+      <p style="font-size: 25px;"><br /><br />Websiten Programmierung (Wir Erwecken ihre eigene Website)<br></p><br>
+      <p style="font-size: 25px;"><br /><br />Windows 11 Installation bei Geräten ohne Vervollständigung<br>der Mindestanforderungen</p><br><br>
+      <p style="font-size: 25px;"><br /><br />2-in-1 PC Scan mit Entfernung von beschädigter Dateien<br></p><br>
+      <p style="font-size: 25px;"><br /><br />Gaming Tastatur Reperatur der Leertaste + Dimmung<br></p><br>
+      <p style="font-size: 25px;"><br /><br />Komplette Computer Systeminspektion + Intigration<br></p><br>
+      <p style="font-size: 25px;"><br /><br />PC Zurücksetzung neuinstailation und Neuaufbau<br></p><br>
+      <p style="font-size: 25px;"><br /><br />Maustasten Reparatur<br></p><br>
+      <p style="font-size: 25px;"><br /><br />Druckereinrichtung inkl. Treiberinstallation<br></p><br>
+      <p style="font-size: 25px;"><br /><br />SmartWatch Akku Kalibrierung (Hervorragendere Akkulaufzeit)<br></p><br>
+      <p style="color:#E6E6FA;text-align: center;">Alles wird auf Spendenbasis erledigt😃<p><br></p> <br>
+    </section>
+    
+    <section id="Infos" class="content">
+      <h1 style="color:#65FE08;text-align: center;">Informationen</h1>
+      <p style="font-size: 25px;"><br /><br />Fehlerbehebung und gute Zusammenarbeit</p>
+      <p style="font-size: 25px;"><br />___________</p><br />
+      <p style="color:#FFE4E1;font-size: 25px;">
+        Doch die Tätigkeiten gehen weit darüber hinaus.<br />
+        Auch bei der Einrichtung neuer Geräte übernehmen wir Systeminstallationen,<br />
+        richten Software ein und machen alles dafür, dass ihr Computer optimal läuft. Also ob Neuaufbau,<br />
+        Erweiterung oder Optimierung – Wir stehen Ihnen mit<br />
+        persönlicher Unterstützung zur Verfügung.<br><br>Alles auf Spendenbasierte Zahlung🤩
+        <br><br>
+        <p style="color:#FF0000;font-size: 25px;">Deutschland<br>
+        OptiCroid<br>
+        Markus Sieber<br>
+        opticroid@gmail.com<br>
+        +49 (0) 15206821179
+      </p>
+    </section>
+
+    <section id="Partner" class="content">
+      <h1 style="color:#65FE08;text-align: center;">Partnerschaft</h1>
+      <p style="font-size: 25px; color: #FFC0CB;">
+        In Arbeit mit dem YouTube & Instagram Kanal<br />
+        @Tbrasstracks bieten wir auch<br />
+        kreative Trompeten Videos<br>
+        🎺◀️<br />
+      </p>
+      <a href="https://www.instagram.com/tbrasstracks?igsh=MXd1MzI3d3Bka2pqYQ==" target="_blank" class="instagram-btn">Instagram</a>
+      <a href="https://youtube.com/@tbrasstracks?si=6t80yVRvs1cRSYDc" target="_blank" class="youtube-btn">YouTube</a>
+      <img src="IMG_0107.png" alt="Über uns Bild" class="ueber-uns-logo" />
+    </section>
+  </main>
+
+  <script>
+    function handleContact(protocol, text) {
+      window.location.href = protocol;
+      setTimeout(function() {
+        document.getElementById('modalText').innerText = text;
+        document.getElementById('contactModal').style.display = 'flex';
+      }, 500);
+    }
+
+    function closeModal() {
+      document.getElementById('contactModal').style.display = 'none';
+    }
+
+    function showSection(id) {
+      document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
+      document.getElementById('link-' + id).classList.add('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      showSection('startseite');
+    });
+  </script>
+</body>
+</html>
