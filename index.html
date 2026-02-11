@@ -134,6 +134,7 @@
       text-decoration: none;
       border-radius: 8px;
       display: inline-block;
+      cursor: pointer;
     }
     .Berwertungs-button {
       background-color: blue;
@@ -188,6 +189,28 @@
       margin-bottom: 20px;
     }
 
+    /* NEU: MODAL STYLE */
+    #mailModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      width: 260px;
+    }
+
     @media (max-width: 768px) {
       nav a {
         margin: 0 10px;
@@ -223,6 +246,14 @@
   </style>
 </head>
 <body>
+
+  <div id="mailModal">
+    <div class="modal-content">
+      <p style="color: #333; font-weight: bold; margin-bottom: 20px;">opticroid@gmail.com</p>
+      <button onclick="closeModal()" style="background:#007BFF; color:white; border:none; padding:8px 25px; border-radius:5px; cursor:pointer;">Okay</button>
+    </div>
+  </div>
+
   <div id="loader">
     <div class="spinner"></div>
     <div class="loader-text">OptiCroid</div>
@@ -244,7 +275,7 @@
       <img src="1768734429139.png" alt="Startseite" />
       <h1><p style="color:#40E0D0;font-size: 20px;">Herzlich Willkommen bei OptiCroid</h1>
       <br />
-      <a class="email-button" href="mailto:opticroid@gmail.com">E-Mail senden</a>
+      <a class="email-button" onclick="openMail()">E-Mail senden</a>
       <a href="tel:+4915206821179" target="_blank" class="Anrufen-button">Anrufen</a>
     </section>
     
@@ -297,6 +328,17 @@
   </main>
 
   <script>
+    /* NEU: MODAL LOGIK */
+    function openMail() {
+      window.location.href = "mailto:opticroid@gmail.com";
+      setTimeout(function() {
+        document.getElementById('mailModal').style.display = 'flex';
+      }, 500);
+    }
+    function closeModal() {
+      document.getElementById('mailModal').style.display = 'none';
+    }
+
     /* ANIMATIONS LOGIC */
     window.addEventListener('load', () => {
       setTimeout(() => {
@@ -320,11 +362,5 @@
     });
   </script>
 </body>
-                                                                                                                                                  </html>
-                                                                                                                                                  
-
-
-
-
-
-
+  </html>
+  
