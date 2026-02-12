@@ -8,6 +8,7 @@
   <meta name="google-site-verification" content="1h0mJmEKKiB0WFa2w9Txokx6s4TYYGrI54m2dTZAwCk" />
   <meta name="description" content="IT Dienstleistung / Markus Sieber">
   <style>
+    /* Verhindert seitliches Wischen */
     html, body {
       width: 100%;
       overflow-x: hidden;
@@ -17,7 +18,7 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #000000;
+      background-color: linear-gradient(to right, #000000,#0000Ff);
     }
     
     header {
@@ -32,6 +33,10 @@
       border-bottom-left-radius: 15px;
       border-bottom-right-radius: 15px;
       transition: background 0.3s ease;
+    }
+
+    header:hover {
+      background: #00AAAA;
     }
 
     nav a {
@@ -50,28 +55,24 @@
       color: orange;
     }
 
-    /* Diese Änderung lässt Google den Text lesen */
+    /* NUR HIER GEÄNDERT: display:none entfernt, damit Google den Text indiziert */
     .content {
-      display: block;
       visibility: hidden;
       height: 0;
       overflow: hidden;
       padding: 0;
       text-align: center;
       background-color: #00AAAA;
-      margin: 0 auto;
+      margin: 20px auto;
       max-width: 900px;
       border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     }
-
     .content.active {
       visibility: visible;
       height: auto;
       padding: 30px;
-      margin: 20px auto;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     }
-
     .email-button {
       background-color: #FF0000;
       border: 2px solid #FF0000;
@@ -82,7 +83,16 @@
       display: inline-block;
       cursor: pointer;
     }
-
+    .Berwertungs-button {
+      background-color: blue;
+      border: 3px solid #ADD8E6;
+      color: white;
+      padding: 12px 23px;
+      text-decoration: none;
+      border-radius: 10px;
+      display: inline-block;
+    }
+    
     .Anrufen-button {
       background-color: green;
       border: 2px solid #ADD8E6;
@@ -118,10 +128,11 @@
       max-width: 100%;
       height: auto;
       border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     #startseite img {
-      width: 188px;
+      width: 250px;
       margin-bottom: 10px;
     }
 
@@ -132,12 +143,14 @@
       margin-bottom: 20px;
     }
 
+    /* MODAL STYLE */
     #contactModal {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       justify-content: center;
       align-items: center;
       z-index: 2000;
@@ -148,12 +161,41 @@
       padding: 25px;
       border-radius: 12px;
       text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
       width: 260px;
     }
 
     @media (max-width: 768px) {
-      nav a { margin: 0 10px; font-size: 0.9em; }
-      .ueber-uns-logo { float: none; display: block; margin: 20px auto; width: 150px; }
+      nav a {
+        margin: 0 10px;
+        font-size: 0.9em;
+      }
+      .content {
+        padding: 15px;
+      }
+      .ueber-uns-logo {
+        float: none;
+        display: block;
+        margin: 20px auto;
+        width: 150px;
+      }
+      #ueberuns p {
+        font-size: 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      nav a {
+        margin: 0 5px;
+        font-size: 0.8em;
+      }
+      .email-button, .Werbespot-button {
+        padding: 8px 15px;
+        font-size: 14px;
+      }
+      .ueber-uns-logo {
+        width: 120px;
+      }
     }
   </style>
 </head>
@@ -177,41 +219,58 @@
 
   <main>
     <section id="startseite" class="content active">
-      <p style="color: orange; font-size: 20px; margin-bottom: 20px;"><strong>IT Dienstleistung</strong></p>
+      <p style="color: orange; font-size: 20px; margin-bottom: 20px;"><strong>IT Dienstleistung</strong></p><br>
       <img src="1768734429139.png" alt="Startseite" />
-      <h1><p style="color:#40E0D0;font-size: 20px;">Herzlich Willkommen bei OptiCroid</p></h1>
+      <h1><p style="color:#40E0D0;font-size: 20px;">Herzlich Willkommen bei OptiCroid</h1>
+      <br />
       <a class="email-button" onclick="handleContact('mailto:opticroid@gmail.com', 'opticroid@gmail.com')">E-Mail senden</a>
       <a class="Anrufen-button" onclick="handleContact('tel:+4915206821179', '+49 15206821179')">Anrufen</a>
     </section>
     
     <section id="Service-Angebote" class="content">
-      <h1 style="color:#65FE08;">Übersicht</h1>
-      <p style="font-weight: bold;color:#FFC0CB;">Alle zuletzt erledigten Aufträge</p>
-      <p>Websiten Programmierung</p>
-      <p>Windows 11 Installation</p>
-      <p>2-in-1 PC Scan</p>
-      <p>Gaming Tastatur Reperatur</p>
-      <p>Computer Systeminspektion</p>
-      <p>PC Zurücksetzung</p>
-      <p>Maustasten Reparatur</p>
-      <p>Druckereinrichtung</p>
-      <p>SmartWatch Akku Kalibrierung</p>
-      <p style="color:#E6E6FA;">Alles wird auf Spendenbasis erledigt😃</p>
+      <h1 style="color:#65FE08;text-align: center;">Übersicht</h1>
+      <p style="font-size: 20px;"><p style="font-weight: bold;color:#FFC0CB;text-align: center;">Alle zuletzt erledigten Aufträge<p><br></p> <br>
+      <p style="font-size: 18px;"><br />Websiten Programmierung (Wir Erwecken ihre eigene Website)<br></p>
+      <p style="font-size: 18px;"><br />Windows 11 Installation bei Geräten ohne Vervollständigung<br>der Mindestanforderungen</p><br>
+      <p style="font-size: 18px;"><br />2-in-1 PC Scan mit Entfernung von beschädigter Dateien<br></p>
+      <p style="font-size: 18px;"><br />Gaming Tastatur Reperatur der Leertaste + Dimmung<br></p>
+      <p style="font-size: 18px;"><br />Komplette Computer Systeminspektion + Intigration<br></p>
+      <p style="font-size: 18px;"><br />PC Zurücksetzung neuinstailation und Neuaufbau<br></p>
+      <p style="font-size: 18px;"><br />Maustasten Reparatur<br></p>
+      <p style="font-size: 18px;"><br />Druckereinrichtung inkl. Treiberinstallation<br></p>
+      <p style="font-size: 18px;"><br />SmartWatch Akku Kalibrierung (Hervorragendere Akkulaufzeit)<br></p><br>
+      <p style="color:#E6E6FA;text-align: center;">Alles wird auf Spendenbasis erledigt😃<p><br></p> <br>
     </section>
     
     <section id="Infos" class="content">
-      <h1 style="color:#65FE08;">Informationen</h1>
-      <p>Fehlerbehebung und gute Zusammenarbeit</p>
-      <p style="color:#FFE4E1;">Wir übernehmen Systeminstallationen und Optimierungen.</p>
-      <p style="color:blue;font-size: 20px;">Alles auf Spendenbasierte Zahlung🤩</p>
-      <p style="color:orange;font-size: 20px;">Deutschland<br>OptiCroid<br>Markus Sieber</p>
+      <h1 style="color:#65FE08;text-align: center;">Informationen</h1>
+      <p style="font-size: 18px;"><br /><br />Fehlerbehebung und gute Zusammenarbeit</p>
+      <p style="font-size: 18px;"><br />___________</p><br />
+      <p style="color:#FFE4E1;font-size: 18px;">
+        Doch die Tätigkeiten gehen weit darüber hinaus.<br />
+        Auch bei der Einrichtung neuer Geräte übernehmen wir Systeminstallationen,<br />
+        richten Software ein und machen alles dafür, dass ihr Computer optimal läuft. Also ob Neuaufbau,<br />
+        Erweiterung oder Optimierung – Wir stehen Ihnen mit<br />
+        persönlicher Unterstützung zur Verfügung.<br><br><p style="color:blue;font-size: 20px;">Alles auf Spendenbasierte Zahlung🤩
+        <br><br>
+        <p style="color:orange;font-size: 20px;">Deutschland<br>
+        OptiCroid<br>
+        Markus Sieber<br>
+        opticroid@gmail.com<br>
+        +49 (0) 15206821179
+      </p>
     </section>
 
     <section id="Partner" class="content">
-      <h1 style="color:#65FE08;">Partnerschaft</h1>
-      <p style="color: #FFC0CB;">In Arbeit mit @Tbrasstracks</p>
-      <a href="https://www.instagram.com/tbrasstracks" target="_blank" class="instagram-btn">Instagram</a>
-      <a href="https://youtube.com/@tbrasstracks" target="_blank" class="youtube-btn">YouTube</a>
+      <h1 style="color:#65FE08;text-align: center;">Partnerschaft</h1>
+      <p style="font-size: 18px; color: #FFC0CB;">
+        In Arbeit mit dem YouTube & Instagram Kanal<br />
+        @Tbrasstracks bieten wir auch<br />
+        kreative Trompeten Videos<br>
+        🎺◀️<br />
+      </p>
+      <a href="https://www.instagram.com/tbrasstracks?igsh=MXd1MzI3d3Bka2pqYQ==" target="_blank" class="instagram-btn">Instagram</a>
+      <a href="https://youtube.com/@tbrasstracks?si=6t80yVRvs1cRSYDc" target="_blank" class="youtube-btn">YouTube</a>
       <img src="IMG_0107.png" alt="Über uns Bild" class="ueber-uns-logo" />
     </section>
   </main>
@@ -230,8 +289,21 @@
     }
 
     function showSection(id) {
-      document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.content').forEach(el => {
+          el.classList.remove('active');
+          // Zusätzliche Logik für die Sichtbarkeit
+          el.style.visibility = 'hidden';
+          el.style.height = '0';
+          el.style.overflow = 'hidden';
+          el.style.padding = '0';
+      });
+      
+      const activeEl = document.getElementById(id);
+      activeEl.classList.add('active');
+      activeEl.style.visibility = 'visible';
+      activeEl.style.height = 'auto';
+      activeEl.style.padding = '30px';
+
       document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
       document.getElementById('link-' + id).classList.add('active');
     }
