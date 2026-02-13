@@ -55,7 +55,7 @@
       color: orange;
     }
 
-    /* NUR HIER GEÄNDERT: display:none entfernt, damit Google den Text indiziert */
+    /* NUR HIER ANGEPASST: Nutzt Sichtbarkeit statt Display:none für Google */
     .content {
       visibility: hidden;
       height: 0;
@@ -289,21 +289,8 @@
     }
 
     function showSection(id) {
-      document.querySelectorAll('.content').forEach(el => {
-          el.classList.remove('active');
-          // Zusätzliche Logik für die Sichtbarkeit
-          el.style.visibility = 'hidden';
-          el.style.height = '0';
-          el.style.overflow = 'hidden';
-          el.style.padding = '0';
-      });
-      
-      const activeEl = document.getElementById(id);
-      activeEl.classList.add('active');
-      activeEl.style.visibility = 'visible';
-      activeEl.style.height = 'auto';
-      activeEl.style.padding = '30px';
-
+      document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
       document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
       document.getElementById('link-' + id).classList.add('active');
     }
