@@ -210,11 +210,30 @@
       <a href="https://youtube.com/@tbrasstracks?si=6t80yVRvs1cRSYDc" target="_blank" class="youtube-btn">YouTube</a>
     </section>
 
-    <section id="Profil" class="content active">
-  <p style="color:white;">Anmeldung</p>
-  <textarea id="userMessage" style="width: 80%; height: 100px; border-radius: 8px; padding: 10px;"></textarea><br><br>
-  <button onclick="alert('?' + document.getElementById('userMessage').value)" style="background:orange; color:black; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold;">Anmelden</button>
+    <section id="Profil" class="content">
+  <div id="loginArea">
+    <p style="color:white;">Anmeldung</p>
+    <input type="password" id="passInput" placeholder="Passwort eingeben" style="width: 80%; padding: 10px; border-radius: 8px;"><br><br>
+    <button onclick="checkPass()" style="background:orange; color:black; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold;">Anmelden</button>
+  </div>
+
+  <div id="secretContent" style="display:none;">
+    <h2 style="color:#65FE08;">Willkommen im internen Bereich</h2>
+    <p style="color:white;">Hier liegen deine geschützten Daten.</p>
+  </div>
 </section>
+
+<script>
+function checkPass() {
+  const input = document.getElementById('passInput').value;
+  if (input === "OptiCroid/31_008") {
+    document.getElementById('loginArea').style.display = 'none';
+    document.getElementById('secretContent').style.display = 'block';
+  } else {
+    alert("Falsches Passwort!");
+  }
+}
+</script>
   </main>
 
   <script>
