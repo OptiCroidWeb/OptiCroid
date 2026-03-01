@@ -184,7 +184,7 @@
       }
     }
 
-    /* --- MARKIERUNG: NEUER STIL FÜR DEN SPINNER --- */
+    /* NEUER STIL FÜR SPINNER */
     @keyframes spin { 100% { transform: rotate(360deg); } }
   </style>
 </head>
@@ -206,25 +206,30 @@
     </nav>
   </header>
 
-  <div style="display: flex; align-items: center; justify-content: center; gap: 15px; padding: 15px; background: white; border-bottom: 2px solid black;">
+  <div id="maintenance-bar" style="display: flex; align-items: center; justify-content: center; gap: 15px; padding: 15px; background: white; border-bottom: 2px solid black;">
     <div style="width: 35px; height: 35px; border: 5px solid black; border-top: 5px solid blue; border-radius: 50%; animation: spin 1s linear infinite;"></div>
     <div style="text-align: left; color: black;">
       <strong style="display: block; font-size: 1.1em;">Wartungsarbeiten im Laufe</strong>
-      <span id="wartungs-countdown" style="font-family: monospace; font-weight: bold; font-size: 1.1em;">3:12:32:17</span>
+      <span id="wartungs-countdown" style="font-family: monospace; font-weight: bold; font-size: 1.1em;">Laden...</span>
     </div>
   </div>
 
   <script>
-    // Countdown Logik für den Wartungsbereich
-    const targetDate = new Date().getTime() + (3 * 24 * 60 * 60 * 1000 + 12 * 60 * 60 * 1000 + 32 * 60 * 1000 + 17 * 1000);
-    setInterval(() => {
+    const targetDate = new Date(2026, 2, 10, 18, 0, 0).getTime();
+    function updateTimer() {
       const diff = targetDate - new Date().getTime();
+      if (diff <= 0) {
+        document.getElementById("maintenance-bar").style.display = "none";
+        return;
+      }
       const d = Math.floor(diff / 86400000);
       const h = Math.floor((diff % 86400000) / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       const s = Math.floor((diff % 60000) / 1000);
       document.getElementById("wartungs-countdown").innerText = `${d}:${h}:${m}:${s}`;
-    }, 1000);
+    }
+    setInterval(updateTimer, 1000);
+    updateTimer();
   </script>
   <main>
     <section id="startseite" class="content active">
