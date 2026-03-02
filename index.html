@@ -8,7 +8,7 @@
   <meta name="google-site-verification" content="1h0mJmEKKiB0WFa2w9Txokx6s4TYYGrI54m2dTZAwCk" />
   <meta name="description" content="IT Dienstleistung / Markus Sieber">
   <style>
-    html, body { width: 100%; overflow-x: hidden; margin: 0; }
+    html, body { width: 100%; overflow-x: hidden; margin: 0; padding: 0; }
     body { margin: 0; font-family: Arial, sans-serif; background: linear-gradient(to right, #000000,#0000Ff); background-attachment: fixed; }
 
     header {
@@ -56,16 +56,24 @@
 
     nav a:hover { color: orange; background: rgba(255,255,255,0.1); }
 
+    /* Dynamischer Hauptbereich */
+    main {
+      transition: margin-left 0.4s ease;
+      margin-left: 60px;
+    }
+
+    header.open ~ main {
+      margin-left: 220px;
+    }
+
     .content {
       position: absolute;
       left: -9999px;
       opacity: 0;
-      height: 0;
-      overflow: hidden;
       text-align: center;
       background-color: #00AAAA;
       margin: 20px auto;
-      max-width: 850px;
+      max-width: 90%;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
       transition: opacity 0.3s ease;
@@ -73,14 +81,10 @@
 
     .content.active {
       position: relative;
-      left: 40px;
+      left: 0;
       opacity: 1;
-      height: auto;
       padding: 30px;
-      margin-left: 80px;
     }
-
-    header.open ~ main .content.active { margin-left: 240px; }
 
     .email-button { background-color: #FF0000; border: 2px solid #FF0000; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; display: inline-block; cursor: pointer; }
     .Anrufen-button { background-color: green; border: 2px solid #ADD8E6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; display: inline-block; cursor: pointer; }
@@ -91,11 +95,11 @@
     .blink-bg { background-color: #d3d3d3; border-radius: 4px; transition: background-color 0.4s ease; }
     
     @media (max-width: 768px) {
-      header { width: 100%; height: auto; position: sticky; flex-direction: row; justify-content: space-around; padding: 10px 0; }
-      header.open { width: 100%; }
-      #toggle-btn { display: none; }
-      nav { flex-direction: row; justify-content: center; }
-      .content.active { margin-left: 10px; left: 0; max-width: 95%; }
+      header { width: 50px; }
+      header.open { width: 180px; }
+      main { margin-left: 50px; }
+      header.open ~ main { margin-left: 180px; }
+      nav a { padding: 15px 10px; gap: 10px; font-size: 0.9em; }
     }
   </style>
 </head>
@@ -112,7 +116,7 @@
   </header>
 
   <main>
-    <div id="maintenance-bar" style="display: flex; align-items: center; justify-content: center; gap: 15px; padding: 15px; background: white; border-bottom: 2px solid black; margin-left: 60px;">
+    <div id="maintenance-bar" style="display: flex; align-items: center; justify-content: center; gap: 15px; padding: 15px; background: white; border-bottom: 2px solid black;">
       <div style="width: 35px; height: 35px; border: 5px solid black; border-top: 5px solid blue; border-radius: 50%; animation: spin 1s linear infinite;"></div>
       <div style="text-align: left; color: black;">
         <strong style="display: block; font-size: 1.1em;">Wartungsarbeiten im Laufe</strong>
@@ -123,7 +127,7 @@
     </div>
 
     <section id="startseite" class="content active">
-      <p style="color: orange; font-size: 20px; margin-bottom: 20px;"><strong>IT Dienstleistung / OptiCroid</strong></p><br>
+      <p style="color: orange; font-size: 20px; margin-bottom: 20px;"><strong>IT Dienstleistung / OptiCroid</strong></p>
       <img src="1768734429139.png" alt="Startseite" style="width:250px;"/>
       <h1><p style="color:#40E0D0;font-size: 20px;">Herzlich Willkommen bei OptiCroid</p></h1>
       <a class="email-button" onclick="handleContact('mailto:opticroid@gmail.com', 'opticroid@gmail.com')">E-Mail senden</a>
@@ -186,10 +190,15 @@
 
   <script>
     function toggleNav() {
-      const header = document.getElementById("myHeader");
-      const btn = document.getElementById("toggle-btn");
-      header.classList.toggle("open");
-      btn.innerText = header.classList.contains("open") ? "⬅" : "➔";
+      const h = document.getElementById("myHeader");
+      const b = document.getElementById("toggle-btn");
+      h.classList.toggle("open");
+      b.innerText = h.classList.contains("open") ? "⬅" : "➔";
+    }
+
+    function showSection(id) {
+      document.querySelectorAll('.content').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
 
     function checkPass() {
@@ -199,12 +208,7 @@
       } else { alert("Falsches Passwort!"); }
     }
 
-    function showSection(id) {
-      document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-    }
-
-    const targetDate = new Date(2026, 2, 3, 21, 00, 0).getTime();
+    const targetDate = new Date(2026, 2, 2, 13, 59, 0).getTime();
     function updateTimer() {
       const now = new Date().getTime();
       const diff = targetDate - now;
@@ -215,12 +219,10 @@
         m: Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0'),
         s: Math.floor((diff % 60000) / 1000).toString().padStart(2, '0')
       };
-      const ids = ['val-d', 'val-h', 'val-m', 'val-s'];
-      const vals = [parts.d, parts.h, parts.m, parts.s];
-      ids.forEach((id, i) => {
-        const el = document.getElementById(id);
-        if (el && el.innerText !== String(vals[i])) {
-          el.innerText = vals[i];
+      ['d','h','m','s'].forEach(k => {
+        const el = document.getElementById('val-' + k);
+        if (el && el.innerText !== parts[k]) {
+          el.innerText = parts[k];
           el.classList.add('blink-bg');
           setTimeout(() => el.classList.remove('blink-bg'), 400);
         }
@@ -229,12 +231,11 @@
     setInterval(updateTimer, 1000);
     updateTimer();
 
-    function handleContact(protocol, text) {
-      window.location.href = protocol;
+    function handleContact(p, t) {
+      window.location.href = p;
       setTimeout(() => {
-        const modal = document.getElementById('contactModal');
-        document.getElementById('modalText').innerText = text;
-        modal.style.display = 'flex';
+        document.getElementById('modalText').innerText = t;
+        document.getElementById('contactModal').style.display = 'flex';
       }, 500);
     }
     function closeModal() { document.getElementById('contactModal').style.display = 'none'; }
