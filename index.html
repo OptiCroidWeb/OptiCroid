@@ -190,7 +190,7 @@
 
     <section id="Spiel" class="content" style="background-color: #111; padding: 20px; border-radius: 15px; text-align: center;">
   <h2 style="color:#00FF7F; margin: 0 0 10px 0;">OptiCroid Arena</h2>
-  <canvas id="gameCanvas" width="360" height="360" style="background: #fff; border-radius: 50%; touch-action: none; box-shadow: 0 0 20px #00FF7F;"></canvas>
+  <canvas id="gameCanvas" width="300" height="300" style="background: #fff; border-radius: 50%; touch-action: none; border: 5px solid #00FF7F;"></canvas>
   <div style="margin-top: 15px;">
     <button onclick="resetGame()" style="background:#00FF7F; color:black; padding:10px 20px; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Neustart</button>
   </div>
@@ -198,70 +198,48 @@
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    const size = 360, center = 180, radius = 175;
+    let p = { x: 150, y: 150, a: 0, s: 2, c: '#00AAAA', t: [] };
+    let bots = [{x:50, y:50, a:1, s:1.5, c:'#FF4500', t:[]}, {x:250, y:250, a:3, s:1.5, c:'#FFD700', t:[]}];
 
-    let player = { x: center, y: center, angle: 0, speed: 2, color: '#00AAAA', trail: [], owned: [] };
-    let bots = [
-      { x: 100, y: 100, angle: 1, speed: 1.5, color: '#FF4500', trail: [] },
-      { x: 260, y: 260, angle: 4, speed: 1.5, color: '#FFD700', trail: [] }
-    ];
-
-    function getMousePos(e) {
-      const rect = canvas.getBoundingClientRect();
-      const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-      const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-      player.angle = Math.atan2(y - player.y, x - player.x);
+    function move(e) {
+      const r = canvas.getBoundingClientRect();
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+      const y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
+      p.a = Math.atan2(y - p.y, x - p.x);
     }
 
-    canvas.addEventListener('mousemove', getMousePos);
-    canvas.addEventListener('touchstart', getMousePos);
-    canvas.addEventListener('touchmove', getMousePos);
+    canvas.addEventListener('mousemove', move);
+    canvas.addEventListener('touchmove', move);
 
     function resetGame() {
-      player.x = center; player.y = center; player.trail = [];
-      bots.forEach(b => { b.x = Math.random()*size; b.y = Math.random()*size; b.trail = []; });
+      p.x = 150; p.y = 150; p.t = [];
+      bots.forEach(b => { b.x = Math.random()*300; b.y = Math.random()*300; b.t = []; });
     }
 
-    function updateEntity(ent, isPlayer) {
-      ent.x += Math.cos(ent.angle) * ent.speed;
-      ent.y += Math.sin(ent.angle) * ent.speed;
-
-      if (Math.hypot(ent.x - center, ent.y - center) > radius) {
-        if (isPlayer) resetGame();
-        else ent.angle += Math.PI / 2;
+    function loop() {
+      if (document.getElementById('Game').classList.contains('active')) {
+        ctx.clearRect(0, 0, 300, 300);
+        [p, ...bots].forEach(e => {
+          e.x += Math.cos(e.a) * e.s;
+          e.y += Math.sin(e.a) * e.s;
+          if (Math.hypot(e.x - 150, e.y - 150) > 145) {
+             if (e === p) resetGame(); else e.a += Math.PI;
+          }
+          e.t.push({x: e.x, y: e.y});
+          if (e.t.length > 50) e.t.shift();
+          ctx.beginPath();
+          ctx.strokeStyle = e.c;
+          ctx.lineWidth = 4;
+          e.t.forEach((pt, i) => i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y));
+          ctx.stroke();
+          ctx.fillStyle = e.c;
+          ctx.fillRect(e.x - 5, e.y - 5, 10, 10);
+          if (e !== p && Math.random() < 0.02) e.a += (Math.random() - 0.5);
+        });
       }
-
-      ent.trail.push({x: ent.x, y: ent.y});
-      if (ent.trail.length > 100) ent.trail.shift();
-
-      if (!isPlayer && Math.random() < 0.02) ent.angle += (Math.random() - 0.5);
+      requestAnimationFrame(loop);
     }
-
-    function draw() {
-      if (!document.getElementById('Game').classList.contains('active')) {
-        requestAnimationFrame(draw);
-        return;
-      }
-
-      ctx.clearRect(0, 0, size, size);
-      [player, ...bots].forEach(ent => {
-        updateEntity(ent, ent === player);
-        
-        ctx.beginPath();
-        ctx.strokeStyle = ent.color;
-        ctx.lineWidth = 4;
-        ent.trail.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
-        ctx.stroke();
-
-        ctx.fillStyle = ent.color;
-        ctx.shadowBlur = 10; ctx.shadowColor = ent.color;
-        ctx.fillRect(ent.x - 5, ent.y - 5, 10, 10);
-        ctx.shadowBlur = 0;
-      });
-
-      requestAnimationFrame(draw);
-    }
-    draw();
+    loop();
   </script>
 </section>
   </main>
