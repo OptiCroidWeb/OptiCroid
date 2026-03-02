@@ -188,58 +188,73 @@
       </div>
     </section>
 
-    <section id="Spiel" class="content" style="background-color: #111; padding: 20px; border-radius: 15px; text-align: center;">
-  <h2 style="color:#00FF7F; margin: 0 0 10px 0;">OptiCroid Arena</h2>
-  <canvas id="gameCanvas" width="300" height="300" style="background: #fff; border-radius: 50%; touch-action: none; border: 5px solid #00FF7F;"></canvas>
-  <div style="margin-top: 15px;">
-    <button onclick="resetGame()" style="background:#00FF7F; color:black; padding:10px 20px; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Neustart</button>
-  </div>
-
+    <section id="Spiel" class="content" style="background-color: #111; padding: 20px; border-radius: 15px; text-align: center; color: white;">
+  <h2 style="color:#00FF7F; margin: 0 0 10px 0;">OptiCroid Runner</h2>
+  <div style="margin-bottom: 10px; font-family: monospace;">Zeit: <span id="gameTimer" style="color: orange; font-size: 1.2em;">0.0</span>s</div>
+  <canvas id="dinoCanvas" width="400" height="150" style="background: #222; border-bottom: 3px solid #00FF7F; touch-action: none; width: 100%; max-width: 400px;"></canvas>
+  <div style="margin-top: 10px; font-size: 0.8em; color: #888;">W = Springen | S = Ducken (Halten)</div>
+  
   <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    let p = { x: 150, y: 150, a: 0, s: 2, c: '#00AAAA', t: [] };
-    let bots = [{x:50, y:50, a:1, s:1.5, c:'#FF4500', t:[]}, {x:250, y:250, a:3, s:1.5, c:'#FFD700', t:[]}];
+    const dCanvas = document.getElementById('dinoCanvas');
+    const dCtx = dCanvas.getContext('2d');
+    let dino = { x: 50, y: 120, w: 20, h: 20, dy: 0, jump: -9, grav: 0.6, grounded: true, duck: false };
+    let obs = [];
+    let startTime = Date.now();
+    let dActive = true;
+    let speed = 4;
+    let touchY = 0;
 
-    function move(e) {
-      const r = canvas.getBoundingClientRect();
-      const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
-      const y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
-      p.a = Math.atan2(y - p.y, x - p.x);
-    }
+    function jump() { if (dino.grounded && dActive) { dino.dy = dino.jump; dino.grounded = false; } }
 
-    canvas.addEventListener('mousemove', move);
-    canvas.addEventListener('touchmove', move);
+    window.onkeydown = (e) => { 
+      if(e.key.toLowerCase() === 'w') jump(); 
+      if(e.key.toLowerCase() === 's') { dino.duck = true; if(dino.grounded) { dino.h = 10; dino.y = 130; } }
+    };
+    window.onkeyup = (e) => { if(e.key.toLowerCase() === 's') { dino.duck = false; dino.h = 20; dino.y = 120; } };
 
-    function resetGame() {
-      p.x = 150; p.y = 150; p.t = [];
-      bots.forEach(b => { b.x = Math.random()*300; b.y = Math.random()*300; b.t = []; });
-    }
+    dCanvas.ontouchstart = (e) => { touchY = e.touches[0].clientY; };
+    dCanvas.ontouchend = (e) => {
+      let diff = touchY - e.changedTouches[0].clientY;
+      if (diff > 30) jump();
+      if (diff < -30) { dino.duck = true; setTimeout(() => { dino.duck = false; dino.h = 20; }, 500); }
+    };
 
-    function loop() {
-      if (document.getElementById('Game').classList.contains('active')) {
-        ctx.clearRect(0, 0, 300, 300);
-        [p, ...bots].forEach(e => {
-          e.x += Math.cos(e.a) * e.s;
-          e.y += Math.sin(e.a) * e.s;
-          if (Math.hypot(e.x - 150, e.y - 150) > 145) {
-             if (e === p) resetGame(); else e.a += Math.PI;
+    function dLoop() {
+      if (document.getElementById('Spiel').classList.contains('active') && dActive) {
+        dCtx.clearRect(0, 0, 400, 150);
+        let elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        document.getElementById('SpielTimer').innerText = elapsed;
+        speed += 0.001;
+
+        dino.dy += dino.grav;
+        dino.y += dino.dy;
+        if (dino.y > (dino.duck ? 130 : 120)) { dino.y = (dino.duck ? 130 : 120); dino.dy = 0; dino.grounded = true; }
+        if (dino.duck) dino.h = 10; else dino.h = 20;
+
+        dCtx.fillStyle = '#00AAAA';
+        dCtx.fillRect(dino.x, dino.y, dino.w, dino.h);
+
+        if (Math.random() < 0.02) {
+          let type = Math.random() > 0.3 ? 'low' : 'high';
+          if (obs.length === 0 || obs[obs.length-1].x < 250) obs.push({ x: 400, w: 15, h: 20, type });
+        }
+
+        obs.forEach((o, i) => {
+          o.x -= speed;
+          let obsY = o.type === 'high' ? 100 : 130;
+          dCtx.fillStyle = o.type === 'high' ? '#FFD700' : '#FF4500';
+          dCtx.fillRect(o.x, obsY, o.w, o.h);
+
+          if (o.x < dino.x + dino.w && o.x + o.w > dino.x && obsY < dino.y + dino.h && obsY + o.h > dino.y) {
+            dActive = false;
+            setTimeout(() => { startTime = Date.now(); obs = []; speed = 4; dActive = true; }, 1000);
           }
-          e.t.push({x: e.x, y: e.y});
-          if (e.t.length > 50) e.t.shift();
-          ctx.beginPath();
-          ctx.strokeStyle = e.c;
-          ctx.lineWidth = 4;
-          e.t.forEach((pt, i) => i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y));
-          ctx.stroke();
-          ctx.fillStyle = e.c;
-          ctx.fillRect(e.x - 5, e.y - 5, 10, 10);
-          if (e !== p && Math.random() < 0.02) e.a += (Math.random() - 0.5);
+          if (o.x < -20) obs.splice(i, 1);
         });
       }
-      requestAnimationFrame(loop);
+      requestAnimationFrame(dLoop);
     }
-    loop();
+    dLoop();
   </script>
 </section>
   </main>
