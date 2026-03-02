@@ -189,25 +189,37 @@
     </section>
 
     <section id="Spiel" class="content">
-  <h2 style="color:#65FE08;">OptiPaper-cd</h2>
-  <div style="color: white; margin-bottom: 10px;">Steuerung: Maus oder Finger</div>
-  <canvas id="gameCanvas" width="350" height="350" style="background: #fff; border-radius: 50%; touch-action: none; cursor: crosshair;"></canvas>
+  <h2 style="color:#65FE08;">OptiCroid Paper-IO</h2>
+  <div style="color: white; margin-bottom: 10px;">Erobere den weißen Kreis!</div>
+  <canvas id="gameCanvas" width="350" height="350" style="background: #eee; border-radius: 50%; touch-action: none; cursor: crosshair;"></canvas>
   <br><br>
-  <button onclick="resetPlayer()" style="background:orange; padding:10px; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Neu starten</button>
+  <button onclick="resetGame()" style="background:orange; padding:10px; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Neu starten</button>
 
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    let player = { x: 175, y: 175, vx: 1.5, vy: 0, size: 8, color: '#00AAAA' };
+    const size = 350;
+    const center = size / 2;
+    const radius = 170;
+
+    let player = { x: center, y: center, vx: 1.5, vy: 0, color: '#00AAAA' };
     let trail = [];
+    let ownedMask = document.createElement('canvas'); // Speicher für eroberte Fläche
+    ownedMask.width = size;
+    ownedMask.height = size;
+    let mctx = ownedMask.getContext('2d');
+
+    // Startfläche zeichnen
+    mctx.fillStyle = player.color;
+    mctx.beginPath();
+    mctx.arc(center, center, 30, 0, Math.PI * 2);
+    mctx.fill();
 
     function handleInput(e) {
       const rect = canvas.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      const targetX = clientX - rect.left;
-      const targetY = clientY - rect.top;
-      const angle = Math.atan2(targetY - player.y, targetX - player.x);
+      const angle = Math.atan2((clientY - rect.top) - player.y, (clientX - rect.left) - player.x);
       player.vx = Math.cos(angle) * 2;
       player.vy = Math.sin(angle) * 2;
     }
@@ -215,29 +227,56 @@
     canvas.addEventListener('mousemove', handleInput);
     canvas.addEventListener('touchstart', handleInput);
 
-    function resetPlayer() {
-      player.x = 175; player.y = 175; trail = [];
+    function resetGame() {
+      player.x = center; player.y = center; trail = [];
+      mctx.clearRect(0, 0, size, size);
+      mctx.fillStyle = player.color;
+      mctx.beginPath(); mctx.arc(center, center, 30, 0, Math.PI * 2); mctx.fill();
     }
 
     function gameLoop() {
-      if (document.getElementById('Spiel').classList.contains('active')) {
+      if (document.getElementById('Game').classList.contains('active')) {
         player.x += player.vx;
         player.y += player.vy;
-        const dist = Math.hypot(player.x - 175, player.y - 175);
-        if (dist > 170) resetPlayer();
-        trail.push({x: player.x, y: player.y});
-        if (trail.length > 200) trail.shift(); 
-        ctx.clearRect(0, 0, 350, 350);
+
+        // Rand-Check
+        if (Math.hypot(player.x - center, player.y - center) > radius) resetGame();
+
+        // Prüfen, ob Spieler auf eigenem Land ist
+        let onOwned = mctx.getImageData(player.x, player.y, 1, 1).data[3] > 0;
+
+        if (!onOwned) {
+          trail.push({x: player.x, y: player.y});
+          // Kollision mit eigener Spur
+          for(let i = 0; i < trail.length - 10; i++) {
+            if(Math.hypot(player.x - trail[i].x, player.y - trail[i].y) < 3) resetGame();
+          }
+        } else if (trail.length > 0) {
+          // Fläche füllen wenn zurück auf Eigenland
+          mctx.fillStyle = player.color;
+          mctx.beginPath();
+          mctx.moveTo(trail[0].x, trail[0].y);
+          trail.forEach(p => mctx.lineTo(p.x, p.y));
+          mctx.closePath();
+          mctx.fill();
+          trail = [];
+        }
+
+        ctx.clearRect(0, 0, size, size);
+        ctx.drawImage(ownedMask, 0, 0); // Eroberte Fläche anzeigen
+
+        // Spur zeichnen
         ctx.beginPath();
-        ctx.strokeStyle = player.color;
+        ctx.strokeStyle = "white";
         ctx.lineWidth = 3;
-        trail.forEach((p, i) => {
-          if (i === 0) ctx.moveTo(p.x, p.y);
-          else ctx.lineTo(p.x, p.y);
-        });
+        trail.forEach((p, i) => { i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y); });
         ctx.stroke();
+
+        // Spieler
         ctx.fillStyle = player.color;
-        ctx.fillRect(player.x - 4, player.y - 4, player.size, player.size);
+        ctx.fillRect(player.x - 4, player.y - 4, 8, 8);
+        ctx.strokeStyle = "white";
+        ctx.strokeRect(player.x - 4, player.y - 4, 8, 8);
       }
       requestAnimationFrame(gameLoop);
     }
