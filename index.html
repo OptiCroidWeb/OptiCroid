@@ -112,7 +112,7 @@
       <a href="#" onclick="showSection('Angebote')" id="link-Angebote"><span>💼</span> <span>Angebote</span></a>
       <a href="#" onclick="showSection('Infos')" id="link-Infos"><span>ℹ️</span> <span>Infos</span></a>
       <a href="#" onclick="showSection('Profil')" id="link-Profil"><span>😃</span> <span>Profil</span></a>
-      <a href="#" onclick="showSection('Spiel')" id="link-Spiel"><span>🎮</span> <span>Game</span></a>
+      <a href="#" onclick="showSection('Spiel')" id="link-Spiel"><span>🎮</span> <span>Spiel</span></a>
     </nav>
   </header>
 
@@ -188,8 +188,8 @@
       </div>
     </section>
 
-    <section id="Game" class="content">
-  <h2 style="color:#65FE08;">OptiCroid Paper-IO</h2>
+    <section id="Spiel" class="content">
+  <h2 style="color:#65FE08;">OptiPaper-cd</h2>
   <div style="color: white; margin-bottom: 10px;">Steuerung: Maus oder Finger</div>
   <canvas id="gameCanvas" width="350" height="350" style="background: #fff; border-radius: 50%; touch-action: none; cursor: crosshair;"></canvas>
   <br><br>
@@ -220,7 +220,7 @@
     }
 
     function gameLoop() {
-      if (document.getElementById('Game').classList.contains('active')) {
+      if (document.getElementById('Spiel').classList.contains('active')) {
         player.x += player.vx;
         player.y += player.vy;
         const dist = Math.hypot(player.x - 175, player.y - 175);
