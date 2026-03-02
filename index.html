@@ -111,7 +111,7 @@
       <a href="#" onclick="showSection('startseite')" id="link-startseite"><span>🏠</span> <span>Startseite</span></a>
       <a href="#" onclick="showSection('Angebote')" id="link-Angebote"><span>💼</span> <span>Angebote</span></a>
       <a href="#" onclick="showSection('Infos')" id="link-Infos"><span>ℹ️</span> <span>Infos</span></a>
-      <a href="#" onclick="showSection('Profil')" id="link-Profil"><span>😃</span> <span>Saveroom</span></a>
+      <a href="#" onclick="showSection('Profil')" id="link-Profil"><span>😃</span> <span>Profil</span></a>
     </nav>
   </header>
 
@@ -182,7 +182,7 @@
         <button onclick="checkPass()" style="background:orange; color:black; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold;">Anmelden</button>
       </div>
       <div id="secretContent" style="display:none;">
-        <h2 style="color:#65FE08;">Willkommen im Saveroom</h2>
+        <h2 style="color:#65FE08;">Hallo Markus</h2>
         <a href="https://docs.google.com/document/d/1upsHjR9gnVUU6mZ10YlJHWYKPD6qNe071ZiVDAqIQzE/edit" target="_blank" style="color: orange; text-decoration: none; display: block;">Test Datei 1 öffnen</a>
       </div>
     </section>
@@ -205,7 +205,7 @@
       if (document.getElementById('passInput').value === "OptiCroid/31_008") {
         document.getElementById('loginArea').style.display = 'none';
         document.getElementById('secretContent').style.display = 'block';
-      } else { alert("Falsches Passwort!"); }
+      } else { alert("Du hast hir nichts Verloren!"); }
     }
 
     const targetDate = new Date(2026, 2, 3, 21, 0, 0).getTime();
