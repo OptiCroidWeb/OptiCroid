@@ -188,82 +188,116 @@
       </div>
     </section>
 
-    <section id="Spiel" class="active" style="background-color: #111; padding: 20px; border-radius: 15px; text-align: center; color: white;">
-  <h2 style="color:#00FF7F; margin: 0 0 10px 0;">OptiCroid Runner</h2>
-  <div style="margin-bottom: 10px; font-family: monospace;">Zeit bis System-Reset: <span id="gameTimer" style="color: orange; font-size: 1.2em;">0.0</span>s</div>
-  <canvas id="dinoCanvas" width="400" height="150" style="background: #222; border-bottom: 3px solid #00FF7F; touch-action: none; width: 100%; max-width: 400px; cursor: pointer;"></canvas>
-  <div style="margin-top: 10px; font-size: 0.8em; color: #888;">W = Springen | S = Ducken (Halten) | Mobil: Wischen</div>
+    <section id="Spiel" class="content">
+
+  <h2 style="color:#65FE08;">OptiCroid Paper-IO</h2>
+
+  <div style="color: white; margin-bottom: 10px;">Steuerung: Maus oder Finger</div>
+
+  <canvas id="gameCanvas" width="350" height="350" style="background: #fff; border-radius: 50%; touch-action: none; cursor: crosshair;"></canvas>
+
+  <br><br>
+
+  <button onclick="resetPlayer()" style="background:orange; padding:10px; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Neu starten</button>
+
+
 
   <script>
-    const dCanvas = document.getElementById('dinoCanvas');
-    const dCtx = dCanvas.getContext('2d');
-    let dino = { x: 50, y: 120, w: 20, h: 25, dy: 0, jump: -10, grav: 0.7, grounded: true, duck: false };
-    let obstacles = [];
-    let startTime = Date.now();
-    let dActive = true;
-    let speed = 4;
-    let touchY = 0;
 
-    function jump() { if (dino.grounded && dActive) { dino.dy = dino.jump; dino.grounded = false; } }
+    const canvas = document.getElementById('gameCanvas');
 
-    window.onkeydown = (e) => { 
-      if(e.key.toLowerCase() === 'w') jump(); 
-      if(e.key.toLowerCase() === 's') { dino.duck = true; if(dino.grounded) { dino.h = 12; dino.y = 138; } }
-    };
-    window.onkeyup = (e) => { if(e.key.toLowerCase() === 's') { dino.duck = false; dino.h = 25; dino.y = 125; } };
+    const ctx = canvas.getContext('2d');
 
-    dCanvas.ontouchstart = (e) => { touchY = e.touches[0].clientY; };
-    dCanvas.ontouchend = (e) => {
-      let diff = touchY - e.changedTouches[0].clientY;
-      if (diff > 20) jump();
-      if (diff < -20) { dino.duck = true; setTimeout(() => { dino.duck = false; dino.h = 25; }, 600); }
-    };
+    let player = { x: 175, y: 175, vx: 1.5, vy: 0, size: 8, color: '#00AAAA' };
 
-    function resetDino() {
-      dino.y = 125; dino.dy = 0; obstacles = []; startTime = Date.now(); speed = 4; dActive = true;
+    let trail = [];
+
+
+
+    function handleInput(e) {
+
+      const rect = canvas.getBoundingClientRect();
+
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      const targetX = clientX - rect.left;
+
+      const targetY = clientY - rect.top;
+
+      const angle = Math.atan2(targetY - player.y, targetX - player.x);
+
+      player.vx = Math.cos(angle) * 2;
+
+      player.vy = Math.sin(angle) * 2;
+
     }
 
-    function dLoop() {
-      if (document.getElementById('Spiel').classList.contains('active') && dActive) {
-        dCtx.clearRect(0, 0, 400, 150);
-        let elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-        document.getElementById('SpielTimer').innerText = elapsed;
-        speed += 0.002;
 
-        dino.dy += dino.grav;
-        dino.y += dino.dy;
-        let groundY = dino.duck ? 138 : 125;
-        if (dino.y > groundY) { dino.y = groundY; dino.dy = 0; dino.grounded = true; }
-        dino.h = dino.duck ? 12 : 25;
 
-        // Dino zeichnen
-        dCtx.fillStyle = '#00AAAA';
-        dCtx.fillRect(dino.x, dino.y, dino.w, dino.h);
+    canvas.addEventListener('mousemove', handleInput);
 
-        // Hindernis-Logik
-        if (Math.random() < 0.015 && (obstacles.length === 0 || obstacles[obstacles.length-1].x < 250)) {
-          let isBird = Math.random() > 0.7;
-          obstacles.push({ x: 400, w: 15, h: isBird ? 15 : 25, type: isBird ? 'bird' : 'cactus' });
-        }
+    canvas.addEventListener('touchstart', handleInput);
 
-        obstacles.forEach((o, i) => {
-          o.x -= speed;
-          let oY = o.type === 'bird' ? 105 : 125; // Schwebende Blöcke vs Kaktus
-          dCtx.fillStyle = o.type === 'bird' ? '#FFD700' : '#FF4500';
-          dCtx.fillRect(o.x, oY, o.w, o.h);
 
-          // Kollision
-          if (o.x < dino.x + dino.w && o.x + o.w > dino.x && oY < dino.y + dino.h && oY + o.h > dino.y) {
-            dActive = false;
-            setTimeout(resetDino, 1000);
-          }
-          if (o.x < -20) obstacles.splice(i, 1);
+
+    function resetPlayer() {
+
+      player.x = 175; player.y = 175; trail = [];
+
+    }
+
+
+
+    function gameLoop() {
+
+      if (document.getElementById('Game').classList.contains('active')) {
+
+        player.x += player.vx;
+
+        player.y += player.vy;
+
+        const dist = Math.hypot(player.x - 175, player.y - 175);
+
+        if (dist > 170) resetPlayer();
+
+        trail.push({x: player.x, y: player.y});
+
+        if (trail.length > 200) trail.shift(); 
+
+        ctx.clearRect(0, 0, 350, 350);
+
+        ctx.beginPath();
+
+        ctx.strokeStyle = player.color;
+
+        ctx.lineWidth = 3;
+
+        trail.forEach((p, i) => {
+
+          if (i === 0) ctx.moveTo(p.x, p.y);
+
+          else ctx.lineTo(p.x, p.y);
+
         });
+
+        ctx.stroke();
+
+        ctx.fillStyle = player.color;
+
+        ctx.fillRect(player.x - 4, player.y - 4, player.size, player.size);
+
       }
-      requestAnimationFrame(dLoop);
+
+      requestAnimationFrame(gameLoop);
+
     }
-    dLoop();
+
+    gameLoop();
+
   </script>
+
 </section>
   </main>
 
