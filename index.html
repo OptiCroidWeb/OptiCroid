@@ -188,154 +188,80 @@
       </div>
     </section>
 
-    <section id="Spiel" class="content" style="background-color: #1a1a1a; padding: 20px; border-radius: 15px;">
-  <h2 style="color:#00FF7F; margin-bottom: 5px;">OptiCroid Arena</h2>
-  <div id="scoreBoard" style="color: white; font-family: monospace; margin-bottom: 10px; font-size: 14px;">
-    Dein Anteil: <span id="playerScore" style="color:#00AAAA; font-weight:bold;">0.0%</span>
-  </div>
-  
-  <div style="position: relative; display: inline-block;">
-    <canvas id="gameCanvas" width="400" height="400" style="background: #ffffff; border-radius: 50%; box-shadow: 0 0 20px rgba(0,255,127,0.2); touch-action: none;"></canvas>
-  </div>
-  
+    <section id="Spiel" class="content" style="background-color: #111; padding: 20px; border-radius: 15px; text-align: center;">
+  <h2 style="color:#00FF7F; margin: 0 0 10px 0;">OptiCroid Arena</h2>
+  <canvas id="gameCanvas" width="360" height="360" style="background: #fff; border-radius: 50%; touch-action: none; box-shadow: 0 0 20px #00FF7F;"></canvas>
   <div style="margin-top: 15px;">
-    <button onclick="initGame()" style="background:#00FF7F; color:black; padding:10px 20px; border:none; border-radius:5px; font-weight:bold; cursor:pointer; transition: 0.3s;" onmouseover="this.style.background='orange'" onmouseout="this.style.background='#00FF7F'">Spiel Neustarten</button>
+    <button onclick="resetGame()" style="background:#00FF7F; color:black; padding:10px 20px; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Neustart</button>
   </div>
 
   <script>
     const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    const scoreEl = document.getElementById('playerScore');
-    const size = 400, center = 200, radius = 195;
+    const ctx = canvas.getContext('2d');
+    const size = 360, center = 180, radius = 175;
 
-    let players = [];
-    let gameActive = true;
+    let player = { x: center, y: center, angle: 0, speed: 2, color: '#00AAAA', trail: [], owned: [] };
+    let bots = [
+      { x: 100, y: 100, angle: 1, speed: 1.5, color: '#FF4500', trail: [] },
+      { x: 260, y: 260, angle: 4, speed: 1.5, color: '#FFD700', trail: [] }
+    ];
 
-    class Entity {
-      constructor(x, y, color, isBot = true) {
-        this.x = x; this.y = y;
-        this.color = color;
-        this.isBot = isBot;
-        this.angle = Math.random() * Math.PI * 2;
-        this.speed = 2;
-        this.trail = [];
-        this.ownedCanvas = document.createElement('canvas');
-        this.ownedCanvas.width = size; this.ownedCanvas.height = size;
-        this.oCtx = this.ownedCanvas.getContext('2d');
-        this.initLand();
-      }
-
-      initLand() {
-        this.oCtx.fillStyle = this.color;
-        this.oCtx.beginPath();
-        this.oCtx.arc(this.x, this.y, 25, 0, Math.PI * 2);
-        this.oCtx.fill();
-      }
-
-      update() {
-        if (this.isBot) {
-          if (Math.random() < 0.05) this.angle += (Math.random() - 0.5) * 1;
-          const distToCenter = Math.hypot(this.x - center, this.y - center);
-          if (distToCenter > radius - 20) this.angle = Math.atan2(center - this.y, center - this.x);
-        }
-
-        this.x += Math.cos(this.angle) * this.speed;
-        this.y += Math.sin(this.angle) * this.speed;
-
-        if (Math.hypot(this.x - center, this.y - center) > radius) this.die();
-
-        let pixel = this.oCtx.getImageData(this.x, this.y, 1, 1).data;
-        let onOwned = pixel[3] > 0;
-
-        if (!onOwned) {
-          this.trail.push({x: this.x, y: this.y});
-          this.checkTrailCollision();
-        } else if (this.trail.length > 0) {
-          this.fillArea();
-        }
-      }
-
-      fillArea() {
-        this.oCtx.fillStyle = this.color;
-        this.oCtx.beginPath();
-        this.oCtx.moveTo(this.trail[0].x, this.trail[0].y);
-        this.trail.forEach(p => this.oCtx.lineTo(p.x, p.y));
-        this.oCtx.closePath();
-        this.oCtx.fill();
-        this.trail = [];
-      }
-
-      checkTrailCollision() {
-        for (let p of players) {
-          if (p === this && this.trail.length < 10) continue;
-          for (let point of p.trail) {
-            if (Math.hypot(this.x - point.x, this.y - point.y) < 4) this.die();
-          }
-        }
-      }
-
-      die() {
-        if (!this.isBot) { gameActive = false; alert("Game Over! Klicke Neustart."); }
-        this.x = Math.random() * size; this.y = Math.random() * size;
-        this.trail = []; this.oCtx.clearRect(0, 0, size, size); this.initLand();
-      }
-
-      draw() {
-        ctx.drawImage(this.ownedCanvas, 0, 0);
-        if (this.trail.length > 0) {
-          ctx.beginPath();
-          ctx.strokeStyle = this.color;
-          ctx.lineWidth = 4;
-          this.trail.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
-          ctx.stroke();
-        }
-        ctx.fillStyle = (this.isBot) ? this.color : "black";
-        ctx.fillRect(this.x - 5, this.y - 5, 10, 10);
-        ctx.strokeStyle = "white"; ctx.strokeRect(this.x - 5, this.y - 5, 10, 10);
-      }
+    function getMousePos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+      player.angle = Math.atan2(y - player.y, x - player.x);
     }
 
-    function initGame() {
-      players = [
-        new Entity(200, 200, '#00AAAA', false),
-        new Entity(100, 100, '#FF4500'),
-        new Entity(300, 100, '#FFD700'),
-        new Entity(200, 300, '#9400D3')
-      ];
-      gameActive = true;
+    canvas.addEventListener('mousemove', getMousePos);
+    canvas.addEventListener('touchstart', getMousePos);
+    canvas.addEventListener('touchmove', getMousePos);
+
+    function resetGame() {
+      player.x = center; player.y = center; player.trail = [];
+      bots.forEach(b => { b.x = Math.random()*size; b.y = Math.random()*size; b.trail = []; });
     }
 
-    canvas.addEventListener('mousemove', (e) => {
-      if (!gameActive) return;
-      const rect = canvas.getBoundingClientRect();
-      players[0].angle = Math.atan2((e.clientY - rect.top) - players[0].y, (e.clientX - rect.left) - players[0].x);
-    });
+    function updateEntity(ent, isPlayer) {
+      ent.x += Math.cos(ent.angle) * ent.speed;
+      ent.y += Math.sin(ent.angle) * ent.speed;
 
-    canvas.addEventListener('touchmove', (e) => {
-      if (!gameActive) return;
-      const rect = canvas.getBoundingClientRect();
-      const t = e.touches[0];
-      players[0].angle = Math.atan2((t.clientY - rect.top) - players[0].y, (t.clientX - rect.left) - players[0].x);
-    });
+      if (Math.hypot(ent.x - center, ent.y - center) > radius) {
+        if (isPlayer) resetGame();
+        else ent.angle += Math.PI / 2;
+      }
 
-    function loop() {
-      if (document.getElementById('Game').classList.contains('active') && gameActive) {
-        ctx.clearRect(0, 0, size, size);
-        players.forEach(p => { p.update(); p.draw(); });
+      ent.trail.push({x: ent.x, y: ent.y});
+      if (ent.trail.length > 100) ent.trail.shift();
+
+      if (!isPlayer && Math.random() < 0.02) ent.angle += (Math.random() - 0.5);
+    }
+
+    function draw() {
+      if (!document.getElementById('Game').classList.contains('active')) {
+        requestAnimationFrame(draw);
+        return;
+      }
+
+      ctx.clearRect(0, 0, size, size);
+      [player, ...bots].forEach(ent => {
+        updateEntity(ent, ent === player);
         
-        // Prozent berechnen (sehr grob für Performance)
-        if (Math.random() < 0.1) {
-           let data = players[0].oCtx.getImageData(0,0,size,size).data;
-           let count = 0;
-           for(let i=3; i<data.length; i+=400) if(data[i]>0) count++;
-           scoreEl.innerText = (count / 314).toFixed(1) + "%";
-        }
-      }
-      requestAnimationFrame(loop);
-    }
+        ctx.beginPath();
+        ctx.strokeStyle = ent.color;
+        ctx.lineWidth = 4;
+        ent.trail.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+        ctx.stroke();
 
-    initGame();
-    loop();
+        ctx.fillStyle = ent.color;
+        ctx.shadowBlur = 10; ctx.shadowColor = ent.color;
+        ctx.fillRect(ent.x - 5, ent.y - 5, 10, 10);
+        ctx.shadowBlur = 0;
+      });
+
+      requestAnimationFrame(draw);
+    }
+    draw();
   </script>
 </section>
   </main>
