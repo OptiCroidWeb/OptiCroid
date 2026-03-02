@@ -188,99 +188,154 @@
       </div>
     </section>
 
-    <section id="Spiel" class="content">
-  <h2 style="color:#65FE08;">OptiCroid Paper-IO</h2>
-  <div style="color: white; margin-bottom: 10px;">Erobere den weißen Kreis!</div>
-  <canvas id="gameCanvas" width="350" height="350" style="background: #eee; border-radius: 50%; touch-action: none; cursor: crosshair;"></canvas>
-  <br><br>
-  <button onclick="resetGame()" style="background:orange; padding:10px; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Neu starten</button>
+    <section id="Spiel" class="content" style="background-color: #1a1a1a; padding: 20px; border-radius: 15px;">
+  <h2 style="color:#00FF7F; margin-bottom: 5px;">OptiCroid Arena</h2>
+  <div id="scoreBoard" style="color: white; font-family: monospace; margin-bottom: 10px; font-size: 14px;">
+    Dein Anteil: <span id="playerScore" style="color:#00AAAA; font-weight:bold;">0.0%</span>
+  </div>
+  
+  <div style="position: relative; display: inline-block;">
+    <canvas id="gameCanvas" width="400" height="400" style="background: #ffffff; border-radius: 50%; box-shadow: 0 0 20px rgba(0,255,127,0.2); touch-action: none;"></canvas>
+  </div>
+  
+  <div style="margin-top: 15px;">
+    <button onclick="initGame()" style="background:#00FF7F; color:black; padding:10px 20px; border:none; border-radius:5px; font-weight:bold; cursor:pointer; transition: 0.3s;" onmouseover="this.style.background='orange'" onmouseout="this.style.background='#00FF7F'">Spiel Neustarten</button>
+  </div>
 
   <script>
     const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const size = 350;
-    const center = size / 2;
-    const radius = 170;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const scoreEl = document.getElementById('playerScore');
+    const size = 400, center = 200, radius = 195;
 
-    let player = { x: center, y: center, vx: 1.5, vy: 0, color: '#00AAAA' };
-    let trail = [];
-    let ownedMask = document.createElement('canvas'); // Speicher für eroberte Fläche
-    ownedMask.width = size;
-    ownedMask.height = size;
-    let mctx = ownedMask.getContext('2d');
+    let players = [];
+    let gameActive = true;
 
-    // Startfläche zeichnen
-    mctx.fillStyle = player.color;
-    mctx.beginPath();
-    mctx.arc(center, center, 30, 0, Math.PI * 2);
-    mctx.fill();
+    class Entity {
+      constructor(x, y, color, isBot = true) {
+        this.x = x; this.y = y;
+        this.color = color;
+        this.isBot = isBot;
+        this.angle = Math.random() * Math.PI * 2;
+        this.speed = 2;
+        this.trail = [];
+        this.ownedCanvas = document.createElement('canvas');
+        this.ownedCanvas.width = size; this.ownedCanvas.height = size;
+        this.oCtx = this.ownedCanvas.getContext('2d');
+        this.initLand();
+      }
 
-    function handleInput(e) {
-      const rect = canvas.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      const angle = Math.atan2((clientY - rect.top) - player.y, (clientX - rect.left) - player.x);
-      player.vx = Math.cos(angle) * 2;
-      player.vy = Math.sin(angle) * 2;
-    }
+      initLand() {
+        this.oCtx.fillStyle = this.color;
+        this.oCtx.beginPath();
+        this.oCtx.arc(this.x, this.y, 25, 0, Math.PI * 2);
+        this.oCtx.fill();
+      }
 
-    canvas.addEventListener('mousemove', handleInput);
-    canvas.addEventListener('touchstart', handleInput);
-
-    function resetGame() {
-      player.x = center; player.y = center; trail = [];
-      mctx.clearRect(0, 0, size, size);
-      mctx.fillStyle = player.color;
-      mctx.beginPath(); mctx.arc(center, center, 30, 0, Math.PI * 2); mctx.fill();
-    }
-
-    function gameLoop() {
-      if (document.getElementById('Game').classList.contains('active')) {
-        player.x += player.vx;
-        player.y += player.vy;
-
-        // Rand-Check
-        if (Math.hypot(player.x - center, player.y - center) > radius) resetGame();
-
-        // Prüfen, ob Spieler auf eigenem Land ist
-        let onOwned = mctx.getImageData(player.x, player.y, 1, 1).data[3] > 0;
-
-        if (!onOwned) {
-          trail.push({x: player.x, y: player.y});
-          // Kollision mit eigener Spur
-          for(let i = 0; i < trail.length - 10; i++) {
-            if(Math.hypot(player.x - trail[i].x, player.y - trail[i].y) < 3) resetGame();
-          }
-        } else if (trail.length > 0) {
-          // Fläche füllen wenn zurück auf Eigenland
-          mctx.fillStyle = player.color;
-          mctx.beginPath();
-          mctx.moveTo(trail[0].x, trail[0].y);
-          trail.forEach(p => mctx.lineTo(p.x, p.y));
-          mctx.closePath();
-          mctx.fill();
-          trail = [];
+      update() {
+        if (this.isBot) {
+          if (Math.random() < 0.05) this.angle += (Math.random() - 0.5) * 1;
+          const distToCenter = Math.hypot(this.x - center, this.y - center);
+          if (distToCenter > radius - 20) this.angle = Math.atan2(center - this.y, center - this.x);
         }
 
-        ctx.clearRect(0, 0, size, size);
-        ctx.drawImage(ownedMask, 0, 0); // Eroberte Fläche anzeigen
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
 
-        // Spur zeichnen
-        ctx.beginPath();
-        ctx.strokeStyle = "white";
-        ctx.lineWidth = 3;
-        trail.forEach((p, i) => { i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y); });
-        ctx.stroke();
+        if (Math.hypot(this.x - center, this.y - center) > radius) this.die();
 
-        // Spieler
-        ctx.fillStyle = player.color;
-        ctx.fillRect(player.x - 4, player.y - 4, 8, 8);
-        ctx.strokeStyle = "white";
-        ctx.strokeRect(player.x - 4, player.y - 4, 8, 8);
+        let pixel = this.oCtx.getImageData(this.x, this.y, 1, 1).data;
+        let onOwned = pixel[3] > 0;
+
+        if (!onOwned) {
+          this.trail.push({x: this.x, y: this.y});
+          this.checkTrailCollision();
+        } else if (this.trail.length > 0) {
+          this.fillArea();
+        }
       }
-      requestAnimationFrame(gameLoop);
+
+      fillArea() {
+        this.oCtx.fillStyle = this.color;
+        this.oCtx.beginPath();
+        this.oCtx.moveTo(this.trail[0].x, this.trail[0].y);
+        this.trail.forEach(p => this.oCtx.lineTo(p.x, p.y));
+        this.oCtx.closePath();
+        this.oCtx.fill();
+        this.trail = [];
+      }
+
+      checkTrailCollision() {
+        for (let p of players) {
+          if (p === this && this.trail.length < 10) continue;
+          for (let point of p.trail) {
+            if (Math.hypot(this.x - point.x, this.y - point.y) < 4) this.die();
+          }
+        }
+      }
+
+      die() {
+        if (!this.isBot) { gameActive = false; alert("Game Over! Klicke Neustart."); }
+        this.x = Math.random() * size; this.y = Math.random() * size;
+        this.trail = []; this.oCtx.clearRect(0, 0, size, size); this.initLand();
+      }
+
+      draw() {
+        ctx.drawImage(this.ownedCanvas, 0, 0);
+        if (this.trail.length > 0) {
+          ctx.beginPath();
+          ctx.strokeStyle = this.color;
+          ctx.lineWidth = 4;
+          this.trail.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+          ctx.stroke();
+        }
+        ctx.fillStyle = (this.isBot) ? this.color : "black";
+        ctx.fillRect(this.x - 5, this.y - 5, 10, 10);
+        ctx.strokeStyle = "white"; ctx.strokeRect(this.x - 5, this.y - 5, 10, 10);
+      }
     }
-    gameLoop();
+
+    function initGame() {
+      players = [
+        new Entity(200, 200, '#00AAAA', false),
+        new Entity(100, 100, '#FF4500'),
+        new Entity(300, 100, '#FFD700'),
+        new Entity(200, 300, '#9400D3')
+      ];
+      gameActive = true;
+    }
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (!gameActive) return;
+      const rect = canvas.getBoundingClientRect();
+      players[0].angle = Math.atan2((e.clientY - rect.top) - players[0].y, (e.clientX - rect.left) - players[0].x);
+    });
+
+    canvas.addEventListener('touchmove', (e) => {
+      if (!gameActive) return;
+      const rect = canvas.getBoundingClientRect();
+      const t = e.touches[0];
+      players[0].angle = Math.atan2((t.clientY - rect.top) - players[0].y, (t.clientX - rect.left) - players[0].x);
+    });
+
+    function loop() {
+      if (document.getElementById('Game').classList.contains('active') && gameActive) {
+        ctx.clearRect(0, 0, size, size);
+        players.forEach(p => { p.update(); p.draw(); });
+        
+        // Prozent berechnen (sehr grob für Performance)
+        if (Math.random() < 0.1) {
+           let data = players[0].oCtx.getImageData(0,0,size,size).data;
+           let count = 0;
+           for(let i=3; i<data.length; i+=400) if(data[i]>0) count++;
+           scoreEl.innerText = (count / 314).toFixed(1) + "%";
+        }
+      }
+      requestAnimationFrame(loop);
+    }
+
+    initGame();
+    loop();
   </script>
 </section>
   </main>
