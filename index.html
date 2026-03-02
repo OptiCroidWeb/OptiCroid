@@ -112,8 +112,7 @@
       <a href="#" onclick="showSection('Angebote')" id="link-Angebote"><span>💼</span> <span>Angebote</span></a>
       <a href="#" onclick="showSection('Infos')" id="link-Infos"><span>ℹ️</span> <span>Infos</span></a>
       <a href="#" onclick="showSection('Profil')" id="link-Profil"><span>😃</span> <span>Profil</span></a>
-      <a href="#" onclick="showSection('Spiel')" id="link-Spiel"><span>🎮</span> <span>Spiel</span></a>
-    </nav>
+      <a href="#"
   </header>
 
   <main>
@@ -187,118 +186,6 @@
         <a href="https://docs.google.com/document/d/1upsHjR9gnVUU6mZ10YlJHWYKPD6qNe071ZiVDAqIQzE/edit" target="_blank" style="color: orange; text-decoration: none; display: block;">Test Datei 1 öffnen</a>
       </div>
     </section>
-
-    <section id="Spiel" class="content">
-
-  <h2 style="color:#65FE08;">OptiCroid Paper-IO</h2>
-
-  <div style="color: white; margin-bottom: 10px;">Steuerung: Maus oder Finger</div>
-
-  <canvas id="gameCanvas" width="350" height="350" style="background: #fff; border-radius: 50%; touch-action: none; cursor: crosshair;"></canvas>
-
-  <br><br>
-
-  <button onclick="resetPlayer()" style="background:orange; padding:10px; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Neu starten</button>
-
-
-
-  <script>
-
-    const canvas = document.getElementById('gameCanvas');
-
-    const ctx = canvas.getContext('2d');
-
-    let player = { x: 175, y: 175, vx: 1.5, vy: 0, size: 8, color: '#00AAAA' };
-
-    let trail = [];
-
-
-
-    function handleInput(e) {
-
-      const rect = canvas.getBoundingClientRect();
-
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-      const targetX = clientX - rect.left;
-
-      const targetY = clientY - rect.top;
-
-      const angle = Math.atan2(targetY - player.y, targetX - player.x);
-
-      player.vx = Math.cos(angle) * 2;
-
-      player.vy = Math.sin(angle) * 2;
-
-    }
-
-
-
-    canvas.addEventListener('mousemove', handleInput);
-
-    canvas.addEventListener('touchstart', handleInput);
-
-
-
-    function resetPlayer() {
-
-      player.x = 175; player.y = 175; trail = [];
-
-    }
-
-
-
-    function gameLoop() {
-
-      if (document.getElementById('Game').classList.contains('active')) {
-
-        player.x += player.vx;
-
-        player.y += player.vy;
-
-        const dist = Math.hypot(player.x - 175, player.y - 175);
-
-        if (dist > 170) resetPlayer();
-
-        trail.push({x: player.x, y: player.y});
-
-        if (trail.length > 200) trail.shift(); 
-
-        ctx.clearRect(0, 0, 350, 350);
-
-        ctx.beginPath();
-
-        ctx.strokeStyle = player.color;
-
-        ctx.lineWidth = 3;
-
-        trail.forEach((p, i) => {
-
-          if (i === 0) ctx.moveTo(p.x, p.y);
-
-          else ctx.lineTo(p.x, p.y);
-
-        });
-
-        ctx.stroke();
-
-        ctx.fillStyle = player.color;
-
-        ctx.fillRect(player.x - 4, player.y - 4, player.size, player.size);
-
-      }
-
-      requestAnimationFrame(gameLoop);
-
-    }
-
-    gameLoop();
-
-  </script>
-
-</section>
   </main>
 
   <script>
