@@ -94,12 +94,17 @@
     @keyframes spin { 100% { transform: rotate(360deg); } }
     .blink-bg { background-color: #d3d3d3; border-radius: 4px; transition: background-color 0.4s ease; }
     
+    /* HANDY OPTIMIERUNG (Responsive Design) */
     @media (max-width: 768px) {
       header { width: 50px; }
       header.open { width: 180px; }
-      main { margin-left: 50px; }
-      header.open ~ main { margin-left: 180px; }
-      nav a { padding: 15px 10px; gap: 10px; font-size: 0.9em; }
+      main { margin-left: 50px; padding: 10px; }
+      header.open ~ main { margin-left: 50px; } /* Verhindert Quetschen auf Handy */
+      
+      .content.active { padding: 15px; } /* Weniger Innenabstand auf Handy */
+      h1 { font-size: 1.4em; }
+      p { font-size: 16px !important; } /* Text wird automatisch lesbar */
+      img { width: 180px !important; }
     }
   </style>
 </head>
