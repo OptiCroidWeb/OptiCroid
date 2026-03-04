@@ -184,51 +184,76 @@
     </section>
 
     <section id="Spiele" class="content">
-      <div style="text-align: center; font-family: 'Segoe UI', sans-serif; background: #ffffff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 600px; margin: auto; display: flex; gap: 20px;">
-    <div style="flex: 1;">
+      <div style="text-align: center; font-family: 'Segoe UI', sans-serif; background: #ffffff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 650px; margin: auto; display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+    <div style="flex: 1; min-width: 300px;">
         <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
             <div id="coinScore" style="font-size: 20px; font-weight: bold; color: #d4af37;">Münzen: 0</div>
             <div id="timer" style="font-size: 20px; font-weight: bold; color: #333;">Zeit: 0s</div>
         </div>
-        <canvas id="game" width="400" height="200" style="background: #fdfdfd; border-bottom: 3px solid #333; width: 100%; touch-action: none; border-radius: 5px;"></canvas>
+        <div id="totalCoins" style="font-size: 14px; color: #888; margin-bottom: 5px;">Gesamtbestand: 0 🪙</div>
+        <canvas id="game" width="450" height="200" style="background: #fdfdfd; border-bottom: 3px solid #333; width: 100%; touch-action: none; border-radius: 5px;"></canvas>
         <div id="msg" style="color: #e74c3c; font-weight: bold; height: 30px; margin-top: 10px;"></div>
+        
         <div id="menu">
             <input type="text" id="userName" placeholder="Dein Name" style="margin-top: 10px; padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 80%;">
-            <div id="charList" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin: 10px 0;"></div>
-            <button id="startBtn" style="padding: 10px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">SPIEL STARTEN</button>
+            <p style="margin: 10px 0 5px; font-size: 14px; font-weight: bold;">Shop:</p>
+            <div id="charList" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 15px;"></div>
+            <button id="startBtn" style="padding: 12px 25px; font-size: 16px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">SPIEL STARTEN</button>
         </div>
     </div>
 
-    <div style="width: 150px; background: #f9f9f9; padding: 10px; border-radius: 10px; font-size: 12px; text-align: left; border-left: 2px solid #eee;">
-        <strong style="color: #27ae60;">🟢 Gerade online:</strong>
-        <ul id="onlineList" style="list-style: none; padding: 0; margin-top: 10px;"></ul>
+    <div style="width: 160px; background: #f9f9f9; padding: 15px; border-radius: 10px; font-size: 13px; text-align: left; border: 1px solid #eee;">
+        <strong style="color: #27ae60;">🟢 Live-Lobby:</strong>
+        <ul id="onlineList" style="list-style: none; padding: 0; margin-top: 10px; line-height: 1.6;"></ul>
     </div>
 </div>
 
 <script>
-    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), timerEl = document.getElementById('timer'), msgEl = document.getElementById('msg'), charList = document.getElementById('charList'), menu = document.getElementById('menu'), nameInput = document.getElementById('userName'), onlineUl = document.getElementById('onlineList');
-    const prices = { "🤠": 0, "🦖": 20, "😎": 20, "🤩": 20, "🤑": 20, "💩": 20, "👽": 20, "⛄": 50, "🥵": 50, "🥶": 50, "😈": 100 };
+    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), msgEl = document.getElementById('msg'), charList = document.getElementById('charList'), menu = document.getElementById('menu'), nameInput = document.getElementById('userName'), onlineUl = document.getElementById('onlineList');
+
+    const prices = { "🤠": 0, "🦖": 20, "😎": 20, "🤩": 20, "🤑": 20, "💩": 20, "👽": 20, "⛄": 50, "🥵": 50, "🥶": 50, "😈": 100, "🤡": 150, "🤖": 150, "🐯": 150, "🦄": 200, "🐲": 200, "🦥": 200, "🐳": 250, "🐦‍🔥": 300 };
+    const tier1 = ["🤠", "🦖", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "🥶", "😈"];
+    const tier2 = ["🤡", "🤖", "🐯", "🦄", "🐲", "🦥", "🐳", "🐦‍🔥"];
+
     let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = "🤠";
-    let dino, obs, coins, rocks, stars, speed, sessionCoins, active, nextSpawn, touchY, startTime, invincTimer = 0;
-    let fakePlayers = [{n: "Lukas", c: 12, e: "😎"}, {n: "Sarah", c: 5, e: "🤩"}, {n: "Timo", c: 24, e: "👽"}];
+    let dino, obs, coins, rocks, stars, speed, sessionCoins, active = false, nextSpawn, touchY, startTime, invincTimer = 0;
+    let fakePlayers = [{n: "Lukas", c: 12, e: "😎"}, {n: "Sarah", c: 45, e: "🤩"}, {n: "ZockerPro", c: 89, e: "🤖"}];
 
     function updateOnline() {
         onlineUl.innerHTML = "";
-        if(active) { onlineUl.innerHTML += `<li><strong>Du:</strong> ${sessionCoins} 🪙</li>`; }
-        fakePlayers.forEach(p => {
-            if(Math.random() > 0.8) p.c += 1;
-            onlineUl.innerHTML += `<li style="margin-bottom: 5px;">${p.e} ${p.n}: ${p.c} 🪙</li>`;
-        });
+        if(active) onlineUl.innerHTML += `<li><strong>${nameInput.value || "Du"}:</strong> ${sessionCoins} 🪙</li>`;
+        fakePlayers.forEach(p => { if(Math.random() > 0.8) p.c += 1; onlineUl.innerHTML += `<li>${p.e} ${p.n}: ${p.c} 🪙</li>`; });
     }
     setInterval(updateOnline, 2000);
 
     function updateUI() {
+        totalEl.innerText = `Gesamtbestand: ${wallet} 🪙`;
         charList.innerHTML = "";
-        Object.keys(prices).forEach(e => {
-            const span = document.createElement('span'); span.innerText = e;
-            span.style.cssText = `font-size: 22px; cursor: pointer; padding: 3px; border: 2px solid ${e === selectedEmoji ? "#333" : "transparent"}; opacity: ${unlocked.includes(e) ? "1" : "0.3"};`;
-            span.onclick = () => { if(unlocked.includes(e)) { selectedEmoji = e; updateUI(); } else if(wallet >= prices[e]) { wallet -= prices[e]; unlocked.push(e); localStorage.setItem('totalCoins', wallet); localStorage.setItem('unlockedChars', JSON.stringify(unlocked)); selectedEmoji = e; updateUI(); } };
-            charList.appendChild(span);
+        const allTier1 = tier1.every(e => unlocked.includes(e));
+        const allTier2 = tier2.every(e => unlocked.includes(e));
+
+        if (allTier1 && allTier2) {
+            unlocked = ["🤠"]; selectedEmoji = "🤠";
+            localStorage.setItem('unlockedChars', JSON.stringify(unlocked));
+            msgEl.innerText = "PRESTIGE! Alles auf Anfang 🏆";
+        }
+
+        const currentEmojis = allTier1 ? tier2 : tier1;
+        currentEmojis.forEach(e => {
+            const container = document.createElement('div');
+            container.style.cssText = "display: flex; flex-direction: column; align-items: center;";
+            const isUnlocked = unlocked.includes(e);
+            const span = document.createElement('span');
+            span.innerText = e;
+            span.style.cssText = `font-size: 24px; cursor: pointer; padding: 4px; border-radius: 5px; border: 2px solid ${e === selectedEmoji ? "#333" : "transparent"}; opacity: ${isUnlocked ? "1" : "0.3"};`;
+            span.onclick = () => {
+                if(isUnlocked) { selectedEmoji = e; updateUI(); }
+                else if(wallet >= prices[e]) { wallet -= prices[e]; unlocked.push(e); localStorage.setItem('totalCoins', wallet); localStorage.setItem('unlockedChars', JSON.stringify(unlocked)); selectedEmoji = e; updateUI(); }
+            };
+            const priceTag = document.createElement('small');
+            priceTag.innerText = isUnlocked ? "✔" : prices[e];
+            container.appendChild(span); container.appendChild(priceTag);
+            charList.appendChild(container);
         });
     }
 
@@ -248,45 +273,36 @@
 
     function loop() {
         if(!active) return;
-        ctx.clearRect(0,0,400,200); speed += 0.001;
+        ctx.clearRect(0,0,450,200); speed += 0.0005;
         let elapsed = Math.floor((Date.now()-startTime)/1000); timerEl.innerText = `Zeit: ${elapsed}s`;
-        if(invincTimer > 0) { invincTimer--; ctx.fillStyle = "rgba(255,215,0,0.3)"; ctx.fillRect(dino.x-5, dino.y-dino.h-5, 40, 50); }
+        
+        if(invincTimer > 0) { invincTimer--; ctx.fillStyle = "rgba(255,215,0,0.3)"; ctx.beginPath(); ctx.arc(dino.x+15, dino.y-15, 25, 0, Math.PI*2); ctx.fill(); }
         if(dino.jump) { dino.dy += 0.6; dino.y += dino.dy; }
         if(dino.y >= 170) { dino.y = 170; dino.jump = false; }
-        ctx.font = dino.duck ? "30px serif" : "40px serif"; ctx.fillText(selectedEmoji, dino.x, dino.y-(dino.duck?0:5));
+        ctx.font = dino.duck ? "30px serif" : "40px serif";
+        ctx.fillText(selectedEmoji, dino.x, dino.y-(dino.duck?0:5));
 
         if(nextSpawn-- <= 0) {
             let r = Math.random();
-            if(r > 0.7) obs.push({x:450,y:170}); else if(r > 0.4) rocks.push({x:450,y:135}); 
-            else if(r > 0.1) coins.push({x:450,y:Math.random()>0.5?100:160}); else stars.push({x:450,y:130});
-            nextSpawn = Math.random()*60+40;
+            if(r > 0.75) obs.push({x:500,y:170}); else if(r > 0.5) rocks.push({x:500,y:135}); 
+            else if(r > 0.15) coins.push({x:500,y:Math.random()>0.5?100:160}); else stars.push({x:500,y:130});
+            nextSpawn = Math.random()*50 + 40;
         }
 
-        [...stars, ...coins, ...obs, ...rocks].forEach((h, i) => {
-            h.x -= speed; let type = stars.includes(h) ? "🌟" : coins.includes(h) ? "🪙" : rocks.includes(h) ? "🪨" : "🌵";
-            ctx.font = (type==="🪙"?"20px":"30px") + " serif"; ctx.fillText(type, h.x, h.y);
+        [...stars, ...coins, ...obs, ...rocks].forEach((h) => {
+            h.x -= speed;
+            let type = stars.includes(h)?"🌟":coins.includes(h)?"🪙":rocks.includes(h)?"🪨":"🌵";
+            ctx.font = (type==="🪙"?"22px":"32px") + " serif"; ctx.fillText(type, h.x, h.y);
             if(dino.x < h.x+20 && dino.x+30 > h.x && (dino.y-dino.h) < h.y && dino.y > h.y-25) {
-                if(type==="🪙") { sessionCoins++; wallet++; coinEl.innerText = "Münzen: "+sessionCoins; localStorage.setItem('totalCoins', wallet); (coins.splice(coins.indexOf(h), 1)); }
-                else if(type==="🌟") { invincTimer = 300; (stars.splice(stars.indexOf(h), 1)); }
-                else if(invincTimer <= 0) { active = false; msgEl.innerText = "Knapp daneben ist auch vorbei😂"; menu.style.display = 'block'; setTimeout(() => { if(!active) document.getElementById('startseite').classList.add('active'); }, 5000); }
+                if(type==="🪙") { sessionCoins++; wallet++; coinEl.innerText = "Münzen: "+sessionCoins; localStorage.setItem('totalCoins', wallet); coins.splice(coins.indexOf(h), 1); }
+                else if(type==="🌟") { invincTimer = 400; stars.splice(stars.indexOf(h), 1); }
+                else if(invincTimer <= 0) { active = false; msgEl.innerText = "Game Over! 😂"; menu.style.display = 'block'; updateUI(); }
             }
         });
         if(active) requestAnimationFrame(loop);
     }
     updateUI(); updateOnline();
 </script>
-    </section>
-    
-    <section id="Profil" class="content">
-      <div id="loginArea">
-        <input type="password" id="passInput" placeholder="Passwort eingeben" style="width: 80%; padding: 10px; border-radius: 8px;"><br><br>
-        <button onclick="checkPass()" style="background:orange; color:black; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold;">Anmelden</button>
-      </div>
-      <div id="secretContent" style="display:none;">
-        <h2 style="color:#65FE08;">Hallo Markus</h2>
-        <a href="https://docs.google.com/document/d/1upsHjR9gnVUU6mZ10YlJHWYKPD6qNe071ZiVDAqIQzE/edit" target="_blank" style="color: orange; text-decoration: none; display: block;">Test Datei 1 öffnen</a>
-      </div>
-    </section>
   </main>
 
   <script>
