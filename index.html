@@ -185,20 +185,20 @@
 
     <section id="Spiele" class="content">
       <div style="text-align: center; font-family: 'Segoe UI', sans-serif; background: #ffffff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 500px; margin: auto;">
-    <div id="score" style="font-size: 24px; font-weight: bold; color: #333; margin-bottom: 10px;">Score: 0</div>
+    <div id="coinScore" style="font-size: 24px; font-weight: bold; color: #d4af37; margin-bottom: 10px;">Münzen: 0</div>
     <div id="msg" style="color: #e74c3c; font-weight: bold; height: 30px; font-size: 18px;"></div>
     <canvas id="game" width="500" height="200" style="background: #fdfdfd; border-bottom: 3px solid #333; width: 100%; touch-action: none; border-radius: 5px;"></canvas><br>
     <button id="startBtn" style="margin-top: 15px; padding: 12px 25px; font-size: 16px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer;">SPIEL STARTEN</button>
 </div>
 
 <script>
-    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), scoreEl = document.getElementById('score'), msgEl = document.getElementById('msg');
-    let dino, obs, speed, score, active, nextSpawn, touchY;
+    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), msgEl = document.getElementById('msg');
+    let dino, obs, coins, speed, collectedCoins, active, nextSpawn, touchY;
 
     function resetGame() {
         dino = { x: 40, y: 170, w: 30, h: 40, dy: 0, jump: false, duck: false };
-        obs = []; speed = 4.5; score = 0; active = true; nextSpawn = 0;
-        msgEl.innerText = ""; btn.style.display = 'none';
+        obs = []; coins = []; speed = 4.5; collectedCoins = 0; active = true; nextSpawn = 0;
+        msgEl.innerText = ""; btn.style.display = 'none'; coinEl.innerText = "Münzen: 0";
         loop();
     }
 
@@ -219,8 +219,7 @@
 
     function loop() {
         if (!active) return;
-        ctx.clearRect(0, 0, 500, 200); speed += 0.0015; score++; 
-        scoreEl.innerText = "Score: " + Math.floor(score/10);
+        ctx.clearRect(0, 0, 500, 200); speed += 0.001;
         
         if (dino.jump) { dino.dy += 0.6; dino.y += dino.dy; }
         if (dino.y >= 170) { dino.y = 170; dino.jump = false; }
@@ -228,19 +227,33 @@
         ctx.font = dino.duck ? "30px serif" : "40px serif";
         ctx.fillText("🤠", dino.x, dino.y - (dino.duck ? 0 : 5));
 
-        if (nextSpawn-- <= 0) { obs.push({ x: 550, y: 170 }); nextSpawn = Math.random() * 80 + 50; }
+        if (nextSpawn-- <= 0) {
+            if (Math.random() > 0.4) {
+                obs.push({ x: 550, y: 170 });
+            } else {
+                let height = Math.random() > 0.5 ? 100 : 160; 
+                coins.push({ x: 550, y: height });
+            }
+            nextSpawn = Math.random() * 60 + 40; 
+        }
+
+        coins.forEach((c, i) => {
+            c.x -= speed; ctx.font = "25px serif"; ctx.fillText("🪙", c.x, c.y);
+            let dY = dino.y - (dino.duck ? 15 : 30);
+            if (dino.x < c.x + 20 && dino.x + 30 > c.x && dY < c.y && dY + 30 > c.y - 20) {
+                collectedCoins++; coinEl.innerText = "Münzen: " + collectedCoins; coins.splice(i, 1);
+            }
+            if (c.x < -40) coins.splice(i, 1);
+        });
 
         obs.forEach((o, i) => {
             o.x -= speed; ctx.font = "35px serif"; ctx.fillText("🌵", o.x, o.y);
             if (dino.x < o.x + 20 && dino.x + 30 > o.x && dino.y - dino.h < o.y && dino.y > o.y - 30) { 
                 active = false; msgEl.innerText = "Knapp daneben ist auch vorbei😂";
                 btn.style.display = 'inline'; btn.innerText = "NOCHMAL VERSUCHEN";
-                setTimeout(() => { 
-                    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-                    document.getElementById('startseite').classList.add('active');
-                }, 5000);
+                setTimeout(() => { document.getElementById('startseite').classList.add('active'); }, 5000);
             }
-            if (o.x < -40) obs.splice(i, 1);
+            if (o.x < -40) obs.splice(i, i);
         });
         if (active) requestAnimationFrame(loop);
     }
