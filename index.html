@@ -184,105 +184,114 @@
     </section>
 
     <section id="Spiele" class="content">
-      <div style="text-align: center; font-family: 'Segoe UI', sans-serif; background: #ffffff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 650px; margin: auto; display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-    <div style="flex: 1; min-width: 300px;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-            <div id="coinScore" style="font-size: 20px; font-weight: bold; color: #d4af37;">Münzen: 0</div>
-            <div id="timer" style="font-size: 20px; font-weight: bold; color: #333;">Zeit: 0s</div>
+      <div id="gameContainer" style="text-align: center; font-family: 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); max-width: 650px; margin: auto; display: flex; gap: 25px; flex-wrap: wrap; justify-content: center; position: relative;">
+    
+    <div style="flex: 1; min-width: 320px; position: relative;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; background: rgba(255,255,255,0.8); padding: 10px 20px; border-radius: 12px; backdrop-filter: blur(5px);">
+            <div id="coinScore" style="font-size: 20px; font-weight: 800; color: #f1c40f;">🪙 0</div>
+            <div id="timer" style="font-size: 20px; font-weight: 800; color: #2c3e50;">⏱️ 0s</div>
         </div>
-        <div id="totalCoins" style="font-size: 14px; color: #888; margin-bottom: 5px;">Gesamtbestand: 0 🪙</div>
-        <div style="position: relative;">
-            <canvas id="game" width="450" height="200" style="background: url('https://img.freepik.com/free-vector/wild-west-desert-landscape-with-cactus-mountains_107791-14063.jpg') no-repeat center bottom; background-size: cover; border-bottom: 3px solid #333; width: 100%; touch-action: none; border-radius: 5px;"></canvas>
-            <div id="powerLabel" style="position: absolute; top: 10px; right: 10px; color: gold; font-weight: bold; display: none;">SUPER-MODUS! 🌟</div>
-        </div>
-        <div id="msg" style="color: #e74c3c; font-weight: bold; height: 30px; margin-top: 10px;"></div>
         
-        <div id="menu">
-            <input type="text" id="userName" placeholder="Dein Name" style="margin-top: 10px; padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 80%;">
-            <div id="charList" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 15px 0;"></div>
-            <button id="startBtn" style="padding: 12px 25px; font-size: 16px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">SPIEL STARTEN</button>
+        <div id="canvasWrapper" style="position: relative; border-radius: 15px; overflow: hidden; border: 3px solid rgba(255,255,255,0.3); transition: all 0.5s ease;">
+            <canvas id="game" width="450" height="220" style="background: url('https://img.freepik.com/free-vector/cartoon-landscape-with-hills-trees-blue-sky_107791-3200.jpg') no-repeat center bottom; background-size: cover; width: 100%; touch-action: none; display: block;"></canvas>
+            <div id="powerLabel" style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); background: gold; color: #000; padding: 5px 15px; border-radius: 20px; font-weight: 900; font-size: 14px; box-shadow: 0 0 15px gold; display: none; animation: pulse 1s infinite;">🌟 SUPER-MODUS</div>
+            
+            <div id="gameOverScreen" style="position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: none; flex-direction: column; align-items: center; justify-content: center; color: white; backdrop-filter: blur(5px); z-index: 10;">
+                <h1 style="margin: 0; font-size: 40px; text-shadow: 2px 2px #e74c3c;">Knapp danemen ist auch vorbei😂</h1>
+                <p id="finalScore" style="font-size: 18px; margin: 10px 0 20px;">Du hast 0 Münzen gesammelt!</p>
+                <button onclick="resetGame()" style="padding: 12px 30px; font-size: 18px; background: #2ecc71; color: white; border: none; border-radius: 50px; cursor: pointer; transition: 0.3s; font-weight: bold;">ERNEUT VERSUCHEN</button>
+            </div>
+        </div>
+
+        <div id="menu" style="margin-top: 20px; background: white; padding: 20px; border-radius: 15px; border: 1px solid #eee;">
+            <input type="text" id="userName" placeholder="Dein Spielername..." style="padding: 12px; border-radius: 10px; border: 2px solid #ddd; width: 92%; font-size: 16px; margin-bottom: 15px; outline: none; text-align: center;">
+            <div id="totalCoins" style="font-weight: bold; color: #7f8c8d; margin-bottom: 10px;">Guthaben: 0 🪙</div>
+            <div id="charList" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px;"></div>
+            <button id="startBtn" style="padding: 15px; font-size: 18px; background: #34495e; color: white; border: none; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 4px 0 #2c3e50;">SPIEL STARTEN</button>
         </div>
     </div>
-    <div style="width: 160px; background: #f9f9f9; padding: 15px; border-radius: 10px; font-size: 13px; text-align: left; border: 1px solid #eee;">
-        <strong style="color: #27ae60;">🟢 Live-Lobby:</strong>
-        <ul id="onlineList" style="list-style: none; padding: 0; margin-top: 10px; line-height: 1.6;"></ul>
+
+    <div style="width: 180px; background: white; padding: 20px; border-radius: 15px; font-size: 14px; text-align: left; border: 1px solid #eee;">
+        <h3 style="margin: 0 0 15px; color: #27ae60; display: flex; align-items: center; gap: 8px;">
+            <span style="height: 10px; width: 10px; background: #27ae60; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite;"></span> Live-Lobby
+        </h3>
+        <ul id="onlineList" style="list-style: none; padding: 0; margin: 0; line-height: 2.2;"></ul>
     </div>
 </div>
 
-<script>
-    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), msgEl = document.getElementById('msg'), charList = document.getElementById('charList'), menu = document.getElementById('menu'), nameInput = document.getElementById('userName'), onlineUl = document.getElementById('onlineList'), powerLabel = document.getElementById('powerLabel');
+<style>
+    @keyframes normalGlow { 0% { box-shadow: 0 0 15px rgba(52, 152, 219, 0.4); border-color: rgba(52, 152, 219, 0.4); } 100% { box-shadow: 0 0 15px rgba(46, 204, 113, 0.4); border-color: rgba(46, 204, 113, 0.4); } }
+    @keyframes goldGlow { 0% { box-shadow: 0 0 30px gold; border-color: gold; } 100% { box-shadow: 0 0 50px #f1c40f; border-color: #f1c40f; } }
+    @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
+    .normal-border { animation: normalGlow 4s infinite alternate; }
+    .gold-border { animation: goldGlow 0.5s infinite alternate !important; }
+</style>
 
+<script>
+    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), wrapper = document.getElementById('canvasWrapper'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), charList = document.getElementById('charList'), menu = document.getElementById('menu'), nameInput = document.getElementById('userName'), onlineUl = document.getElementById('onlineList'), powerLabel = document.getElementById('powerLabel'), gameOverScreen = document.getElementById('gameOverScreen');
     const prices = { "🤠": 0, "🦖": 20, "😎": 20, "🤩": 20, "🤑": 20, "💩": 20, "👽": 20, "⛄": 50, "🥵": 50, "🥶": 50, "😈": 100, "🤡": 150, "🤖": 150, "🐯": 150, "🦄": 200, "🐲": 200, "🦥": 200, "🐳": 250, "🐦‍🔥": 300 };
     const tier1 = ["🤠", "🦖", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "🥶", "😈"], tier2 = ["🤡", "🤖", "🐯", "🦄", "🐲", "🦥", "🐳", "🐦‍🔥"];
-
-    let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = "🤠";
-    let dino, obs, coins, rocks, stars, speed, sessionCoins, active = false, nextSpawn, touchY, startTime, invincTimer = 0;
-    let fakePlayers = [{n: "Lukas", c: 12, e: "😎"}, {n: "Sarah", c: 45, e: "🤩"}, {n: "ZockerPro", c: 89, e: "🤖"}];
+    let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = "🤠", dino, obs, coins, rocks, stars, speed, sessionCoins, active = false, nextSpawn, startTime, invincTimer = 0, fakePlayers = [{n: "Lukas", c: 12, e: "😎"}, {n: "Sarah", c: 45, e: "🤩"}, {n: "ZockerPro", c: 89, e: "🤖"}];
 
     function updateOnline() {
         onlineUl.innerHTML = "";
-        if(active) onlineUl.innerHTML += `<li><strong>${nameInput.value || "Du"}:</strong> ${sessionCoins} 🪙</li>`;
-        fakePlayers.forEach(p => { if(Math.random() > 0.8) p.c += 1; onlineUl.innerHTML += `<li>${p.e} ${p.n}: ${p.c} 🪙</li>`; });
+        if(active) onlineUl.innerHTML += `<li style="border-bottom: 1px solid #eee;"><strong>${nameInput.value || "Du"}:</strong> ${sessionCoins}</li>`;
+        fakePlayers.forEach(p => { if(Math.random() > 0.8) p.c += 1; onlineUl.innerHTML += `<li style="color: #555;">${p.e} ${p.n}: ${p.c}</li>`; });
     }
     setInterval(updateOnline, 2000);
 
     function updateUI() {
-        totalEl.innerText = `Gesamtbestand: ${wallet} 🪙`; charList.innerHTML = "";
-        const allTier1 = tier1.every(e => unlocked.includes(e));
-        const allTier2 = tier2.every(e => unlocked.includes(e));
-        if (allTier1 && allTier2) { unlocked = ["🤠"]; selectedEmoji = "🤠"; localStorage.setItem('unlockedChars', JSON.stringify(unlocked)); msgEl.innerText = "PRESTIGE! Alles auf Anfang 🏆"; }
+        totalEl.innerText = `Guthaben: ${wallet} 🪙`; charList.innerHTML = "";
+        const allTier1 = tier1.every(e => unlocked.includes(e)), allTier2 = tier2.every(e => unlocked.includes(e));
+        if (allTier1 && allTier2) { unlocked = ["🤠"]; selectedEmoji = "🤠"; localStorage.setItem('unlockedChars', JSON.stringify(unlocked)); }
         const currentEmojis = allTier1 ? tier2 : tier1;
         currentEmojis.forEach(e => {
-            const container = document.createElement('div'); container.style.cssText = "display: flex; flex-direction: column; align-items: center;";
-            const isUnlocked = unlocked.includes(e); const span = document.createElement('span'); span.innerText = e;
-            span.style.cssText = `font-size: 24px; cursor: pointer; padding: 4px; border-radius: 5px; border: 2px solid ${e === selectedEmoji ? "#333" : "transparent"}; opacity: ${isUnlocked ? "1" : "0.3"};`;
+            const container = document.createElement('div'); container.style.cssText = "display: flex; flex-direction: column; align-items: center; cursor: pointer;";
+            const isUnlocked = unlocked.includes(e), span = document.createElement('span'); span.innerText = e;
+            span.style.cssText = `font-size: 28px; padding: 5px; border-radius: 10px; border: 3px solid ${e === selectedEmoji ? "#3498db" : "#eee"}; background: ${isUnlocked ? "#fff" : "#f5f5f5"}; opacity: ${isUnlocked ? "1" : "0.4"};`;
             span.onclick = () => { if(isUnlocked) { selectedEmoji = e; updateUI(); } else if(wallet >= prices[e]) { wallet -= prices[e]; unlocked.push(e); localStorage.setItem('totalCoins', wallet); localStorage.setItem('unlockedChars', JSON.stringify(unlocked)); selectedEmoji = e; updateUI(); } };
-            const priceTag = document.createElement('small'); priceTag.innerText = isUnlocked ? "✔" : prices[e];
+            const priceTag = document.createElement('small'); priceTag.innerText = isUnlocked ? "✔" : prices[e]; priceTag.style.fontWeight = "bold";
             container.appendChild(span); container.appendChild(priceTag); charList.appendChild(container);
         });
     }
 
     function resetGame() {
-        dino = { x: 40, y: 170, w: 30, h: 40, dy: 0, jump: false, duck: false };
+        dino = { x: 40, y: 190, w: 30, h: 40, dy: 0, jump: false, duck: false };
         obs = []; coins = []; rocks = []; stars = []; speed = 4.5; sessionCoins = 0; active = true; nextSpawn = 0; invincTimer = 0;
-        startTime = Date.now(); msgEl.innerText = ""; menu.style.display = 'none'; powerLabel.style.display = 'none'; loop();
+        startTime = Date.now(); menu.style.display = 'none'; gameOverScreen.style.display = 'none'; wrapper.className = "normal-border"; loop();
     }
 
     btn.onclick = resetGame;
     window.onkeydown = (e) => {
         if(!active) return;
-        if((e.key==='w'||e.key==='ArrowUp') && !dino.jump) { dino.dy = -11; dino.jump = true; }
+        if((e.key==='w'||e.key==='ArrowUp') && !dino.jump) { dino.dy = -12; dino.jump = true; }
         if(e.key==='s'||e.key==='ArrowDown') { dino.duck = true; dino.h = 20; }
     };
     window.onkeyup = (e) => { if(e.key==='s'||e.key==='ArrowDown') { dino.duck = false; dino.h = 40; } };
 
     function loop() {
-        if(!active) return; ctx.clearRect(0,0,450,200); speed += 0.0005;
-        let elapsed = Math.floor((Date.now()-startTime)/1000); timerEl.innerText = `Zeit: ${elapsed}s`;
-        
+        if(!active) return; ctx.clearRect(0,0,450,220); speed += 0.0006;
+        let elapsed = Math.floor((Date.now()-startTime)/1000); timerEl.innerText = `⏱️ ${elapsed}s`;
         if(invincTimer > 0) { 
-            invincTimer--; powerLabel.style.display = 'block'; 
-            ctx.strokeStyle = "gold"; ctx.lineWidth = 3; ctx.strokeRect(dino.x-5, dino.y-dino.h-5, 40, 50); 
-        } else { powerLabel.style.display = 'none'; }
-
+            invincTimer--; powerLabel.style.display = 'block'; wrapper.className = "gold-border"; 
+            ctx.strokeStyle = "gold"; ctx.lineWidth = 4; ctx.strokeRect(dino.x-5, dino.y-dino.h-5, 40, 50); 
+        } else { powerLabel.style.display = 'none'; wrapper.className = "normal-border"; }
         if(dino.jump) { dino.dy += 0.6; dino.y += dino.dy; }
-        if(dino.y >= 170) { dino.y = 170; dino.jump = false; }
-        ctx.font = dino.duck ? "30px serif" : "40px serif"; ctx.fillText(selectedEmoji, dino.x, dino.y-(dino.duck?0:5));
-
+        if(dino.y >= 190) { dino.y = 190; dino.jump = false; }
+        ctx.font = dino.duck ? "32px serif" : "42px serif"; ctx.fillText(selectedEmoji, dino.x, dino.y-(dino.duck?0:5));
         if(nextSpawn-- <= 0) {
             let r = Math.random();
-            if(r > 0.8) obs.push({x:500,y:170}); else if(r > 0.6) rocks.push({x:500,y:135}); 
-            else if(r > 0.05) coins.push({x:500,y:Math.random()>0.5?100:160}); else stars.push({x:500,y:130});
-            nextSpawn = Math.random()*50 + 40;
+            if(r > 0.82) obs.push({x:500,y:190}); else if(r > 0.65) rocks.push({x:500,y:155}); 
+            else if(r > 0.05) coins.push({x:500,y:Math.random()>0.5?120:180}); else stars.push({x:500,y:150});
+            nextSpawn = Math.random()*50 + 35;
         }
-
         [...stars, ...coins, ...obs, ...rocks].forEach((h) => {
             h.x -= speed; let type = stars.includes(h)?"🌟":coins.includes(h)?"🪙":rocks.includes(h)?"🪨":"🌵";
-            ctx.font = (type==="🪙"?"22px":"32px") + " serif"; ctx.fillText(type, h.x, h.y);
+            ctx.font = (type==="🪙"?"24px":"34px") + " serif"; ctx.fillText(type, h.x, h.y);
             if(dino.x < h.x+20 && dino.x+30 > h.x && (dino.y-dino.h) < h.y && dino.y > h.y-25) {
-                if(type==="🪙") { sessionCoins++; wallet++; coinEl.innerText = "Münzen: "+sessionCoins; localStorage.setItem('totalCoins', wallet); coins.splice(coins.indexOf(h), 1); }
+                if(type==="🪙") { sessionCoins++; wallet++; coinEl.innerText = "🪙 "+sessionCoins; localStorage.setItem('totalCoins', wallet); coins.splice(coins.indexOf(h), 1); }
                 else if(type==="🌟") { invincTimer = 600; stars.splice(stars.indexOf(h), 1); }
-                else if(invincTimer <= 0) { active = false; msgEl.innerText = "Game Over! 😂"; menu.style.display = 'block'; updateUI(); }
+                else if(invincTimer <= 0) { active = false; document.getElementById('finalScore').innerText = `Du hast ${sessionCoins} Münzen gesammelt!`; gameOverScreen.style.display = 'flex'; menu.style.display = 'block'; updateUI(); }
             }
         });
         if(active) requestAnimationFrame(loop);
