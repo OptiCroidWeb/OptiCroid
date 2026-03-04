@@ -341,6 +341,15 @@ function checkPass() {
   </main>
 
   <script>
+    const targetDate = new Date("2026-03-04T20:45:00").getTime();
+setInterval(() => {
+  const now = new Date().getTime();
+  const diff = targetDate - now;
+  document.getElementById("val-d").innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+  document.getElementById("val-h").innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  document.getElementById("val-m").innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  document.getElementById("val-s").innerText = Math.floor((diff % (1000 * 60)) / 1000);
+}, 1000);
     function handleContact(protocol, text) {
       window.location.href = protocol;
       setTimeout(function() {
