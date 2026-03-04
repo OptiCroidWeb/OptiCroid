@@ -339,36 +339,52 @@ function checkPass() {
   </main>
 
   <script>
-    const targetDate = new Date("2026-03-04T21:00:00").getTime();
-const timerInterval = setInterval(() => {
-  const now = new Date().getTime();
-  const diff = targetDate - now;
-  const bar = document.getElementById("maintenance-bar");
-  if (diff <= 0) {
-    bar.style.display = "none";
-    clearInterval(timerInterval);
-  } else {
-    document.getElementById("val-d").innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
-    document.getElementById("val-h").innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    document.getElementById("val-m").innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    document.getElementById("val-s").innerText = Math.floor((diff % (1000 * 60)) / 1000);
-  }
-}, 1000);
-    function handleContact(protocol, text) {
-      window.location.href = protocol;
-      setTimeout(function() {
-        document.getElementById('modalText').innerText = text;
-        document.getElementById('contactModal').style.display = 'flex';
-      }, 500);
+    // Navigation ausklappen
+    function toggleNav() {
+      const header = document.getElementById('myHeader');
+      header.classList.toggle('open');
+      const btn = document.getElementById('toggle-btn');
+      btn.innerText = header.classList.contains('open') ? "⬅" : "➔";
     }
-    function closeModal() { document.getElementById('contactModal').style.display = 'none'; }
+
+    // Countdown-Logik
+    const targetDate = new Date("2026-03-04T21:00:00").getTime();
+    const timerInterval = setInterval(() => {
+      const now = new Date().getTime();
+      const diff = targetDate - now;
+      const bar = document.getElementById("maintenance-bar");
+      if (bar) {
+        if (diff <= 0) {
+          bar.style.display = "none";
+          clearInterval(timerInterval);
+        } else {
+          document.getElementById("val-d").innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+          document.getElementById("val-h").innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          document.getElementById("val-m").innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          document.getElementById("val-s").innerText = Math.floor((diff % (1000 * 60)) / 1000);
+        }
+      }
+    }, 1000);
+
+    // Sektionen wechseln
     function showSection(id) {
       document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
+      const target = document.getElementById(id);
+      if (target) target.classList.add('active');
+      
       document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
-      document.getElementById('link-' + id).classList.add('active');
+      const link = document.getElementById('link-' + id);
+      if (link) link.classList.add('active');
     }
-    document.addEventListener('DOMContentLoaded', () => { showSection('startseite'); });
+
+    // Kontakt-Funktion
+    function handleContact(protocol, text) {
+      window.location.href = protocol;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => { 
+      showSection('startseite'); 
+    });
   </script>
 </body>
 </html>
