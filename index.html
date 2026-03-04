@@ -184,110 +184,96 @@
     </section>
 
     <section id="Spiele" class="content">
-      <div style="text-align: center; font-family: 'Segoe UI', sans-serif; background: #ffffff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 500px; margin: auto;">
-    <div id="coinScore" style="font-size: 24px; font-weight: bold; color: #d4af37; margin-bottom: 5px;">Münzen: 0</div>
-    <div id="totalCoins" style="font-size: 14px; color: #888; margin-bottom: 10px;">Gesamtbestand: 0 🪙</div>
-    <div id="msg" style="color: #e74c3c; font-weight: bold; height: 30px; font-size: 18px; margin-bottom: 10px;"></div>
-    <canvas id="game" width="500" height="200" style="background: #fdfdfd; border-bottom: 3px solid #333; width: 100%; touch-action: none; border-radius: 5px;"></canvas>
-    
-    <div id="menu">
-        <p style="margin: 15px 0 5px; font-weight: bold; color: #555;">Charakter-Shop:</p>
-        <div id="charList" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 15px;"></div>
-        <button id="startBtn" style="padding: 12px 25px; font-size: 16px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">SPIEL STARTEN</button>
+      <div style="text-align: center; font-family: 'Segoe UI', sans-serif; background: #ffffff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 600px; margin: auto; display: flex; gap: 20px;">
+    <div style="flex: 1;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <div id="coinScore" style="font-size: 20px; font-weight: bold; color: #d4af37;">Münzen: 0</div>
+            <div id="timer" style="font-size: 20px; font-weight: bold; color: #333;">Zeit: 0s</div>
+        </div>
+        <canvas id="game" width="400" height="200" style="background: #fdfdfd; border-bottom: 3px solid #333; width: 100%; touch-action: none; border-radius: 5px;"></canvas>
+        <div id="msg" style="color: #e74c3c; font-weight: bold; height: 30px; margin-top: 10px;"></div>
+        <div id="menu">
+            <input type="text" id="userName" placeholder="Dein Name" style="margin-top: 10px; padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 80%;">
+            <div id="charList" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin: 10px 0;"></div>
+            <button id="startBtn" style="padding: 10px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">SPIEL STARTEN</button>
+        </div>
+    </div>
+
+    <div style="width: 150px; background: #f9f9f9; padding: 10px; border-radius: 10px; font-size: 12px; text-align: left; border-left: 2px solid #eee;">
+        <strong style="color: #27ae60;">🟢 Gerade online:</strong>
+        <ul id="onlineList" style="list-style: none; padding: 0; margin-top: 10px;"></ul>
     </div>
 </div>
 
 <script>
-    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), totalEl = document.getElementById('totalCoins'), msgEl = document.getElementById('msg'), charList = document.getElementById('charList'), menu = document.getElementById('menu');
-    
+    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), timerEl = document.getElementById('timer'), msgEl = document.getElementById('msg'), charList = document.getElementById('charList'), menu = document.getElementById('menu'), nameInput = document.getElementById('userName'), onlineUl = document.getElementById('onlineList');
     const prices = { "🤠": 0, "🦖": 20, "😎": 20, "🤩": 20, "🤑": 20, "💩": 20, "👽": 20, "⛄": 50, "🥵": 50, "🥶": 50, "😈": 100 };
-    let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"];
-    let wallet = parseInt(localStorage.getItem('totalCoins')) || 0;
-    let selectedEmoji = "🤠";
-    let dino, obs, coins, rocks, speed, sessionCoins, active, nextSpawn, touchY;
+    let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = "🤠";
+    let dino, obs, coins, rocks, stars, speed, sessionCoins, active, nextSpawn, touchY, startTime, invincTimer = 0;
+    let fakePlayers = [{n: "Lukas", c: 12, e: "😎"}, {n: "Sarah", c: 5, e: "🤩"}, {n: "Timo", c: 24, e: "👽"}];
+
+    function updateOnline() {
+        onlineUl.innerHTML = "";
+        if(active) { onlineUl.innerHTML += `<li><strong>Du:</strong> ${sessionCoins} 🪙</li>`; }
+        fakePlayers.forEach(p => {
+            if(Math.random() > 0.8) p.c += 1;
+            onlineUl.innerHTML += `<li style="margin-bottom: 5px;">${p.e} ${p.n}: ${p.c} 🪙</li>`;
+        });
+    }
+    setInterval(updateOnline, 2000);
 
     function updateUI() {
-        totalEl.innerText = `Gesamtbestand: ${wallet} 🪙`;
         charList.innerHTML = "";
         Object.keys(prices).forEach(e => {
-            const container = document.createElement('div');
-            const isUnlocked = unlocked.includes(e);
-            container.style.cssText = "display: flex; flex-direction: column; align-items: center;";
-            
-            const span = document.createElement('span');
-            span.innerText = e;
-            span.style.cssText = `font-size: 30px; cursor: pointer; padding: 5px; border-radius: 5px; border: 2px solid ${e === selectedEmoji ? "#333" : "transparent"}; opacity: ${isUnlocked ? "1" : "0.4"};`;
-            
-            const priceTag = document.createElement('small');
-            priceTag.innerText = isUnlocked ? "✔" : prices[e];
-            priceTag.style.fontSize = "10px";
-
-            span.onclick = () => {
-                if (isUnlocked) {
-                    selectedEmoji = e; updateUI();
-                } else if (wallet >= prices[e]) {
-                    wallet -= prices[e]; unlocked.push(e);
-                    localStorage.setItem('totalCoins', wallet);
-                    localStorage.setItem('unlockedChars', JSON.stringify(unlocked));
-                    selectedEmoji = e; updateUI();
-                } else { msgEl.innerText = "Zu teuer! 🪙"; setTimeout(() => msgEl.innerText = "", 2000); }
-            };
-            container.appendChild(span); container.appendChild(priceTag);
-            charList.appendChild(container);
+            const span = document.createElement('span'); span.innerText = e;
+            span.style.cssText = `font-size: 22px; cursor: pointer; padding: 3px; border: 2px solid ${e === selectedEmoji ? "#333" : "transparent"}; opacity: ${unlocked.includes(e) ? "1" : "0.3"};`;
+            span.onclick = () => { if(unlocked.includes(e)) { selectedEmoji = e; updateUI(); } else if(wallet >= prices[e]) { wallet -= prices[e]; unlocked.push(e); localStorage.setItem('totalCoins', wallet); localStorage.setItem('unlockedChars', JSON.stringify(unlocked)); selectedEmoji = e; updateUI(); } };
+            charList.appendChild(span);
         });
     }
 
     function resetGame() {
         dino = { x: 40, y: 170, w: 30, h: 40, dy: 0, jump: false, duck: false };
-        obs = []; coins = []; rocks = []; speed = 4.5; sessionCoins = 0; active = true; nextSpawn = 0;
-        msgEl.innerText = ""; menu.style.display = 'none'; coinEl.innerText = "Münzen: 0";
-        loop();
+        obs = []; coins = []; rocks = []; stars = []; speed = 4.5; sessionCoins = 0; active = true; nextSpawn = 0; invincTimer = 0;
+        startTime = Date.now(); msgEl.innerText = ""; menu.style.display = 'none'; loop();
     }
 
     btn.onclick = resetGame;
     window.onkeydown = (e) => {
-        if (!active) return;
-        if ((e.key === 'w' || e.key === 'ArrowUp') && !dino.jump) { dino.dy = -11; dino.jump = true; }
-        if (e.key === 's' || e.key === 'ArrowDown') { dino.duck = true; dino.h = 20; }
+        if(!active) return;
+        if((e.key==='w'||e.key==='ArrowUp') && !dino.jump) { dino.dy = -11; dino.jump = true; }
+        if(e.key==='s'||e.key==='ArrowDown') { dino.duck = true; dino.h = 20; }
     };
-    window.onkeyup = (e) => { if (e.key === 's' || e.key === 'ArrowDown') { dino.duck = false; dino.h = 40; } };
+    window.onkeyup = (e) => { if(e.key==='s'||e.key==='ArrowDown') { dino.duck = false; dino.h = 40; } };
 
     function loop() {
-        if (!active) return;
-        ctx.clearRect(0, 0, 500, 200); speed += 0.001;
-        if (dino.jump) { dino.dy += 0.6; dino.y += dino.dy; }
-        if (dino.y >= 170) { dino.y = 170; dino.jump = false; }
-        ctx.font = dino.duck ? "30px serif" : "40px serif";
-        ctx.fillText(selectedEmoji, dino.x, dino.y - (dino.duck ? 0 : 5));
+        if(!active) return;
+        ctx.clearRect(0,0,400,200); speed += 0.001;
+        let elapsed = Math.floor((Date.now()-startTime)/1000); timerEl.innerText = `Zeit: ${elapsed}s`;
+        if(invincTimer > 0) { invincTimer--; ctx.fillStyle = "rgba(255,215,0,0.3)"; ctx.fillRect(dino.x-5, dino.y-dino.h-5, 40, 50); }
+        if(dino.jump) { dino.dy += 0.6; dino.y += dino.dy; }
+        if(dino.y >= 170) { dino.y = 170; dino.jump = false; }
+        ctx.font = dino.duck ? "30px serif" : "40px serif"; ctx.fillText(selectedEmoji, dino.x, dino.y-(dino.duck?0:5));
 
-        if (nextSpawn-- <= 0) {
+        if(nextSpawn-- <= 0) {
             let r = Math.random();
-            if (r > 0.6) obs.push({ x: 550, y: 170 });
-            else if (r > 0.3) rocks.push({ x: 550, y: 135 });
-            else coins.push({ x: 550, y: Math.random() > 0.5 ? 100 : 160 });
-            nextSpawn = Math.random() * 60 + 40;
+            if(r > 0.7) obs.push({x:450,y:170}); else if(r > 0.4) rocks.push({x:450,y:135}); 
+            else if(r > 0.1) coins.push({x:450,y:Math.random()>0.5?100:160}); else stars.push({x:450,y:130});
+            nextSpawn = Math.random()*60+40;
         }
 
-        coins.forEach((c, i) => {
-            c.x -= speed; ctx.font = "25px serif"; ctx.fillText("🪙", c.x, c.y);
-            if (dino.x < c.x + 20 && dino.x + 30 > c.x && (dino.y-dino.h) < c.y && dino.y > c.y-20) {
-                sessionCoins++; wallet++; coinEl.innerText = "Münzen: " + sessionCoins; 
-                localStorage.setItem('totalCoins', wallet); coins.splice(i, 1);
+        [...stars, ...coins, ...obs, ...rocks].forEach((h, i) => {
+            h.x -= speed; let type = stars.includes(h) ? "🌟" : coins.includes(h) ? "🪙" : rocks.includes(h) ? "🪨" : "🌵";
+            ctx.font = (type==="🪙"?"20px":"30px") + " serif"; ctx.fillText(type, h.x, h.y);
+            if(dino.x < h.x+20 && dino.x+30 > h.x && (dino.y-dino.h) < h.y && dino.y > h.y-25) {
+                if(type==="🪙") { sessionCoins++; wallet++; coinEl.innerText = "Münzen: "+sessionCoins; localStorage.setItem('totalCoins', wallet); (coins.splice(coins.indexOf(h), 1)); }
+                else if(type==="🌟") { invincTimer = 300; (stars.splice(stars.indexOf(h), 1)); }
+                else if(invincTimer <= 0) { active = false; msgEl.innerText = "Knapp daneben ist auch vorbei😂"; menu.style.display = 'block'; setTimeout(() => { if(!active) document.getElementById('startseite').classList.add('active'); }, 5000); }
             }
         });
-
-        [...obs, ...rocks].forEach((h) => {
-            h.x -= speed; let isRock = rocks.includes(h);
-            ctx.font = "35px serif"; ctx.fillText(isRock ? "🪨" : "🌵", h.x, h.y);
-            if (dino.x < h.x + 20 && dino.x + 30 > h.x && (dino.y-dino.h) < h.y && dino.y > h.y-25) { 
-                active = false; msgEl.innerText = "Knapp daneben ist auch vorbei😂";
-                menu.style.display = 'block'; updateUI();
-                setTimeout(() => { if(!active) document.getElementById('startseite').classList.add('active'); }, 5000);
-            }
-        });
-        if (active) requestAnimationFrame(loop);
+        if(active) requestAnimationFrame(loop);
     }
-    updateUI();
+    updateUI(); updateOnline();
 </script>
     </section>
     
