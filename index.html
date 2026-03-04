@@ -184,53 +184,65 @@
     </section>
 
     <section id="Spiele" class="content">
-      <div style="text-align: center; font-family: 'Courier New', Courier, monospace;">
-    <div id="score" style="font-size: 20px;">Score: 0</div>
-    <div id="msg" style="color: red; font-weight: bold; height: 25px; margin-bottom: 5px;"></div>
-    <canvas id="game" width="400" height="150" style="background: #f7f7f7; border-bottom: 2px solid #535353; width: 100%; max-width: 400px; touch-action: none;"></canvas><br>
-    <button id="startBtn" style="margin-top: 10px; padding: 10px 20px; font-family: 'Courier New'; cursor: pointer;">SPIEL STARTEN</button>
+      <div style="text-align: center; font-family: 'Segoe UI', sans-serif; background: #ffffff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 500px; margin: auto;">
+    <div id="score" style="font-size: 24px; font-weight: bold; color: #333; margin-bottom: 10px;">Score: 0</div>
+    <div id="msg" style="color: #e74c3c; font-weight: bold; height: 30px; font-size: 18px;"></div>
+    <canvas id="game" width="500" height="200" style="background: #fdfdfd; border-bottom: 3px solid #333; width: 100%; touch-action: none; border-radius: 5px;"></canvas><br>
+    <button id="startBtn" style="margin-top: 15px; padding: 12px 25px; font-size: 16px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer;">SPIEL STARTEN</button>
 </div>
 
 <script>
     const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), scoreEl = document.getElementById('score'), msgEl = document.getElementById('msg');
-    let dino = { x: 30, y: 130, w: 25, h: 30, dy: 0, jump: false, duck: false }, obs = [], speed = 4, score = 0, active = false, nextSpawn = 0, touchY = 0;
+    let dino, obs, speed, score, active, nextSpawn, touchY;
+
+    function resetGame() {
+        dino = { x: 40, y: 170, w: 30, h: 40, dy: 0, jump: false, duck: false };
+        obs = []; speed = 4.5; score = 0; active = true; nextSpawn = 0;
+        msgEl.innerText = ""; btn.style.display = 'none';
+        loop();
+    }
+
+    btn.onclick = resetGame;
 
     window.onkeydown = (e) => {
-        if (e.key === 'w' && !dino.jump) { dino.dy = -8; dino.jump = true; }
-        if (e.key === 's') { dino.duck = true; dino.h = 15; }
+        if (e.key === 'w' && !dino.jump) { dino.dy = -11; dino.jump = true; }
+        if (e.key === 's') { dino.duck = true; dino.h = 20; }
     };
-    window.onkeyup = (e) => { if (e.key === 's') { dino.duck = false; dino.h = 30; } };
+    window.onkeyup = (e) => { if (e.key === 's') { dino.duck = false; dino.h = 40; } };
 
     canvas.addEventListener('touchstart', e => touchY = e.touches[0].clientY);
     canvas.addEventListener('touchend', e => {
         let diff = touchY - e.changedTouches[0].clientY;
-        if (diff > 20 && !dino.jump) { dino.dy = -8; dino.jump = true; }
-        if (diff < -20) { dino.duck = true; setTimeout(() => { dino.duck = false; dino.h = 30; }, 500); dino.h = 15; }
+        if (diff > 20 && !dino.jump) { dino.dy = -11; dino.jump = true; }
+        if (diff < -20) { dino.duck = true; setTimeout(() => { dino.duck = false; dino.h = 40; }, 500); dino.h = 20; }
     });
-
-    btn.onclick = () => { active = true; btn.style.display = 'none'; score = 0; obs = []; speed = 4; msgEl.innerText = ""; loop(); };
 
     function loop() {
         if (!active) return;
-        ctx.clearRect(0, 0, 400, 150); speed += 0.002; score++; scoreEl.innerText = "Score: " + Math.floor(score/10);
+        ctx.clearRect(0, 0, 500, 200); speed += 0.0015; score++; 
+        scoreEl.innerText = "Score: " + Math.floor(score/10);
+        
         if (dino.jump) { dino.dy += 0.6; dino.y += dino.dy; }
-        if (dino.y >= 130) { dino.y = 130; dino.jump = false; }
-        ctx.font = dino.duck ? "20px serif" : "25px serif";
+        if (dino.y >= 170) { dino.y = 170; dino.jump = false; }
+        
+        ctx.font = dino.duck ? "30px serif" : "40px serif";
         ctx.fillText("🤠", dino.x, dino.y - (dino.duck ? 0 : 5));
-        if (nextSpawn-- <= 0) { obs.push({ x: 400, y: 130 }); nextSpawn = Math.random() * 50 + 20; }
+
+        if (nextSpawn-- <= 0) { obs.push({ x: 550, y: 170 }); nextSpawn = Math.random() * 80 + 50; }
+
         obs.forEach((o, i) => {
-            o.x -= speed; ctx.font = "20px serif"; ctx.fillText("🌵", o.x, o.y);
-            if (dino.x < o.x + 15 && dino.x + 20 > o.x && dino.y - dino.h < o.y && dino.y > o.y - 20) { 
-                active = false; 
-                msgEl.innerText = "GAME OVER - Zurück zur Startseite...";
+            o.x -= speed; ctx.font = "35px serif"; ctx.fillText("🌵", o.x, o.y);
+            if (dino.x < o.x + 20 && dino.x + 30 > o.x && dino.y - dino.h < o.y && dino.y > o.y - 30) { 
+                active = false; msgEl.innerText = "Knapp daneben ist auch vorbei😂";
+                btn.style.display = 'inline'; btn.innerText = "NOCHMAL VERSUCHEN";
                 setTimeout(() => { 
                     document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
                     document.getElementById('startseite').classList.add('active');
                 }, 5000);
             }
-            if (o.x < -20) obs.splice(i, 1);
+            if (o.x < -40) obs.splice(i, 1);
         });
-        requestAnimationFrame(loop);
+        if (active) requestAnimationFrame(loop);
     }
 </script>
     </section>
@@ -267,7 +279,7 @@
       } else { alert("Du hast hir nichts Verloren!"); }
     }
 
-    const targetDate = new Date(2026, 2, 4, 18, 45, 0).getTime();
+    const targetDate = new Date(2026, 2, 4, 18, 59, 0).getTime();
     function updateTimer() {
       const now = new Date().getTime();
       const diff = targetDate - now;
