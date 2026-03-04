@@ -304,57 +304,47 @@
 </script>
     </section>
 
-<section id="Profil" class="content">
+ <section id="Profil" class="content">
+  <div id="loginArea">
+    <input type="password" id="passInput" placeholder="Passwort eingeben" style="width: 80%; padding: 10px; border-radius: 8px;"><br><br>
+    <button onclick="checkPass()" style="background:orange; color:black; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold;">anmelden</button>
+  </div>
+
+  <div id="secretContent" style="display:none;">
+    <h2 style="color:#65FE08;">Wilkommen Markus</h2>
+    <p style="color:white;">Hier befinden Sich deine Geschützten Dateien.</p>
+  </div>
+</section>
+
+<script>
+function checkPass() {
+  const input = document.getElementById('passInput').value;
+  if (input === "OptiCroid/31_008") {
+    document.getElementById('loginArea').style.display = 'none';
+    document.getElementById('secretContent').style.display = 'block';
+  } else {
+    alert("Falsches Passwort!");
+  }
+}
+</script>
+  </main>
+
   <script>
-    function toggleNav() {
-      const h = document.getElementById("myHeader");
-      const b = document.getElementById("toggle-btn");
-      h.classList.toggle("open");
-      b.innerText = h.classList.contains("open") ? "⬅" : "➔";
-    }
-
-    function showSection(id) {
-      document.querySelectorAll('.content').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-    }
-
-    function checkPass() {
-      if (document.getElementById('passInput').value === "OptiCroid/31_008") {
-        document.getElementById('loginArea').style.display = 'none';
-        document.getElementById('secretContent').style.display = 'block';
-      } else { alert("Du hast hir nichts Verloren!"); }
-    }
-    const targetDate = new Date(2026, 2, 4, 20, 15, 0).getTime();
-    function updateTimer() {
-      const now = new Date().getTime();
-      const diff = targetDate - now;
-      if (diff <= 0) { document.getElementById("maintenance-bar").style.display = "none"; return; }
-      const parts = {
-        d: Math.floor(diff / 86400000),
-        h: Math.floor((diff % 86400000) / 3600000).toString().padStart(2, '0'),
-        m: Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0'),
-        s: Math.floor((diff % 60000) / 1000).toString().padStart(2, '0')
-      };
-      ['d','h','m','s'].forEach(k => {
-        const el = document.getElementById('val-' + k);
-        if (el && el.innerText !== parts[k]) {
-          el.innerText = parts[k];
-          el.classList.add('blink-bg');
-          setTimeout(() => el.classList.remove('blink-bg'), 400);
-        }
-      });
-    }
-    setInterval(updateTimer, 1000);
-    updateTimer();
-
-    function handleContact(p, t) {
-      window.location.href = p;
-      setTimeout(() => {
-        document.getElementById('modalText').innerText = t;
+    function handleContact(protocol, text) {
+      window.location.href = protocol;
+      setTimeout(function() {
+        document.getElementById('modalText').innerText = text;
         document.getElementById('contactModal').style.display = 'flex';
       }, 500);
     }
     function closeModal() { document.getElementById('contactModal').style.display = 'none'; }
+    function showSection(id) {
+      document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
+      document.getElementById('link-' + id).classList.add('active');
+    }
+    document.addEventListener('DOMContentLoaded', () => { showSection('startseite'); });
   </script>
 </body>
 </html>
