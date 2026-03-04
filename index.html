@@ -184,31 +184,38 @@
     </section>
 
     <section id="Spiele" class="content">
-      <canvas id="game" width="800" height="200" style="background: #f7f7f7; border-bottom: 2px solid #535353; display: block; margin: auto;"></canvas>
+      <canvas id="game" width="800" height="200" style="background: #f7f7f7; border-bottom: 2px solid #535353; width: 100%; touch-action: none;"></canvas>
 <script>
     const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
     let dino = { x: 50, y: 160, w: 40, h: 40, dy: 0, jump: false, duck: false };
-    let obs = []; let speed = 5; let nextSpawn = 0;
+    let obs = []; let speed = 6; let nextSpawn = 0; let touchY = 0;
 
     window.onkeydown = (e) => {
-        if (e.key === 'w' && !dino.jump) { dino.dy = -12; dino.jump = true; }
+        if (e.key === 'w' && !dino.jump) { dino.dy = -10; dino.jump = true; }
         if (e.key === 's') { dino.duck = true; dino.h = 20; }
     };
     window.onkeyup = (e) => { if (e.key === 's') { dino.duck = false; dino.h = 40; } };
 
+    canvas.addEventListener('touchstart', e => touchY = e.touches[0].clientY);
+    canvas.addEventListener('touchend', e => {
+        let diff = touchY - e.changedTouches[0].clientY;
+        if (diff > 30 && !dino.jump) { dino.dy = -10; dino.jump = true; }
+        if (diff < -30) { dino.duck = true; setTimeout(() => { dino.duck = false; dino.h = 40; }, 500); dino.h = 20; }
+    });
+
     function loop() {
         ctx.clearRect(0, 0, 800, 200);
-        speed += 0.002;
-        if (dino.jump) { dino.dy += 0.6; dino.y += dino.dy; }
+        speed += 0.003;
+        if (dino.jump) { dino.dy += 0.7; dino.y += dino.dy; }
         if (dino.y >= 160) { dino.y = 160; dino.jump = false; }
         
         ctx.font = dino.duck ? "30px serif" : "40px serif";
-        ctx.fillText("🤠", dino.x, dino.y - 5);
+        ctx.fillText("🤠", dino.x, dino.y - (dino.duck ? 0 : 5));
 
         if (nextSpawn-- <= 0) {
             obs.push({ x: 800, y: 160 });
-            nextSpawn = Math.random() * 150 + 50; 
+            nextSpawn = Math.random() * 60 + 30; 
         }
 
         obs.forEach((o, i) => {
