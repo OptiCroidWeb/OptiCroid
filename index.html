@@ -184,50 +184,54 @@
     </section>
 
     <section id="Spiele" class="content">
-      <canvas id="game" width="800" height="200" style="background: #f7f7f7; border-bottom: 2px solid #535353; width: 100%; touch-action: none;"></canvas>
+      <div style="text-align: center; font-family: 'Courier New', Courier, monospace;">
+    <div id="score" style="font-size: 20px;">Score: 0</div>
+    <div id="msg" style="color: red; font-weight: bold; height: 25px; margin-bottom: 5px;"></div>
+    <canvas id="game" width="400" height="150" style="background: #f7f7f7; border-bottom: 2px solid #535353; width: 100%; max-width: 400px; touch-action: none;"></canvas><br>
+    <button id="startBtn" style="margin-top: 10px; padding: 10px 20px; font-family: 'Courier New'; cursor: pointer;">SPIEL STARTEN</button>
+</div>
+
 <script>
-    const canvas = document.getElementById('game');
-    const ctx = canvas.getContext('2d');
-    let dino = { x: 50, y: 160, w: 40, h: 40, dy: 0, jump: false, duck: false };
-    let obs = []; let speed = 6; let nextSpawn = 0; let touchY = 0;
+    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), scoreEl = document.getElementById('score'), msgEl = document.getElementById('msg');
+    let dino = { x: 30, y: 130, w: 25, h: 30, dy: 0, jump: false, duck: false }, obs = [], speed = 4, score = 0, active = false, nextSpawn = 0, touchY = 0;
 
     window.onkeydown = (e) => {
-        if (e.key === 'w' && !dino.jump) { dino.dy = -10; dino.jump = true; }
-        if (e.key === 's') { dino.duck = true; dino.h = 20; }
+        if (e.key === 'w' && !dino.jump) { dino.dy = -8; dino.jump = true; }
+        if (e.key === 's') { dino.duck = true; dino.h = 15; }
     };
-    window.onkeyup = (e) => { if (e.key === 's') { dino.duck = false; dino.h = 40; } };
+    window.onkeyup = (e) => { if (e.key === 's') { dino.duck = false; dino.h = 30; } };
 
     canvas.addEventListener('touchstart', e => touchY = e.touches[0].clientY);
     canvas.addEventListener('touchend', e => {
         let diff = touchY - e.changedTouches[0].clientY;
-        if (diff > 30 && !dino.jump) { dino.dy = -10; dino.jump = true; }
-        if (diff < -30) { dino.duck = true; setTimeout(() => { dino.duck = false; dino.h = 40; }, 500); dino.h = 20; }
+        if (diff > 20 && !dino.jump) { dino.dy = -8; dino.jump = true; }
+        if (diff < -20) { dino.duck = true; setTimeout(() => { dino.duck = false; dino.h = 30; }, 500); dino.h = 15; }
     });
 
+    btn.onclick = () => { active = true; btn.style.display = 'none'; score = 0; obs = []; speed = 4; msgEl.innerText = ""; loop(); };
+
     function loop() {
-        ctx.clearRect(0, 0, 800, 200);
-        speed += 0.003;
-        if (dino.jump) { dino.dy += 0.7; dino.y += dino.dy; }
-        if (dino.y >= 160) { dino.y = 160; dino.jump = false; }
-        
-        ctx.font = dino.duck ? "30px serif" : "40px serif";
+        if (!active) return;
+        ctx.clearRect(0, 0, 400, 150); speed += 0.002; score++; scoreEl.innerText = "Score: " + Math.floor(score/10);
+        if (dino.jump) { dino.dy += 0.6; dino.y += dino.dy; }
+        if (dino.y >= 130) { dino.y = 130; dino.jump = false; }
+        ctx.font = dino.duck ? "20px serif" : "25px serif";
         ctx.fillText("🤠", dino.x, dino.y - (dino.duck ? 0 : 5));
-
-        if (nextSpawn-- <= 0) {
-            obs.push({ x: 800, y: 160 });
-            nextSpawn = Math.random() * 60 + 30; 
-        }
-
+        if (nextSpawn-- <= 0) { obs.push({ x: 400, y: 130 }); nextSpawn = Math.random() * 50 + 20; }
         obs.forEach((o, i) => {
-            o.x -= speed;
-            ctx.font = "30px serif";
-            ctx.fillText("🌵", o.x, o.y);
-            if (dino.x < o.x + 20 && dino.x + 30 > o.x && dino.y - dino.h < o.y && dino.y > o.y - 30) location.reload();
-            if (o.x < -30) obs.splice(i, 1);
+            o.x -= speed; ctx.font = "20px serif"; ctx.fillText("🌵", o.x, o.y);
+            if (dino.x < o.x + 15 && dino.x + 20 > o.x && dino.y - dino.h < o.y && dino.y > o.y - 20) { 
+                active = false; 
+                msgEl.innerText = "GAME OVER - Zurück zur Startseite...";
+                setTimeout(() => { 
+                    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+                    document.getElementById('startseite').classList.add('active');
+                }, 5000);
+            }
+            if (o.x < -20) obs.splice(i, 1);
         });
         requestAnimationFrame(loop);
     }
-    loop();
 </script>
     </section>
     
