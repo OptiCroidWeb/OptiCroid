@@ -209,8 +209,8 @@
 
 <script>
     const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), charList = document.getElementById('charList'), gameOverScreen = document.getElementById('gameOverScreen');
-    const prices = { "🤠": 0, "🦖": 20, "😎": 20, "🤩": 20, "🤑": 20, "💩": 20, "👽": 20, "⛄": 50, "🥵": 50, "🥶": 50, "😈": 100, "🤖": 150, "🐯": 150, "🦄": 200, "🐲": 200, "🐳": 250 };
-    let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = "🤠", active = false, dino, obs, coins, speed, sessionCoins, startTime;
+    const prices = { "🤠": 0, "🦖": 20, "😎": 20, "🤩": 20, "🤑": 20, "💩": 20, "👽": 20, "⛄": 50, "🥵": 50, "😈": 100, "🤖": 150, "🐯": 150, "🦄": 200, "🐲": 200, "🐳": 250 };
+    let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = "🤠", active = false, dino, objects, speed, sessionCoins, startTime, spawnTimer, hue = 50, particles = [];
 
     function updateUI() {
         totalEl.innerText = wallet; charList.innerHTML = "";
@@ -222,9 +222,13 @@
         });
     }
 
+    function createFirework() {
+        for(let i=0; i<30; i++) particles.push({x: 375, y: 150, dx: (Math.random()-0.5)*10, dy: (Math.random()-0.5)*10, c: `hsl(${Math.random()*360},100%,50%)`, l: 50});
+    }
+
     function resetGame() {
         dino = { x: 70, y: 260, dy: 0, jump: false, duck: false, angle: 0 };
-        obs = []; coins = []; speed = 5.2; sessionCoins = 0; active = true;
+        objects = []; speed = 5.0; sessionCoins = 0; active = true; spawnTimer = 0; hue = 50; particles = [];
         startTime = Date.now(); gameOverScreen.style.display = 'none'; loop();
     }
 
@@ -239,48 +243,53 @@
         if(!active) return; ctx.clearRect(0,0,750,300); speed += 0.001;
         let elapsed = Math.floor((Date.now()-startTime)/1000);
         coinEl.innerText = sessionCoins; timerEl.innerText = elapsed + "s";
+        hue = (hue + (speed * 0.15)) % 360;
 
-        // Bühnen-Hintergrund
         ctx.fillStyle = "#111"; ctx.fillRect(0,0,750,300);
-        ctx.fillStyle = "#333"; ctx.fillRect(0,260,750,40); // Boden
+        ctx.fillStyle = "#333"; ctx.fillRect(0,260,750,40);
         
-        // Scheinwerfer-Effekt
-        ctx.save();
-        ctx.globalAlpha = 0.2;
-        ctx.fillStyle = "#f1c40f";
-        ctx.beginPath(); ctx.moveTo(100,0); ctx.lineTo(0,300); ctx.lineTo(200,300); ctx.fill();
-        ctx.beginPath(); ctx.moveTo(650,0); ctx.lineTo(550,300); ctx.lineTo(750,300); ctx.fill();
-        ctx.restore();
+        ctx.save(); ctx.globalAlpha = 0.25; ctx.fillStyle = `hsl(${hue}, 80%, 60%)`;
+        ctx.beginPath(); ctx.moveTo(150,0); ctx.lineTo(30,300); ctx.lineTo(270,300); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(600,0); ctx.lineTo(480,300); ctx.lineTo(720,300); ctx.fill(); ctx.restore();
+
+        particles.forEach((p, i) => {
+            p.x += p.dx; p.y += p.dy; p.l--;
+            ctx.fillStyle = p.c; ctx.fillRect(p.x, p.y, 3, 3);
+            if(p.l <= 0) particles.splice(i, 1);
+        });
 
         if(dino.jump) { dino.dy += 0.95; dino.y += dino.dy; dino.angle += 0.15; } 
         else { dino.angle = 0; dino.y = 260; dino.jump = false; }
-        
         if(dino.y >= 260) { dino.y = 260; dino.jump = false; }
 
-        ctx.save();
-        ctx.translate(dino.x + 20, dino.y - (dino.duck ? 15 : 25));
-        ctx.rotate(dino.angle);
-        ctx.font = dino.duck ? "40px serif" : "55px serif";
-        ctx.textAlign = "center"; ctx.textBaseline = "middle";
-        ctx.fillText(selectedEmoji, 0, 0);
-        ctx.restore();
+        ctx.save(); ctx.translate(dino.x + 20, dino.y - (dino.duck ? 15 : 25)); ctx.rotate(dino.angle);
+        ctx.font = dino.duck ? "40px serif" : "55px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.fillText(selectedEmoji, 0, 0); ctx.restore();
 
-        if(Math.random() < 0.02) {
-            let r = Math.random();
-            if(r > 0.6) { obs.push({x:760, y: r > 0.8 ? 260 : 235, t: r > 0.8 ? "🌵" : "🪨"}); }
-            else { coins.push({x:760, y: Math.random() > 0.5 ? 150 : 240, t: "🪙"}); }
+        spawnTimer--;
+        if(spawnTimer <= 0) {
+            let type = Math.random();
+            if(type > 0.45) {
+                let subType = Math.random();
+                objects.push({x:800, y: subType > 0.5 ? 260 : 230, t: subType > 0.5 ? "🌵" : "🪨"});
+            } else {
+                objects.push({x:800, y: Math.random() > 0.5 ? 150 : 240, t: "🪙"});
+            }
+            spawnTimer = Math.max(40, 80 - (speed * 2)) + Math.random() * 50;
         }
 
-        [...coins, ...obs].forEach((h, i) => {
-            h.x -= speed; ctx.font = (h.t==="🪙"?"30px":"45px") + " serif"; ctx.fillText(h.t, h.x, h.y);
-            let hW = 25, hH = (h.t === "🌵") ? 35 : 20;
-            let hitY = (h.t === "🪨") ? h.y - 15 : h.y - 30;
-            
-            if(dino.x < h.x+hW && dino.x+35 > h.x && (dino.y-(dino.duck?15:40)) < h.y && dino.y > hitY) {
-                if(h.t==="🪙") { sessionCoins++; wallet++; (h.t==="🪙"?coins:obs).splice(i,1); localStorage.setItem('totalCoins', wallet); }
-                else { active = false; document.getElementById('finalScore').innerText = `${sessionCoins} Münzen gesammelt!`; gameOverScreen.style.display = 'flex'; updateUI(); }
+        for(let i = objects.length - 1; i >= 0; i--) {
+            let obj = objects[i]; obj.x -= speed;
+            ctx.font = (obj.t==="🪙"?"30px":"45px") + " serif"; ctx.fillText(obj.t, obj.x, obj.y);
+            let hW = 22, hitY = (obj.t === "🪨") ? obj.y - 12 : obj.y - 32;
+            if(dino.x < obj.x+hW && dino.x+32 > obj.x && (dino.y-(dino.duck?15:40)) < obj.y && dino.y > hitY) {
+                if(obj.t==="🪙") { 
+                    sessionCoins++; wallet++; objects.splice(i,1); localStorage.setItem('totalCoins', wallet); 
+                    if(sessionCoins === 100) createFirework();
+                } else { active = false; document.getElementById('finalScore').innerText = `${sessionCoins} Münzen!`; gameOverScreen.style.display = 'flex'; updateUI(); }
             }
-        });
+            if(obj.x < -60) objects.splice(i, 1);
+        }
         if(active) requestAnimationFrame(loop);
     }
     updateUI();
