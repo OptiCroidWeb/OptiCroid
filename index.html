@@ -189,30 +189,34 @@
     const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
     let dino = { x: 50, y: 160, w: 40, h: 40, dy: 0, jump: false, duck: false };
-    let obstacles = []; let speed = 6; let frame = 0;
+    let obs = []; let speed = 5; let nextSpawn = 0;
 
     window.onkeydown = (e) => {
         if (e.key === 'w' && !dino.jump) { dino.dy = -12; dino.jump = true; }
-        if (e.key === 's') { dino.duck = true; if(!dino.jump) dino.h = 20; }
+        if (e.key === 's') { dino.duck = true; dino.h = 20; }
     };
     window.onkeyup = (e) => { if (e.key === 's') { dino.duck = false; dino.h = 40; } };
 
     function loop() {
         ctx.clearRect(0, 0, 800, 200);
-        speed += 0.001; frame++;
-        
+        speed += 0.002;
         if (dino.jump) { dino.dy += 0.6; dino.y += dino.dy; }
         if (dino.y >= 160) { dino.y = 160; dino.jump = false; }
         
-        ctx.fillStyle = '#535353';
-        ctx.fillRect(dino.x, dino.y - dino.h, dino.w, dino.h);
+        ctx.font = dino.duck ? "30px serif" : "40px serif";
+        ctx.fillText("🤠", dino.x, dino.y - 5);
 
-        if (frame % 100 === 0) obstacles.push({ x: 800, y: 130, w: 20, h: 30 });
-        obstacles.forEach((obs, i) => {
-            obs.x -= speed;
-            ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
-            if (dino.x < obs.x + obs.w && dino.x + dino.w > obs.x && dino.y - dino.h < obs.y + obs.h && dino.y > obs.y) location.reload();
-            if (obs.x < -20) obstacles.splice(i, 1);
+        if (nextSpawn-- <= 0) {
+            obs.push({ x: 800, y: 160 });
+            nextSpawn = Math.random() * 150 + 50; 
+        }
+
+        obs.forEach((o, i) => {
+            o.x -= speed;
+            ctx.font = "30px serif";
+            ctx.fillText("🌵", o.x, o.y);
+            if (dino.x < o.x + 20 && dino.x + 30 > o.x && dino.y - dino.h < o.y && dino.y > o.y - 30) location.reload();
+            if (o.x < -30) obs.splice(i, 1);
         });
         requestAnimationFrame(loop);
     }
