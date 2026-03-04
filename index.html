@@ -211,22 +211,40 @@
 
 <script>
     const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), charList = document.getElementById('charList'), gameOverScreen = document.getElementById('gameOverScreen'), wrapper = document.getElementById('wrapper');
-    const prices = { "🤠": 0, "🦖": 20, "😎": 20, "🤩": 20, "🤑": 20, "💩": 20, "👽": 20, "⛄": 50, "🥵": 50, "😈": 100, "🤖": 150, "🐯": 150, "🦄": 200, "🐲": 200, "🐳": 250 };
-    let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = "🤠", active = false, dino, objects, speed, sessionCoins, startTime, spawnTimer, hue = 50, particles = [];
+    const emojis = ["🤠", "🦖", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐲", "🐳"];
+    let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = localStorage.getItem('selectedEmoji') || "🤠", active = false, dino, objects, speed, sessionCoins, startTime, spawnTimer, hue = 50, particles = [];
 
     function updateUI() {
         totalEl.innerText = wallet; charList.innerHTML = "";
-        Object.keys(prices).forEach(e => {
-            const isUnlocked = unlocked.includes(e), span = document.createElement('span');
-            span.innerText = e; span.style.cssText = `font-size: 32px; cursor: pointer; padding: 6px; border-radius: 10px; border: 2px solid ${e === selectedEmoji ? "#f1c40f" : "transparent"}; opacity: ${isUnlocked ? "1" : "0.3"}; background: #333;`;
-            span.onclick = () => { if(isUnlocked) { selectedEmoji = e; updateUI(); } else if(wallet >= prices[e]) { wallet -= prices[e]; unlocked.push(e); localStorage.setItem('totalCoins', wallet); localStorage.setItem('unlockedChars', JSON.stringify(unlocked)); selectedEmoji = e; updateUI(); } };
+        emojis.forEach((e, index) => {
+            const price = index * 20, isUnlocked = unlocked.includes(e);
+            const span = document.createElement('div');
+            span.style.cssText = `display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 5px; background: #333; border-radius: 10px; border: 2px solid ${e === selectedEmoji ? "#f1c40f" : "transparent"}; opacity: ${isUnlocked ? "1" : "0.4"}; min-width: 50px;`;
+            span.innerHTML = `<span style="font-size:32px">${e}</span><span style="font-size:12px;color:#f1c40f">${isUnlocked ? "✔" : price}</span>`;
+            span.onclick = () => { if(isUnlocked) { selectedEmoji = e; localStorage.setItem('selectedEmoji', e); updateUI(); } };
             charList.appendChild(span);
         });
     }
 
-    function toggleFS() {
-        if (!document.fullscreenElement) wrapper.requestFullscreen().catch(() => {});
-        else document.exitFullscreen();
+    function checkUnlock() {
+        let nextIndex = emojis.indexOf(unlocked[unlocked.length - 1]) + 1;
+        if (nextIndex < emojis.length) {
+            let nextPrice = nextIndex * 20;
+            if (wallet >= nextPrice) {
+                wallet -= nextPrice;
+                unlocked.push(emojis[nextIndex]);
+                selectedEmoji = emojis[nextIndex];
+                localStorage.setItem('totalCoins', wallet);
+                localStorage.setItem('unlockedChars', JSON.stringify(unlocked));
+                localStorage.setItem('selectedEmoji', selectedEmoji);
+                createFirework();
+                updateUI();
+            }
+        }
+    }
+
+    function createFirework() {
+        for(let i=0; i<50; i++) particles.push({x: 375, y: 150, dx: (Math.random()-0.5)*15, dy: (Math.random()-0.5)*15, c: `hsl(${Math.random()*360},100%,50%)`, l: 60});
     }
 
     function resetGame() {
@@ -235,34 +253,25 @@
         startTime = Date.now(); gameOverScreen.style.display = 'none'; loop();
     }
 
+    function toggleFS() { if (!document.fullscreenElement) wrapper.requestFullscreen(); else document.exitFullscreen(); }
     btn.onclick = resetGame;
-    
     window.onkeydown = (e) => {
         if(["ArrowUp", "ArrowDown", " "].includes(e.key)) e.preventDefault();
         if((e.key==='w'||e.key==='ArrowUp'||e.key===' ') && !dino.jump) { dino.dy = -15; dino.jump = true; }
         if(e.key==='s'||e.key==='ArrowDown') dino.duck = true;
     };
     window.onkeyup = (e) => { if(e.key==='s'||e.key==='ArrowDown') dino.duck = false; };
-
     canvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
-        const width = canvas.clientWidth;
-        if(touchX > width / 2) { if(!dino.jump) { dino.dy = -15; dino.jump = true; } }
+        if(e.touches[0].clientX - canvas.getBoundingClientRect().left > canvas.clientWidth / 2) { if(!dino.jump) { dino.dy = -15; dino.jump = true; } }
         else { dino.duck = true; }
     });
     canvas.addEventListener('touchend', () => { dino.duck = false; });
 
-    function createFirework() {
-        for(let i=0; i<30; i++) particles.push({x: 375, y: 150, dx: (Math.random()-0.5)*10, dy: (Math.random()-0.5)*10, c: `hsl(${Math.random()*360},100%,50%)`, l: 50});
-    }
-
     function loop() {
         if(!active) return; ctx.clearRect(0,0,750,300); speed += 0.001;
-        let elapsed = Math.floor((Date.now()-startTime)/1000);
-        coinEl.innerText = sessionCoins; timerEl.innerText = elapsed + "s";
+        coinEl.innerText = sessionCoins; timerEl.innerText = Math.floor((Date.now()-startTime)/1000) + "s";
         hue = (hue + (speed * 0.15)) % 360;
-
         ctx.fillStyle = "#111"; ctx.fillRect(0,0,750,300);
         ctx.fillStyle = "#333"; ctx.fillRect(0,260,750,40);
         ctx.save(); ctx.globalAlpha = 0.25; ctx.fillStyle = `hsl(${hue}, 80%, 60%)`;
@@ -275,23 +284,17 @@
             if(p.l <= 0) particles.splice(i, 1);
         });
 
-        if(dino.jump) { dino.dy += 0.95; dino.y += dino.dy; dino.angle += 0.15; } 
-        else { dino.angle = 0; dino.y = 260; }
+        if(dino.jump) { dino.dy += 0.95; dino.y += dino.dy; dino.angle += 0.15; } else { dino.angle = 0; dino.y = 260; }
         if(dino.y >= 260) { dino.y = 260; dino.jump = false; }
 
         ctx.save(); ctx.translate(dino.x + 20, dino.y - (dino.duck ? 15 : 25)); ctx.rotate(dino.angle);
         ctx.font = dino.duck ? "40px serif" : "55px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
         ctx.fillText(selectedEmoji, 0, 0); ctx.restore();
 
-        spawnTimer--;
-        if(spawnTimer <= 0) {
+        if(--spawnTimer <= 0) {
             let type = Math.random();
-            if(type > 0.45) {
-                let subType = Math.random();
-                objects.push({x:800, y: subType > 0.5 ? 260 : 230, t: subType > 0.5 ? "🌵" : "🪨"});
-            } else {
-                objects.push({x:800, y: Math.random() > 0.5 ? 150 : 240, t: "🪙"});
-            }
+            if(type > 0.45) objects.push({x:800, y: Math.random() > 0.5 ? 260 : 230, t: Math.random() > 0.5 ? "🌵" : "🪨"});
+            else objects.push({x:800, y: Math.random() > 0.5 ? 150 : 240, t: "🪙"});
             spawnTimer = Math.max(45, 85 - (speed * 2)) + Math.random() * 50;
         }
 
@@ -302,7 +305,7 @@
             if(dino.x < obj.x+hW && dino.x+32 > obj.x && (dino.y-(dino.duck?15:40)) < obj.y && dino.y > hitY) {
                 if(obj.t==="🪙") { 
                     sessionCoins++; wallet++; objects.splice(i,1); localStorage.setItem('totalCoins', wallet); 
-                    if(sessionCoins % 100 === 0 && sessionCoins > 0) createFirework();
+                    checkUnlock();
                 } else { active = false; document.getElementById('finalScore').innerText = `${sessionCoins} Münzen!`; gameOverScreen.style.display = 'flex'; updateUI(); }
             }
             if(obj.x < -60) objects.splice(i, 1);
@@ -311,7 +314,6 @@
     }
     updateUI();
 </script>
-    </section>
 
  <section id="Profil" class="content">
   <div id="loginArea">
