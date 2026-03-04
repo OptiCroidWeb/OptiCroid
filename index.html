@@ -184,7 +184,7 @@
     </section>
 
     <section id="Spiele" class="content">
-      <div style="text-align: center; font-family: 'Segoe UI', Roboto, sans-serif; max-width: 750px; margin: auto; padding: 10px; color: #eee; transform: scale(0.95); background: #1a1a1a; border-radius: 20px;">
+      <div id="gameContainer" style="text-align: center; font-family: 'Segoe UI', Roboto, sans-serif; max-width: 750px; margin: auto; padding: 10px; color: #eee; background: #1a1a1a; border-radius: 20px; touch-action: none;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 15px;">
         <div style="font-size: 22px; font-weight: 900; color: #f1c40f;">🪙 <span id="coinScore">0</span></div>
         <div style="font-size: 18px; font-weight: bold; background: #333; padding: 4px 12px; border-radius: 8px;">⏱️ <span id="timer">0s</span></div>
@@ -199,6 +199,8 @@
             <p id="finalScore" style="font-size: 20px; margin: 15px 0;"></p>
             <button onclick="resetGame()" style="padding: 12px 40px; font-size: 20px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 900;">NOCHMAL</button>
         </div>
+
+        <button onclick="toggleFS()" style="position: absolute; bottom: 10px; right: 10px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px; border-radius: 5px; cursor: pointer; z-index: 15;">⛶ Fullscreen</button>
     </div>
 
     <div id="shopArea" style="margin-top: 15px;">
@@ -208,7 +210,7 @@
 </div>
 
 <script>
-    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), charList = document.getElementById('charList'), gameOverScreen = document.getElementById('gameOverScreen');
+    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), charList = document.getElementById('charList'), gameOverScreen = document.getElementById('gameOverScreen'), wrapper = document.getElementById('wrapper');
     const prices = { "🤠": 0, "🦖": 20, "😎": 20, "🤩": 20, "🤑": 20, "💩": 20, "👽": 20, "⛄": 50, "🥵": 50, "😈": 100, "🤖": 150, "🐯": 150, "🦄": 200, "🐲": 200, "🐳": 250 };
     let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = "🤠", active = false, dino, objects, speed, sessionCoins, startTime, spawnTimer, hue = 50, particles = [];
 
@@ -222,8 +224,9 @@
         });
     }
 
-    function createFirework() {
-        for(let i=0; i<30; i++) particles.push({x: 375, y: 150, dx: (Math.random()-0.5)*10, dy: (Math.random()-0.5)*10, c: `hsl(${Math.random()*360},100%,50%)`, l: 50});
+    function toggleFS() {
+        if (!document.fullscreenElement) wrapper.requestFullscreen().catch(() => {});
+        else document.exitFullscreen();
     }
 
     function resetGame() {
@@ -233,11 +236,26 @@
     }
 
     btn.onclick = resetGame;
+    
     window.onkeydown = (e) => {
-        if((e.key==='w'||e.key==='ArrowUp') && !dino.jump) { dino.dy = -15; dino.jump = true; }
+        if(["ArrowUp", "ArrowDown", " "].includes(e.key)) e.preventDefault();
+        if((e.key==='w'||e.key==='ArrowUp'||e.key===' ') && !dino.jump) { dino.dy = -15; dino.jump = true; }
         if(e.key==='s'||e.key==='ArrowDown') dino.duck = true;
     };
     window.onkeyup = (e) => { if(e.key==='s'||e.key==='ArrowDown') dino.duck = false; };
+
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
+        const width = canvas.clientWidth;
+        if(touchX > width / 2) { if(!dino.jump) { dino.dy = -15; dino.jump = true; } }
+        else { dino.duck = true; }
+    });
+    canvas.addEventListener('touchend', () => { dino.duck = false; });
+
+    function createFirework() {
+        for(let i=0; i<30; i++) particles.push({x: 375, y: 150, dx: (Math.random()-0.5)*10, dy: (Math.random()-0.5)*10, c: `hsl(${Math.random()*360},100%,50%)`, l: 50});
+    }
 
     function loop() {
         if(!active) return; ctx.clearRect(0,0,750,300); speed += 0.001;
@@ -247,7 +265,6 @@
 
         ctx.fillStyle = "#111"; ctx.fillRect(0,0,750,300);
         ctx.fillStyle = "#333"; ctx.fillRect(0,260,750,40);
-        
         ctx.save(); ctx.globalAlpha = 0.25; ctx.fillStyle = `hsl(${hue}, 80%, 60%)`;
         ctx.beginPath(); ctx.moveTo(150,0); ctx.lineTo(30,300); ctx.lineTo(270,300); ctx.fill();
         ctx.beginPath(); ctx.moveTo(600,0); ctx.lineTo(480,300); ctx.lineTo(720,300); ctx.fill(); ctx.restore();
@@ -259,7 +276,7 @@
         });
 
         if(dino.jump) { dino.dy += 0.95; dino.y += dino.dy; dino.angle += 0.15; } 
-        else { dino.angle = 0; dino.y = 260; dino.jump = false; }
+        else { dino.angle = 0; dino.y = 260; }
         if(dino.y >= 260) { dino.y = 260; dino.jump = false; }
 
         ctx.save(); ctx.translate(dino.x + 20, dino.y - (dino.duck ? 15 : 25)); ctx.rotate(dino.angle);
@@ -275,7 +292,7 @@
             } else {
                 objects.push({x:800, y: Math.random() > 0.5 ? 150 : 240, t: "🪙"});
             }
-            spawnTimer = Math.max(40, 80 - (speed * 2)) + Math.random() * 50;
+            spawnTimer = Math.max(45, 85 - (speed * 2)) + Math.random() * 50;
         }
 
         for(let i = objects.length - 1; i >= 0; i--) {
@@ -285,7 +302,7 @@
             if(dino.x < obj.x+hW && dino.x+32 > obj.x && (dino.y-(dino.duck?15:40)) < obj.y && dino.y > hitY) {
                 if(obj.t==="🪙") { 
                     sessionCoins++; wallet++; objects.splice(i,1); localStorage.setItem('totalCoins', wallet); 
-                    if(sessionCoins === 100) createFirework();
+                    if(sessionCoins % 100 === 0 && sessionCoins > 0) createFirework();
                 } else { active = false; document.getElementById('finalScore').innerText = `${sessionCoins} Münzen!`; gameOverScreen.style.display = 'flex'; updateUI(); }
             }
             if(obj.x < -60) objects.splice(i, 1);
