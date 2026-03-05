@@ -104,25 +104,71 @@
         </div>
         <button onclick="toggleFS()" style="position: absolute; bottom: 10px; right: 10px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px; border-radius: 5px; cursor: pointer; z-index: 15;">⛶ Fullscreen</button>
     </div>
-    <div id="shopArea" style="margin-top: 15px;">
-        <div id="charList" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; padding: 5px;"></div>
-        <button id="startBtn" style="margin-top: 15px; padding: 15px 60px; font-size: 22px; background: #f1c40f; color: #000; border: none; border-radius: 12px; cursor: pointer; font-weight: 900;">SHOW STARTEN</button>
+    <div id="shopArea" style="margin-top: 15px; display: flex; align-items: center; gap: 10px; justify-content: center; background: #222; padding: 10px; border-radius: 15px;">
+        <div id="charList" style="display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 5px; width: 140px; scrollbar-width: none; -ms-overflow-style: none;"></div>
+        <button id="startBtn" style="padding: 15px 25px; font-size: 18px; background: #f1c40f; color: #000; border: none; border-radius: 12px; cursor: pointer; font-weight: 900;">START</button>
     </div>
   </div>
   <script>
     const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), charList = document.getElementById('charList'), gameOverScreen = document.getElementById('gameOverScreen'), wrapper = document.getElementById('wrapper');
     const emojis = ["🤠", "🐶", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐲", "🐳"];
     let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = localStorage.getItem('selectedEmoji') || "🤠", active = false, dino, objects, speed, sessionCoins, startTime, spawnTimer, hue = 50, particles = [];
-    function updateUI() { totalEl.innerText = wallet; charList.innerHTML = ""; emojis.forEach((e, index) => { const price = index * 15; const isUnlocked = unlocked.includes(e); const span = document.createElement('div'); span.style.cssText = `display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 5px; background: #333; border-radius: 10px; border: 2px solid ${e === selectedEmoji ? "#f1c40f" : "transparent"}; opacity: ${isUnlocked ? "1" : "0.4"}; min-width: 50px;`; span.innerHTML = `<span style="font-size:32px">${e}</span><span style="font-size:12px;color:#f1c40f">${isUnlocked ? "✔" : price}</span>`; span.onclick = () => { if(isUnlocked) { selectedEmoji = e; localStorage.setItem('selectedEmoji', e); updateUI(); } }; charList.appendChild(span); }); }
-    function checkUnlock() { let nextIndex = emojis.indexOf(unlocked[unlocked.length - 1]) + 1; if (nextIndex < emojis.length) { let nextPrice = nextIndex * 15; if (wallet >= nextPrice) { wallet -= nextPrice; unlocked.push(emojis[nextIndex]); selectedEmoji = emojis[nextIndex]; localStorage.setItem('totalCoins', wallet); localStorage.setItem('unlockedChars', JSON.stringify(unlocked)); localStorage.setItem('selectedEmoji', selectedEmoji); createFirework(); updateUI(); } } }
+    
+    function updateUI() { 
+        totalEl.innerText = wallet; 
+        charList.innerHTML = ""; 
+        emojis.forEach((e, index) => { 
+            const price = index * 15; 
+            const isUnlocked = unlocked.includes(e); 
+            const span = document.createElement('div'); 
+            span.style.cssText = `display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 5px; background: #333; border-radius: 10px; border: 2px solid ${e === selectedEmoji ? "#f1c40f" : "transparent"}; opacity: ${isUnlocked ? "1" : "0.5"}; min-width: 55px; scroll-snap-align: start; flex-shrink: 0;`; 
+            span.innerHTML = `<span style="font-size:28px">${e}</span><span style="font-size:10px;color:#f1c40f">${isUnlocked ? "✔" : price}</span>`; 
+            span.onclick = () => buyChar(e, price); 
+            charList.appendChild(span); 
+        }); 
+    }
+
+    function buyChar(emoji, price) {
+        if (!unlocked.includes(emoji)) {
+            if (wallet >= price) {
+                wallet -= price;
+                unlocked.push(emoji);
+                selectedEmoji = emoji;
+                saveData();
+                createFirework();
+                if (unlocked.length === emojis.length) {
+                    setTimeout(() => {
+                        unlocked = ["🤠"];
+                        selectedEmoji = "🤠";
+                        saveData();
+                        updateUI();
+                        alert("Sammlung komplett! Alle Skins außer 🤠 wurden zurückgesetzt.");
+                    }, 1000);
+                }
+            }
+        } else {
+            selectedEmoji = emoji;
+            saveData();
+        }
+        updateUI();
+    }
+
+    function saveData() {
+        localStorage.setItem('totalCoins', wallet);
+        localStorage.setItem('unlockedChars', JSON.stringify(unlocked));
+        localStorage.setItem('selectedEmoji', selectedEmoji);
+    }
+
     function createFirework() { for(let i=0; i<50; i++) particles.push({x: 375, y: 150, dx: (Math.random()-0.5)*15, dy: (Math.random()-0.5)*15, c: `hsl(${Math.random()*360},100%,50%)`, l: 60}); }
     function resetGame() { dino = { x: 70, y: 260, dy: 0, jump: false, duck: false, angle: 0 }; objects = []; speed = 6.5; sessionCoins = 0; active = true; spawnTimer = 0; hue = 50; particles = []; startTime = Date.now(); gameOverScreen.style.display = 'none'; loop(); }
     function toggleFS() { if (!document.fullscreenElement) wrapper.requestFullscreen(); else document.exitFullscreen(); }
     btn.onclick = resetGame;
+
     window.onkeydown = (e) => { if(["ArrowUp", "ArrowDown", " "].includes(e.key)) e.preventDefault(); if((e.key==='w'||e.key==='ArrowUp'||e.key===' ') && !dino.jump) { dino.dy = -15; dino.jump = true; } if(e.key==='s'||e.key==='ArrowDown') dino.duck = true; };
     window.onkeyup = (e) => { if(e.key==='s'||e.key==='ArrowDown') dino.duck = false; };
     canvas.addEventListener('touchstart', (e) => { e.preventDefault(); if(e.touches[0].clientX - canvas.getBoundingClientRect().left > canvas.clientWidth / 2) { if(!dino.jump) { dino.dy = -15; dino.jump = true; } } else { dino.duck = true; } });
     canvas.addEventListener('touchend', () => { dino.duck = false; });
+
     function loop() {
         if(!active) return; ctx.clearRect(0,0,750,300); speed += 0.0012;
         coinEl.innerText = sessionCoins; timerEl.innerText = Math.floor((Date.now()-startTime)/1000) + "s";
@@ -143,7 +189,7 @@
             let obj = objects[i]; obj.x -= speed; ctx.font = (obj.t==="🪙"?"30px":"45px") + " serif"; ctx.fillText(obj.t, obj.x, obj.y);
             let hitBoxWidth = obj.t === "🪨🪨" ? 40 : 25;
             if(dino.x < obj.x + hitBoxWidth && dino.x + 30 > obj.x) {
-                if (obj.t === "🪙") { if (dino.y > obj.y - 40 && (dino.y - 50) < obj.y) { sessionCoins += 5; wallet += 5; objects.splice(i,1); localStorage.setItem('totalCoins', wallet); checkUnlock(); } } 
+                if (obj.t === "🪙") { if (dino.y > obj.y - 40 && (dino.y - 50) < obj.y) { sessionCoins += 5; wallet += 5; objects.splice(i,1); saveData(); updateUI(); } } 
                 else if (obj.t === "🌵") { if (!dino.jump || dino.y > 230) { active = false; gameOver(); } } 
                 else if (obj.t === "🪨🪨") { if (!dino.duck) { active = false; gameOver(); } }
             }
@@ -154,8 +200,8 @@
     function gameOver() { document.getElementById('finalScore').innerText = `${sessionCoins} Münzen!`; gameOverScreen.style.display = 'flex'; updateUI(); }
     updateUI();
   </script>
-  </div>
-    </section>
+</section>
+
 
     <section id="Profil" class="content">
       <div id="loginArea">
