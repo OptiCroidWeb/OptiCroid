@@ -184,137 +184,179 @@
     </section>
 
     <section id="Spiele" class="content">
-      <div id="gameContainer" style="text-align: center; font-family: 'Segoe UI', Roboto, sans-serif; max-width: 750px; margin: auto; padding: 10px; color: #eee; background: #1a1a1a; border-radius: 20px; touch-action: none;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 15px;">
-        <div style="font-size: 22px; font-weight: 900; color: #f1c40f;">🪙 <span id="coinScore">0</span></div>
-        <div style="font-size: 18px; font-weight: bold; background: #333; padding: 4px 12px; border-radius: 8px;">⏱️ <span id="timer">0s</span></div>
-        <div style="font-size: 16px; color: #888;">Bank: <span id="totalCoins">0</span></div>
-    </div>
-
-    <div id="wrapper" style="position: relative; border-radius: 12px; overflow: hidden; border: 4px solid #444; height: 300px; background: #000;">
-        <canvas id="game" width="750" height="300" style="width: 100%; height: 100%; display: block;"></canvas>
-        
-        <div id="gameOverScreen" style="position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10;">
-            <h1 style="font-size: 50px; margin: 0; color: #fff;">VORHANG GEFALLEN</h1>
-            <p id="finalScore" style="font-size: 20px; margin: 15px 0;"></p>
-            <button onclick="resetGame()" style="padding: 12px 40px; font-size: 20px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 900;">NOCHMAL</button>
+      <!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OptiCroid</title>
+  <link rel="icon" type="image/png" href="1768734429139.png">
+  <meta name="google-site-verification" content="1h0mJmEKKiB0WFa2w9Txokx6s4TYYGrI54m2dTZAwCk" />
+  <meta name="description" content="IT Dienstleistung OptiCroid/ Markus Sieber: (Digitales PC-Managment, Systemoptimierung und Intigration)">
+  <style>
+    html, body { width: 100%; overflow-x: hidden; margin: 0; padding: 0; }
+    body { margin: 0; font-family: Arial, sans-serif; background: linear-gradient(to right, #000000,#0000Ff); background-attachment: fixed; }
+    header { background: #E0E0E0; display: flex; flex-direction: column; align-items: center; padding: 15px 0; width: 60px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 1000; transition: width 0.4s ease; overflow: hidden; box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3); border-right: 2px solid #00FF7F; }
+    header.open { width: 220px; }
+    #toggle-btn { color: #00FF7F; font-size: 24px; cursor: pointer; margin-bottom: 30px; transition: transform 0.4s; }
+    nav { display: flex; flex-direction: column; width: 100%; }
+    nav a { padding: 15px 20px; text-decoration: none; color: #000000; font-weight: bold; font-size: 1.1em; white-space: nowrap; display: flex; align-items: center; gap: 20px; transition: background 0.3s, color 0.3s; cursor: pointer; }
+    nav a:hover { color: red; background: rgba(255,255,255,0.1); }
+    main { transition: margin-left 0.4s ease; margin-left: 60px; }
+    header.open ~ main { margin-left: 220px; }
+    .content { position: absolute; left: -9999px; opacity: 0; text-align: center; background-color: #E0E0E0; margin: 20px auto; max-width: 90%; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); transition: opacity 0.3s ease; font-family: sans-serif; line-height: 1.6; }
+    .content.active { position: relative; left: 0; opacity: 1; padding: 30px; }
+    .email-button { background-color: #FF0000; border: 2px solid #FF0000; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; display: inline-block; cursor: pointer; }
+    .Anrufen-button { background-color: green; border: 2px solid #ADD8E6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; display: inline-block; cursor: pointer; }
+    .instagram-btn { background-color: #FFB6C1; border: 2px solid #FF69B4; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; display: inline-block; }
+    .youtube-btn { background-color: #FF0000; border: 2px solid #B20000; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; display: inline-block; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    @media (max-width: 768px) { header { width: 50px; } header.open { width: 180px; } main { margin-left: 50px; padding: 10px; } header.open ~ main { margin-left: 50px; } .content.active { padding: 15px; } h1 { font-size: 1.4em; } p { font-size: 16px !important; } img { width: 180px !important; } }
+  </style>
+</head>
+<body>
+  <header id="myHeader">
+    <div id="toggle-btn" onclick="toggleNav()">➔</div>
+    <nav>
+      <a href="#" onclick="showSection('startseite')" id="link-startseite"><span>🏠</span> <span>Startseite</span></a>
+      <a href="#" onclick="showSection('Angebote')" id="link-Angebote"><span>🫱🏾‍🫲🏽</span> <span>Angebote</span></a>
+      <a href="#" onclick="showSection('Infos')" id="link-Infos"><span>ℹ️</span> <span>Infos</span></a>
+      <a href="#" onclick="showSection('Spiele')" id="link-Spiele"><span>🎮</span> <span>Spiele</span></a>
+      <a href="#" onclick="showSection('Profil')" id="link-Profil"><span>😃</span> <span>Profil</span></a>
+    </nav>
+  </header>
+  <main>
+    <div id="maintenance-bar" style="display: flex; align-items: center; justify-content: center; gap: 15px; padding: 15px; background: white; border-bottom: 2px solid black;">
+      <div style="width: 35px; height: 35px; border: 5px solid black; border-top: 5px solid blue; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+      <div style="text-align: left; color: black;">
+        <strong style="display: block; font-size: 1.1em;">Programmierung im Laufe🤯</strong>
+        <div id="countdown-display" style="font-family: monospace; font-weight: bold; font-size: 1.1em; display: flex; gap: 2px;">
+          <span id="val-d"></span>:<span id="val-h"></span>:<span id="val-m"></span>:<span id="val-s"></span>
         </div>
-
-        <button onclick="toggleFS()" style="position: absolute; bottom: 10px; right: 10px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px; border-radius: 5px; cursor: pointer; z-index: 15;">⛶ Fullscreen</button>
+      </div>
     </div>
-
-    <div id="shopArea" style="margin-top: 15px;">
-        <div id="charList" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; padding: 5px;"></div>
-        <button id="startBtn" style="margin-top: 15px; padding: 15px 60px; font-size: 22px; background: #f1c40f; color: #000; border: none; border-radius: 12px; cursor: pointer; font-weight: 900;">SHOW STARTEN</button>
-    </div>
-</div>
-
-<script>
-    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), charList = document.getElementById('charList'), gameOverScreen = document.getElementById('gameOverScreen'), wrapper = document.getElementById('wrapper');
-    const emojis = ["🤠", "🦖", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐲", "🐳"];
-    let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = localStorage.getItem('selectedEmoji') || "🤠", active = false, dino, objects, speed, sessionCoins, startTime, spawnTimer, hue = 50, particles = [];
-
-    function updateUI() {
-        totalEl.innerText = wallet; charList.innerHTML = "";
-        emojis.forEach((e, index) => {
-            const price = index * 20, isUnlocked = unlocked.includes(e);
-            const span = document.createElement('div');
-            span.style.cssText = `display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 5px; background: #333; border-radius: 10px; border: 2px solid ${e === selectedEmoji ? "#f1c40f" : "transparent"}; opacity: ${isUnlocked ? "1" : "0.4"}; min-width: 50px;`;
-            span.innerHTML = `<span style="font-size:32px">${e}</span><span style="font-size:12px;color:#f1c40f">${isUnlocked ? "✔" : price}</span>`;
-            span.onclick = () => { if(isUnlocked) { selectedEmoji = e; localStorage.setItem('selectedEmoji', e); updateUI(); } };
-            charList.appendChild(span);
-        });
-    }
-
-    function checkUnlock() {
-        let nextIndex = emojis.indexOf(unlocked[unlocked.length - 1]) + 1;
-        if (nextIndex < emojis.length) {
-            let nextPrice = nextIndex * 20;
-            if (wallet >= nextPrice) {
-                wallet -= nextPrice;
-                unlocked.push(emojis[nextIndex]);
-                selectedEmoji = emojis[nextIndex];
-                localStorage.setItem('totalCoins', wallet);
-                localStorage.setItem('unlockedChars', JSON.stringify(unlocked));
-                localStorage.setItem('selectedEmoji', selectedEmoji);
-                createFirework();
-                updateUI();
-            }
-        }
-    }
-
-    function createFirework() {
-        for(let i=0; i<50; i++) particles.push({x: 375, y: 150, dx: (Math.random()-0.5)*15, dy: (Math.random()-0.5)*15, c: `hsl(${Math.random()*360},100%,50%)`, l: 60});
-    }
-
-    function resetGame() {
-        dino = { x: 70, y: 260, dy: 0, jump: false, duck: false, angle: 0 };
-        objects = []; speed = 5.0; sessionCoins = 0; active = true; spawnTimer = 0; hue = 50; particles = [];
-        startTime = Date.now(); gameOverScreen.style.display = 'none'; loop();
-    }
-
-    function toggleFS() { if (!document.fullscreenElement) wrapper.requestFullscreen(); else document.exitFullscreen(); }
-    btn.onclick = resetGame;
-    window.onkeydown = (e) => {
-        if(["ArrowUp", "ArrowDown", " "].includes(e.key)) e.preventDefault();
-        if((e.key==='w'||e.key==='ArrowUp'||e.key===' ') && !dino.jump) { dino.dy = -15; dino.jump = true; }
-        if(e.key==='s'||e.key==='ArrowDown') dino.duck = true;
-    };
-    window.onkeyup = (e) => { if(e.key==='s'||e.key==='ArrowDown') dino.duck = false; };
-    canvas.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        if(e.touches[0].clientX - canvas.getBoundingClientRect().left > canvas.clientWidth / 2) { if(!dino.jump) { dino.dy = -15; dino.jump = true; } }
-        else { dino.duck = true; }
-    });
-    canvas.addEventListener('touchend', () => { dino.duck = false; });
-
-    function loop() {
-        if(!active) return; ctx.clearRect(0,0,750,300); speed += 0.001;
-        coinEl.innerText = sessionCoins; timerEl.innerText = Math.floor((Date.now()-startTime)/1000) + "s";
-        hue = (hue + (speed * 0.15)) % 360;
-        ctx.fillStyle = "#111"; ctx.fillRect(0,0,750,300);
-        ctx.fillStyle = "#333"; ctx.fillRect(0,260,750,40);
-        ctx.save(); ctx.globalAlpha = 0.25; ctx.fillStyle = `hsl(${hue}, 80%, 60%)`;
-        ctx.beginPath(); ctx.moveTo(150,0); ctx.lineTo(30,300); ctx.lineTo(270,300); ctx.fill();
-        ctx.beginPath(); ctx.moveTo(600,0); ctx.lineTo(480,300); ctx.lineTo(720,300); ctx.fill(); ctx.restore();
-
-        particles.forEach((p, i) => {
-            p.x += p.dx; p.y += p.dy; p.l--;
-            ctx.fillStyle = p.c; ctx.fillRect(p.x, p.y, 3, 3);
-            if(p.l <= 0) particles.splice(i, 1);
-        });
-
-        if(dino.jump) { dino.dy += 0.95; dino.y += dino.dy; dino.angle += 0.15; } else { dino.angle = 0; dino.y = 260; }
-        if(dino.y >= 260) { dino.y = 260; dino.jump = false; }
-
-        ctx.save(); ctx.translate(dino.x + 20, dino.y - (dino.duck ? 15 : 25)); ctx.rotate(dino.angle);
-        ctx.font = dino.duck ? "40px serif" : "55px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-        ctx.fillText(selectedEmoji, 0, 0); ctx.restore();
-
-        if(--spawnTimer <= 0) {
-            let type = Math.random();
-            if(type > 0.45) objects.push({x:800, y: Math.random() > 0.5 ? 260 : 230, t: Math.random() > 0.5 ? "🌵" : "🪨"});
-            else objects.push({x:800, y: Math.random() > 0.5 ? 150 : 240, t: "🪙"});
-            spawnTimer = Math.max(45, 85 - (speed * 2)) + Math.random() * 50;
-        }
-
-        for(let i = objects.length - 1; i >= 0; i--) {
-            let obj = objects[i]; obj.x -= speed;
-            ctx.font = (obj.t==="🪙"?"30px":"45px") + " serif"; ctx.fillText(obj.t, obj.x, obj.y);
-            let hW = 22, hitY = (obj.t === "🪨") ? obj.y - 12 : obj.y - 32;
-            if(dino.x < obj.x+hW && dino.x+32 > obj.x && (dino.y-(dino.duck?15:40)) < obj.y && dino.y > hitY) {
-                if(obj.t==="🪙") { 
-                    sessionCoins++; wallet++; objects.splice(i,1); localStorage.setItem('totalCoins', wallet); 
-                    checkUnlock();
-                } else { active = false; document.getElementById('finalScore').innerText = `${sessionCoins} Münzen!`; gameOverScreen.style.display = 'flex'; updateUI(); }
-            }
-            if(obj.x < -60) objects.splice(i, 1);
-        }
-        if(active) requestAnimationFrame(loop);
-    }
-    updateUI();
-</script>
+    <section id="startseite" class="content active">
+      <p style="color: #FF8C00; font-size: 40px; font-weight: 900; margin-bottom: 20px;"><strong>IT Dienstleistung / OptiCroid</strong></p>
+      <img src="1768734429139.png" alt="Startseite" style="width:250px;"/>
+      <h1><p style="color:#40E0D0;font-size: 25px;">Herzlich Willkommen bei OptiCroid</p></h1><br>
+      <a class="email-button" onclick="handleContact('mailto:opticroid@gmail.com', 'opticroid@gmail.com')">E-Mail senden</a>
+      <a class="Anrufen-button" onclick="handleContact('tel:+4915206821179', '+49 15206821179')">Anrufen</a>
     </section>
+    <section id="Angebote" class="content">
+      <h1 style="color:#65FE08;text-align: center;">Übersicht</h1><br>
+      <h1>Digitales PC Management/ Beschwerden</h1>
+      <p style="font-size: 18px;"><br />Websiten Programmierung (Wir Erwecken ihre eigene Website)<br></p>
+      <p style="font-size: 18px;"><br />Windows 11 Installation bei Geräten ohne Vervollständigung<br>der Mindestanforderungen</p>
+      <p style="font-size: 18px;"><br />2-in-1 PC Scan mit Entfernung von beschädigter Dateien<br></p>
+      <p style="font-size: 18px;"><br />Komplette Computer Systeminspektion + Intigration<br></p>
+      <p style="font-size: 18px;"><br />PC Zurücksetzung neuinstailation und Neuaufbau<br></p>
+      <p style="font-size: 18px;"><br />Virus/ Trojaner Entfernung<br></p><br>
+      <h2>Weitere Technische Geräte🧑🏼‍💻</h2>
+      <p style="font-size: 18px;"><br />Gaming Tastatur Reperatur der Leertaste + Klicksounddimmung<br></p>
+      <p style="font-size: 18px;"><br />Maustasten Reparatur<br></p>
+      <p style="font-size: 18px;"><br />Druckereinrichtung inkl. Treiberinstallation<br></p>
+      <p style="font-size: 18px;"><br />SmartWatch Akku Kalibrierung (Hervorragendere Akkulaufzeit)<br></p><br>
+    </section>
+    <section id="Infos" class="content">
+      <h1 style="color:#65FE08;text-align: center;">Informationen</h1>
+      <p style="font-size: 18px;"><br><br>Fehlerbehebung und gute Zusammenarbeit</p>
+      <p style="font-size: 18px;"><br>_____</p><br>
+      <p style="color: #000000; font-size: 18px;">Doch die Tätigkeiten gehen weit darüber hinaus.<br />Auch bei der Einrichtung neuer Geräte wird Systeminstallationen übernommen,<br>richten Software ein und mache alles um aus ihrem System das größte herauszuholen.<br>Also ob Neuaufbau, Erweiterung oder Optimierung – Wir stehen Ihnen mit<br>persönlicher Unterstützung zur Verfügung.<br><br></p>
+      <p style="font-weight: bold; color: #65FE08; text-align: center;font-size: 30px;">Kontakt-Daten:</p>
+      <p style="color: purple; font-size: 20px;">OptiCroid - IT Dienstleistung<br>Markus Sieber<br>Deutschland<br>86989 Steingaden<br>E-mail: opticroid@gmail.com<br>Tel: +49 (0) 15206821179</p><br>
+      <h1 style="color:#65FE08;text-align: center;">Partnerschaft</h1>
+      <p style="font-size: 18px; color: purple;">In Arbeit mit dem YouTube Kanal @Tbrasstracks biten wir auch<br>kreative Trompeten Videos<br>🎺</p>
+      <a href="https://www.instagram.com/tbrasstracks" target="_blank" class="instagram-btn">Instagram</a>
+      <a href="https://youtube.com/@tbrasstracks" target="_blank" class="youtube-btn">YouTube</a>
+    </section>
+    <section id="Spiele" class="content">
+      <div id="gameContainer" style="text-align: center; font-family: 'Segoe UI', Roboto, sans-serif; max-width: 750px; margin: auto; padding: 10px; color: #eee; background: #1a1a1a; border-radius: 20px; touch-action: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 15px;">
+            <div style="font-size: 22px; font-weight: 900; color: #f1c40f;">🪙 <span id="coinScore">0</span></div>
+            <div style="font-size: 18px; font-weight: bold; background: #333; padding: 4px 12px; border-radius: 8px;">⏱️ <span id="timer">0s</span></div>
+            <div style="font-size: 16px; color: #888;">Bank: <span id="totalCoins">0</span></div>
+        </div>
+        <div id="wrapper" style="position: relative; border-radius: 12px; overflow: hidden; border: 4px solid #444; height: 300px; background: #000;">
+            <canvas id="game" width="750" height="300" style="width: 100%; height: 100%; display: block;"></canvas>
+            <div id="gameOverScreen" style="position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10;">
+                <h1 style="font-size: 50px; margin: 0; color: #fff;">VORHANG GEFALLEN</h1>
+                <p id="finalScore" style="font-size: 20px; margin: 15px 0;"></p>
+                <button onclick="resetGame()" style="padding: 12px 40px; font-size: 20px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 900;">NOCHMAL</button>
+            </div>
+            <button onclick="toggleFS()" style="position: absolute; bottom: 10px; right: 10px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px; border-radius: 5px; cursor: pointer; z-index: 15;">⛶ Fullscreen</button>
+        </div>
+        <div id="shopArea" style="margin-top: 15px;">
+            <div id="charList" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; padding: 5px;"></div>
+            <button id="startBtn" style="margin-top: 15px; padding: 15px 60px; font-size: 22px; background: #f1c40f; color: #000; border: none; border-radius: 12px; cursor: pointer; font-weight: 900;">SHOW STARTEN</button>
+        </div>
+      </div>
+      <script>
+        const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), charList = document.getElementById('charList'), gameOverScreen = document.getElementById('gameOverScreen'), wrapper = document.getElementById('wrapper');
+        const emojis = ["🤠", "🦖", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐲", "🐳"];
+        let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = localStorage.getItem('selectedEmoji') || "🤠", active = false, dino, objects, speed, sessionCoins, startTime, spawnTimer, hue = 50, particles = [];
+        function updateUI() { totalEl.innerText = wallet; charList.innerHTML = ""; emojis.forEach((e, index) => { const price = index * 15; const isUnlocked = unlocked.includes(e); const span = document.createElement('div'); span.style.cssText = `display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 5px; background: #333; border-radius: 10px; border: 2px solid ${e === selectedEmoji ? "#f1c40f" : "transparent"}; opacity: ${isUnlocked ? "1" : "0.4"}; min-width: 50px;`; span.innerHTML = `<span style="font-size:32px">${e}</span><span style="font-size:12px;color:#f1c40f">${isUnlocked ? "✔" : price}</span>`; span.onclick = () => { if(isUnlocked) { selectedEmoji = e; localStorage.setItem('selectedEmoji', e); updateUI(); } }; charList.appendChild(span); }); }
+        function checkUnlock() { let nextIndex = emojis.indexOf(unlocked[unlocked.length - 1]) + 1; if (nextIndex < emojis.length) { let nextPrice = nextIndex * 15; if (wallet >= nextPrice) { wallet -= nextPrice; unlocked.push(emojis[nextIndex]); selectedEmoji = emojis[nextIndex]; localStorage.setItem('totalCoins', wallet); localStorage.setItem('unlockedChars', JSON.stringify(unlocked)); localStorage.setItem('selectedEmoji', selectedEmoji); createFirework(); updateUI(); } } }
+        function createFirework() { for(let i=0; i<50; i++) particles.push({x: 375, y: 150, dx: (Math.random()-0.5)*15, dy: (Math.random()-0.5)*15, c: `hsl(${Math.random()*360},100%,50%)`, l: 60}); }
+        function resetGame() { dino = { x: 70, y: 260, dy: 0, jump: false, duck: false, angle: 0 }; objects = []; speed = 6.5; sessionCoins = 0; active = true; spawnTimer = 0; hue = 50; particles = []; startTime = Date.now(); gameOverScreen.style.display = 'none'; loop(); }
+        function toggleFS() { if (!document.fullscreenElement) wrapper.requestFullscreen(); else document.exitFullscreen(); }
+        btn.onclick = resetGame;
+        window.onkeydown = (e) => { if(["ArrowUp", "ArrowDown", " "].includes(e.key)) e.preventDefault(); if((e.key==='w'||e.key==='ArrowUp'||e.key===' ') && !dino.jump) { dino.dy = -15; dino.jump = true; } if(e.key==='s'||e.key==='ArrowDown') dino.duck = true; };
+        window.onkeyup = (e) => { if(e.key==='s'||e.key==='ArrowDown') dino.duck = false; };
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); if(e.touches[0].clientX - canvas.getBoundingClientRect().left > canvas.clientWidth / 2) { if(!dino.jump) { dino.dy = -15; dino.jump = true; } } else { dino.duck = true; } });
+        canvas.addEventListener('touchend', () => { dino.duck = false; });
+        function loop() {
+            if(!active) return; ctx.clearRect(0,0,750,300); speed += 0.0012;
+            coinEl.innerText = sessionCoins; timerEl.innerText = Math.floor((Date.now()-startTime)/1000) + "s";
+            hue = (hue + (speed * 0.15)) % 360;
+            ctx.fillStyle = "#111"; ctx.fillRect(0,0,750,300); ctx.fillStyle = "#333"; ctx.fillRect(0,260,750,40);
+            particles.forEach((p, i) => { p.x += p.dx; p.y += p.dy; p.l--; ctx.fillStyle = p.c; ctx.fillRect(p.x, p.y, 3, 3); if(p.l <= 0) particles.splice(i, 1); });
+            if(dino.jump) { dino.dy += 0.95; dino.y += dino.dy; dino.angle += 0.15; } else { dino.angle = 0; dino.y = 260; }
+            if(dino.y >= 260) { dino.y = 260; dino.jump = false; }
+            ctx.save(); ctx.translate(dino.x + 20, dino.y - (dino.duck ? 15 : 25)); ctx.rotate(dino.angle); ctx.font = dino.duck ? "40px serif" : "55px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(selectedEmoji, 0, 0); ctx.restore();
+            if(--spawnTimer <= 0) {
+                let type = Math.random();
+                if(type < 0.40) { objects.push({x:800, y: Math.random() > 0.5 ? 160 : 230, t: "🪙"}); } 
+                else if (type < 0.75) { objects.push({x:800, y: 260, t: "🌵"}); } 
+                else { objects.push({x:800, y: 220, t: "🪨🪨"}); }
+                spawnTimer = Math.max(30, 70 - (speed * 2)) + Math.random() * 35;
+            }
+            for(let i = objects.length - 1; i >= 0; i--) {
+                let obj = objects[i]; obj.x -= speed; ctx.font = (obj.t==="🪙"?"30px":"45px") + " serif"; ctx.fillText(obj.t, obj.x, obj.y);
+                let hitBoxWidth = obj.t === "🪨🪨" ? 40 : 25;
+                if(dino.x < obj.x + hitBoxWidth && dino.x + 30 > obj.x) {
+                    if (obj.t === "🪙") { if (dino.y > obj.y - 40 && (dino.y - 50) < obj.y) { sessionCoins++; wallet++; objects.splice(i,1); localStorage.setItem('totalCoins', wallet); checkUnlock(); } } 
+                    else if (obj.t === "🌵") { if (!dino.jump || dino.y > 230) { active = false; gameOver(); } } 
+                    else if (obj.t === "🪨🪨") { if (!dino.duck) { active = false; gameOver(); } }
+                }
+                if(obj.x < -100) objects.splice(i, 1);
+            }
+            if(active) requestAnimationFrame(loop);
+        }
+        function gameOver() { document.getElementById('finalScore').innerText = `${sessionCoins} Münzen!`; gameOverScreen.style.display = 'flex'; updateUI(); }
+        updateUI();
+      </script>
+    </section>
+    <section id="Profil" class="content">
+      <div id="loginArea">
+        <input type="password" id="passInput" placeholder="Passwort eingeben" style="width: 80%; padding: 10px; border-radius: 8px;"><br><br>
+        <button onclick="checkPass()" style="background:orange; color:black; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold;">anmelden</button>
+      </div>
+      <div id="secretContent" style="display:none;">
+        <h2 style="color:#65FE08;">Willkommen Markus</h2>
+        <p style="color:white;">Hier befinden Sich deine Geschützten Dateien.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    function toggleNav() { const header = document.getElementById('myHeader'); header.classList.toggle('open'); const btn = document.getElementById('toggle-btn'); btn.innerText = header.classList.contains('open') ? "⬅" : "➔"; }
+    const targetDate = new Date("2026-03-04T21:00:00").getTime();
+    const timerInterval = setInterval(() => { const now = new Date().getTime(); const diff = targetDate - now; const bar = document.getElementById("maintenance-bar"); if (bar) { if (diff <= 0) { bar.style.display = "none"; clearInterval(timerInterval); } else { document.getElementById("val-d").innerText = Math.floor(diff / (1000 * 60 * 60 * 24)); document.getElementById("val-h").innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); document.getElementById("val-m").innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); document.getElementById("val-s").innerText = Math.floor((diff % (1000 * 60)) / 1000); } } }, 1000);
+    function showSection(id) { document.querySelectorAll('.content').forEach(el => el.classList.remove('active')); const target = document.getElementById(id); if (target) target.classList.add('active'); document.querySelectorAll('nav a').forEach(el => el.classList.remove('active')); const link = document.getElementById('link-' + id); if (link) link.classList.add('active'); }
+    function handleContact(protocol, text) { window.location.href = protocol; }
+    document.addEventListener('DOMContentLoaded', () => { showSection('startseite'); });
+  </script>
+</body>
+</html>
 
  <section id="Profil" class="content">
   <div id="loginArea">
@@ -351,7 +393,7 @@ function checkPass() {
     }
 
     // Countdown-Logik
-    const targetDate = new Date("2026-03-04T21:00:00").getTime();
+    const targetDate = new Date("2026-03-05T10:10:00").getTime();
     const timerInterval = setInterval(() => {
       const now = new Date().getTime();
       const diff = targetDate - now;
