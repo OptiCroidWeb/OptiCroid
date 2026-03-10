@@ -120,7 +120,8 @@
 
   <script>
     const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), missionList = document.getElementById('missionList'), gameOverScreen = document.getElementById('gameOverScreen'), charList = document.getElementById('charList'), pauseBtn = document.getElementById('pauseBtn');
-    const emojis = ["🤠", "🐶", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐲", "🐳", "🥶"];
+    // Missions-Emoji "🥶" steht jetzt ganz vorne in der Liste
+    const emojis = ["🥶", "🤠", "🐶", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐲", "🐳"];
     
     let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"];
     let wallet = parseInt(localStorage.getItem('totalCoins')) || 0;
@@ -147,12 +148,18 @@
     function drawMissions() {
         missionList.innerHTML = "";
         missions.forEach((m, i) => {
-            const isCompleted = i <= completedMissionIndex;
-            const isNext = i === completedMissionIndex + 1;
-            const div = document.createElement('div');
-            div.style.cssText = `padding: 10px; border-radius: 8px; font-size: 13px; text-align: left; display: flex; justify-content: space-between; align-items: center; background: ${isNext ? '#f1c40f33' : '#1a1a1a'}; border: 1px solid ${isNext ? '#f1c40f' : '#444'}; color: ${isCompleted ? '#888' : (isNext ? '#fff' : '#555')}`;
-            div.innerHTML = `<span>${isCompleted ? '✅' : (isNext ? '🎯' : '🔒')} ${m.text}</span> <b style="color:#f1c40f">${m.reward}</b>`;
-            missionList.appendChild(div);
+            // Nur anzeigen, wenn erledigt oder die aktuell nächste Mission
+            if (i <= completedMissionIndex + 1) {
+                const isCompleted = i <= completedMissionIndex;
+                const isNext = i === completedMissionIndex + 1;
+                const div = document.createElement('div');
+                div.style.cssText = `padding: 10px; border-radius: 8px; font-size: 13px; text-align: left; display: flex; justify-content: space-between; align-items: center; 
+                                    background: ${isCompleted ? '#27ae60' : (isNext ? '#f1c40f33' : '#1a1a1a')}; 
+                                    border: 1px solid ${isNext ? '#f1c40f' : '#444'}; 
+                                    color: ${isCompleted ? '#fff' : (isNext ? '#fff' : '#555')}`;
+                div.innerHTML = `<span>${isCompleted ? '✅' : '🎯'} ${m.text}</span> <b style="color:${isCompleted ? '#fff' : '#f1c40f'}">${m.reward}</b>`;
+                missionList.appendChild(div);
+            }
         });
     }
 
@@ -161,14 +168,16 @@
         charList.innerHTML = "";
         emojis.forEach((e, i) => {
             const isSpecial = (e === "🥶");
-            const price = isSpecial ? 0 : i * 15;
+            const price = isSpecial ? 0 : (i-1) * 15;
             const isUnlocked = unlocked.includes(e);
             const span = document.createElement('div');
-            // Hier wird der CSS-Filter angewendet, wenn es das Special-Emoji ist und noch nicht freigeschaltet wurde.
-            const blurEffect = (isSpecial && !isUnlocked) ? 'filter: blur(5px);' : '';
             
-            span.style.cssText = `padding: 5px; background: #333; border-radius: 8px; border: 2px solid ${e === selectedEmoji ? "#f1c40f" : "transparent"}; opacity: ${isUnlocked ? "1" : "0.5"}; min-width: 55px; cursor: pointer; flex-shrink: 0; ${blurEffect}`;
-            span.innerHTML = `<div style="font-size:24px">${e}</div><div style="font-size:10px;color:#f1c40f">${isUnlocked ? "✔" : (isSpecial ? "Mission" : price)}</div>`;
+            // Emoji Container für den Blur-Effekt
+            const blurStyle = (isSpecial && !isUnlocked) ? 'filter: blur(6px);' : '';
+            
+            span.style.cssText = `padding: 5px; background: #333; border-radius: 8px; border: 2px solid ${e === selectedEmoji ? "#f1c40f" : "transparent"}; opacity: ${isUnlocked ? "1" : "0.5"}; min-width: 55px; cursor: pointer; flex-shrink: 0;`;
+            span.innerHTML = `<div style="font-size:24px; ${blurStyle}">${e}</div><div style="font-size:10px;color:#f1c40f">${isUnlocked ? "✔" : (isSpecial ? "Mission" : price)}</div>`;
+            
             span.onclick = () => { if(isUnlocked) { selectedEmoji = e; } else if(!isSpecial && wallet >= price) { wallet -= price; unlocked.push(e); selectedEmoji = e; } saveData(); updateUI(); };
             charList.appendChild(span);
         });
@@ -232,7 +241,7 @@
             else if(currentMission.type === 'time' && time >= currentMission.goal) success = true;
             else if(currentMission.type === 'balloons' && isAlt && sessionCoins >= currentMission.goal) success = true;
             else if(currentMission.type === 'ultra' && !missionFailed && sessionCoins >= 120 && time >= 1200 && jumpCounter >= 200) {
-                success = true; unlocked.push("🥶"); // Freischalten des Special-Emojis
+                success = true; unlocked.push("🥶");
             }
             if(success) {
                 completedMissionIndex++;
