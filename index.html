@@ -89,153 +89,149 @@
       <a href="https://youtube.com/@tbrasstracks" target="_blank" class="youtube-btn">YouTube</a>
     </section>
 
-    <section>Spiele</section>" class="content">
-  <div id="paperContainer" style="text-align: center; font-family: 'Segoe UI', sans-serif; max-width: 600px; margin: auto; background: #1a1a1a; padding: 15px; border-radius: 20px; color: #eee;">
-    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; background: #333; padding: 8px 15px; border-radius: 10px;">
-        <div style="color: #2ecc71;">Du: <span id="percent">1</span>%</div>
-        <div style="color: #e74c3c;">Bot: <span id="botPercent">1</span>%</div>
+    <section id="Spiele" class="content">
+  <div id="gameContainer" style="text-align: center; font-family: 'Segoe UI', Roboto, sans-serif; max-width: 750px; margin: auto; padding: 10px; color: #eee; background: #1a1a1a; border-radius: 20px; touch-action: none;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 15px;">
+        <div id="scoreDisplay" style="font-size: 22px; font-weight: 900; color: #f1c40f;">🪙 <span id="coinScore">0</span></div>
+        <div style="font-size: 18px; font-weight: bold; background: #333; padding: 4px 12px; border-radius: 8px;">⏱️ <span id="timer">0s</span></div>
+        <div style="font-size: 16px; color: #888;">Guthaben: <span id="totalCoins">0</span></div>
     </div>
-    <div id="paperWrapper" style="position: relative; aspect-ratio: 1/1; background: #222; border-radius: 10px; overflow: hidden; border: 3px solid #444;">
-        <canvas id="paperCanvas" width="500" height="500" style="width: 100%; height: 100%; cursor: crosshair; touch-action: none;"></canvas>
-        <div id="paperOver" style="position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 20;">
-            <h1 id="paperTitle" style="color: #fff; font-size: 40px;">A Fralle😂</h1>
-            <p id="finalPercent" style="font-size: 20px; margin-bottom: 20px;"></p>
-            <button onclick="startPaper()" style="padding: 12px 35px; background: #2ecc71; border: none; color: white; border-radius: 8px; cursor: pointer; font-weight: 900; font-size: 18px;">NEUSTART</button>
+    <div id="wrapper" style="position: relative; border-radius: 12px; overflow: hidden; border: 4px solid #444; height: 300px; background: #000;">
+        <canvas id="game" width="750" height="300" style="width: 100%; height: 100%; display: block;"></canvas>
+        <div id="gameOverScreen" style="position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10;">
+            <h1 style="font-size: 50px; margin: 0; color: #fff;">A Fralle😂</h1>
+            <p id="finalScore" style="font-size: 20px; margin: 15px 0;"></p>
+            <button onclick="resetGame()" style="padding: 12px 40px; font-size: 20px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 900;">NOCHMAL</button>
         </div>
+        <button onclick="toggleFS()" style="position: absolute; bottom: 10px; right: 10px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px; border-radius: 5px; cursor: pointer; z-index: 15;">⛶ Fullscreen</button>
+    </div>
+    <div id="shopArea" style="margin-top: 15px; display: flex; align-items: center; gap: 15px; justify-content: center; background: #222; padding: 15px; border-radius: 15px;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+            <div id="charList" style="display: flex; gap: 10px; overflow-x: scroll; scroll-snap-type: x mandatory; padding: 5px; width: 140px; scrollbar-width: thin; scrollbar-color: #f1c40f #333;"></div>
+            <style>
+                #charList::-webkit-scrollbar { height: 6px; }
+                #charList::-webkit-scrollbar-track { background: #333; border-radius: 10px; }
+                #charList::-webkit-scrollbar-thumb { background: #f1c40f; border-radius: 10px; }
+            </style>
+        </div>
+        <button id="startBtn" style="padding: 15px 25px; font-size: 18px; background: #f1c40f; color: #000; border: none; border-radius: 12px; cursor: pointer; font-weight: 900;">START</button>
     </div>
   </div>
-
   <script>
-    const pCanvas = document.getElementById('paperCanvas'), pCtx = pCanvas.getContext('2d');
-    const pOver = document.getElementById('paperOver'), pPerc = document.getElementById('percent'), bPerc = document.getElementById('botPercent'), fPerc = document.getElementById('finalPercent'), pTitle = document.getElementById('paperTitle');
+    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), coinEl = document.getElementById('coinScore'), scoreBox = document.getElementById('scoreDisplay'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), charList = document.getElementById('charList'), gameOverScreen = document.getElementById('gameOverScreen'), wrapper = document.getElementById('wrapper');
+    const emojis = ["🤠", "🐶", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐲", "🐳"];
+    let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = localStorage.getItem('selectedEmoji') || "🤠", active = false, dino, objects, speed, sessionCoins, startTime, spawnTimer, hue = 50, particles = [], roundCounter = 0;
     
-    // Spielfeld-Einstellungen
-    let pActive = false, players = [], grid, worldSize = 1500, viewSize = 500, cellSize = 10, gridCount = 150;
-    let camera = { x: 0, y: 0 };
-
-    function startPaper() {
-        grid = Array(gridCount).fill().map(() => Array(gridCount).fill(0)); 
-        players = [
-            { id: 1, x: 200, y: 200, vx: 3, vy: 0, tx: 200, ty: 200, color: '#2ecc71', trail: [], alive: true },
-            { id: 2, x: 1300, y: 1300, vx: -3, vy: 0, tx: 1200, ty: 1200, color: '#e74c3c', trail: [], alive: true, isBot: true, botTimer: 0 }
-        ];
-        players.forEach(p => {
-            let gx = Math.floor(p.x/cellSize), gy = Math.floor(p.y/cellSize);
-            for(let i=-3; i<=3; i++) for(let j=-3; j<=3; j++) if(grid[gx+i]) grid[gx+i][gy+j] = p.id;
-        });
-        pActive = true; pOver.style.display = 'none';
-        paperLoop();
+    function updateUI() { 
+        totalEl.innerText = wallet; 
+        charList.innerHTML = ""; 
+        emojis.forEach((e, index) => { 
+            const price = index * 15; 
+            const isUnlocked = unlocked.includes(e); 
+            const span = document.createElement('div'); 
+            span.style.cssText = `display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 5px; background: #333; border-radius: 10px; border: 2px solid ${e === selectedEmoji ? "#f1c40f" : "transparent"}; opacity: ${isUnlocked ? "1" : "0.5"}; min-width: 55px; scroll-snap-align: start; flex-shrink: 0;`; 
+            span.innerHTML = `<span style="font-size:28px">${e}</span><span style="font-size:10px;color:#f1c40f">${isUnlocked ? "✔" : price}</span>`; 
+            span.onclick = () => buyChar(e, price); 
+            charList.appendChild(span); 
+        }); 
     }
 
-    function paperLoop() {
-        if(!pActive) return;
-
-        // Spielerbewegung
-        let p1 = players[0];
-        if(p1.alive) {
-            let dx = p1.tx - (p1.x - camera.x), dy = p1.ty - (p1.y - camera.y);
-            let dist = Math.sqrt(dx*dx + dy*dy);
-            if(dist > 5) { p1.vx = (dx/dist) * 4; p1.vy = (dy/dist) * 4; }
-            camera.x = p1.x - viewSize/2;
-            camera.y = p1.y - viewSize/2;
-        }
-
-        players.forEach(p => {
-            if(!p.alive) return;
-            if(p.isBot) updateBot(p);
-            p.x += p.vx; p.y += p.vy;
-            if(p.x<0 || p.x>worldSize || p.y<0 || p.y>worldSize) eliminate(p);
-
-            let gx = Math.floor(p.x/cellSize), gy = Math.floor(p.y/cellSize);
-            if(gx >= 0 && gx < gridCount && gy >= 0 && gy < gridCount) {
-                if(grid[gx][gy] !== p.id) {
-                    if(p.trail.some(t => t.x === gx && t.y === gy)) eliminate(p);
-                    players.forEach(other => {
-                        if(other !== p && other.trail.some(t => t.x === gx && t.y === gy)) eliminate(other);
-                    });
-                    if(p.alive) p.trail.push({x: gx, y: gy});
-                } else if(p.trail.length > 0) {
-                    p.trail.forEach(t => grid[t.x][t.y] = p.id);
-                    p.trail = [];
+    function buyChar(emoji, price) {
+        if (!unlocked.includes(emoji)) {
+            if (wallet >= price) {
+                wallet -= price;
+                unlocked.push(emoji);
+                selectedEmoji = emoji;
+                saveData();
+                createFirework();
+                if (unlocked.length === emojis.length) {
+                    setTimeout(() => {
+                        unlocked = ["🤠"];
+                        selectedEmoji = "🤠";
+                        saveData();
+                        updateUI();
+                        alert("Sammlung komplett! Alle Skins außer 🤠 wurden zurückgesetzt.");
+                    }, 1000);
                 }
             }
-        });
-
-        draw();
-        updateScores();
-        if(pActive) requestAnimationFrame(paperLoop);
-    }
-
-    function updateBot(b) {
-        b.botTimer--;
-        if(b.botTimer <= 0) {
-            b.tx = b.x + (Math.random()-0.5)*400;
-            b.ty = b.y + (Math.random()-0.5)*400;
-            b.botTimer = 40 + Math.random()*60;
+        } else {
+            selectedEmoji = emoji;
+            saveData();
         }
-        let dx = b.tx - b.x, dy = b.ty - b.y;
-        let dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist > 5) { b.vx = (dx/dist) * 3.5; b.vy = (dy/dist) * 3.5; }
+        updateUI();
     }
 
-    function draw() {
-        pCtx.clearRect(0,0,viewSize,viewSize);
-        pCtx.save();
-        pCtx.translate(-camera.x, -camera.y);
-
-        // Hintergrund-Gitter
-        pCtx.strokeStyle = "#333";
-        for(let i=0; i<=worldSize; i+=50) {
-            pCtx.beginPath(); pCtx.moveTo(i,0); pCtx.lineTo(i,worldSize); pCtx.stroke();
-            pCtx.beginPath(); pCtx.moveTo(0,i); pCtx.lineTo(worldSize,i); pCtx.stroke();
-        }
-
-        // Gebiete zeichnen
-        for(let i=0; i<gridCount; i++) {
-            for(let j=0; j<gridCount; j++) {
-                if(grid[i][j] !== 0) {
-                    pCtx.fillStyle = players.find(p => p.id === grid[i][j]).color;
-                    pCtx.fillRect(i*cellSize, j*cellSize, cellSize, cellSize);
-                }
-            }
-        }
-
-        // Trails und Spieler
-        players.forEach(p => {
-            if(!p.alive) return;
-            pCtx.fillStyle = p.color + "AA";
-            p.trail.forEach(t => pCtx.fillRect(t.x*cellSize, t.y*cellSize, cellSize, cellSize));
-            pCtx.fillStyle = '#fff'; pCtx.beginPath(); pCtx.arc(p.x, p.y, 10, 0, Math.PI*2); pCtx.fill();
-            pCtx.fillStyle = p.color; pCtx.beginPath(); pCtx.arc(p.x, p.y, 7, 0, Math.PI*2); pCtx.fill();
-        });
-
-        pCtx.restore();
+    function saveData() {
+        localStorage.setItem('totalCoins', wallet);
+        localStorage.setItem('unlockedChars', JSON.stringify(unlocked));
+        localStorage.setItem('selectedEmoji', selectedEmoji);
     }
 
-    function eliminate(p) {
-        p.alive = false;
-        if(p.id === 1) { pActive = false; diePaper(); }
-        else { setTimeout(() => { if(pActive) { p.alive = true; p.x = 1300; p.y = 1300; p.trail = []; }}, 2000); }
-    }
-
-    function updateScores() {
-        let s = {1:0, 2:0};
-        grid.forEach(r => r.forEach(c => { if(c !== 0) s[c]++; }));
-        pPerc.innerText = ((s[1]/(gridCount*gridCount))*100).toFixed(1);
-        bPerc.innerText = ((s[2]/(gridCount*gridCount))*100).toFixed(1);
-    }
-
-    function diePaper() { fPerc.innerText = pPerc.innerText + "% erobert!"; pOver.style.display = 'flex'; }
+    function createFirework() { for(let i=0; i<50; i++) particles.push({x: 375, y: 150, dx: (Math.random()-0.5)*15, dy: (Math.random()-0.5)*15, c: `hsl(${Math.random()*360},100%,50%)`, l: 60}); }
     
-    const updateInput = (e) => {
-        const rect = pCanvas.getBoundingClientRect();
-        players[0].tx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-        players[0].ty = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-    };
+    function resetGame() { 
+        roundCounter++;
+        dino = { x: 70, y: 260, dy: 0, jump: false, duck: false, angle: 0 }; 
+        objects = []; speed = 6.5; sessionCoins = 0; active = true; spawnTimer = 0; hue = 50; particles = []; 
+        startTime = Date.now(); gameOverScreen.style.display = 'none'; loop(); 
+    }
+    
+    function toggleFS() { if (!document.fullscreenElement) wrapper.requestFullscreen(); else document.exitFullscreen(); }
+    btn.onclick = resetGame;
 
-    pCanvas.addEventListener('mousemove', updateInput);
-    pCanvas.addEventListener('touchmove', (e) => { e.preventDefault(); updateInput(e); });
-    startPaper();
+    window.onkeydown = (e) => { if(["ArrowUp", "ArrowDown", " "].includes(e.key)) e.preventDefault(); if((e.key==='w'||e.key==='ArrowUp'||e.key===' ') && !dino.jump) { dino.dy = -15; dino.jump = true; } if(e.key==='s'||e.key==='ArrowDown') dino.duck = true; };
+    window.onkeyup = (e) => { if(e.key==='s'||e.key==='ArrowDown') dino.duck = false; };
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); if(e.touches[0].clientX - canvas.getBoundingClientRect().left > canvas.clientWidth / 2) { if(!dino.jump) { dino.dy = -15; dino.jump = true; } } else { dino.duck = true; } });
+    canvas.addEventListener('touchend', () => { dino.duck = false; });
+
+    function loop() {
+        if(!active) return; ctx.clearRect(0,0,750,300); speed += 0.0012;
+        
+        let isAltLevel = (roundCounter % 2 === 0);
+        let coinImg = isAltLevel ? "🎈" : "🪙";
+        let cactusImg = isAltLevel ? "🐄" : "🌵";
+        let rockImg = isAltLevel ? "🌩️" : "🪨🪨";
+        let floorColor = isAltLevel ? "#001f3f" : "#333";
+
+        scoreBox.innerHTML = `${coinImg} <span id="coinScore">${sessionCoins}</span>`;
+        timerEl.innerText = Math.floor((Date.now()-startTime)/1000) + "s";
+        ctx.fillStyle = "#111"; ctx.fillRect(0,0,750,300); 
+        ctx.fillStyle = floorColor; ctx.fillRect(0,260,750,40);
+        
+        particles.forEach((p, i) => { p.x += p.dx; p.y += p.dy; p.l--; ctx.fillStyle = p.c; ctx.fillRect(p.x, p.y, 3, 3); if(p.l <= 0) particles.splice(i, 1); });
+        if(dino.jump) { dino.dy += 0.95; dino.y += dino.dy; dino.angle += 0.15; } else { dino.angle = 0; dino.y = 260; }
+        if(dino.y >= 260) { dino.y = 260; dino.jump = false; }
+        
+        ctx.save(); ctx.translate(dino.x + 20, dino.y - (dino.duck ? 15 : 25)); ctx.rotate(dino.angle); ctx.font = dino.duck ? "40px serif" : "55px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(selectedEmoji, 0, 0); ctx.restore();
+        
+        if(--spawnTimer <= 0) {
+            let type = Math.random();
+            if(type < 0.40) { objects.push({x:800, y: Math.random() > 0.5 ? 160 : 230, t: coinImg}); } 
+            else if (type < 0.75) { objects.push({x:800, y: 260, t: cactusImg}); } 
+            else { objects.push({x:800, y: 220, t: rockImg}); }
+            spawnTimer = Math.max(30, 70 - (speed * 2)) + Math.random() * 35;
+        }
+        
+        for(let i = objects.length - 1; i >= 0; i--) {
+            let obj = objects[i]; obj.x -= speed; 
+            ctx.font = (obj.t === "🪙" || obj.t === "🎈" ? "30px" : "45px") + " serif"; ctx.fillText(obj.t, obj.x, obj.y);
+            let hitBoxWidth = (obj.t === "🪨🪨" || obj.t === "🌩️") ? 40 : 25;
+            if(dino.x < obj.x + hitBoxWidth && dino.x + 30 > obj.x) {
+                if (obj.t === coinImg) { if (dino.y > obj.y - 40 && (dino.y - 50) < obj.y) { sessionCoins += 1; wallet += 1; objects.splice(i,1); saveData(); updateUI(); } } 
+                else if (obj.t === cactusImg) { if (!dino.jump || dino.y > 230) { active = false; gameOver(isAltLevel); } } 
+                else if (obj.t === rockImg) { if (!dino.duck) { active = false; gameOver(isAltLevel); } }
+            }
+            if(obj.x < -100) objects.splice(i, 1);
+        }
+        if(active) requestAnimationFrame(loop);
+    }
+    function gameOver(isAlt) { 
+        const unit = isAlt ? "Ballons" : "Münzen";
+        document.getElementById('finalScore').innerText = `${sessionCoins} ${unit} gesammelt!`; 
+        gameOverScreen.style.display = 'flex'; 
+        updateUI(); 
+    }
+    updateUI();
   </script>
 </section>
 
