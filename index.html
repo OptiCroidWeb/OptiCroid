@@ -130,10 +130,11 @@
     
     let active = false, isPaused = false, dino, objects, speed, sessionCoins, jumpCounter = 0, startTime, pauseStartTime, totalPauseTime = 0, spawnTimer, roundCounter = 0, missionFailed = false;
     
+    // Missionen mit den neuen Werten aktualisiert
     const missions = [
-        { text: "Sammle 15 Münzen", goal: 15, reward: 30, type: 'coins' },
-        { text: "Überlebe 40 Sek.", goal: 40, reward: 40, type: 'time' },
-        { text: "Sammle 5 Ballons", goal: 5, reward: 50, type: 'balloons' },
+        { text: "Sammle 20 Münzen", goal: 20, reward: 30, type: 'coins' },
+        { text: "Überlebe 120 Sek.", goal: 120, reward: 40, type: 'time' },
+        { text: "Sammle 40 Ballons", goal: 40, reward: 50, type: 'balloons' },
         { text: "ULTRA: 120🪙, 20m, 200 Hüpfer (Kein Stopp!)", goal: 120, reward: "🥶", type: 'ultra' }
     ];
 
@@ -161,7 +162,6 @@
                 missionList.appendChild(div);
             }
         });
-        // Automatisch zur neuesten Mission scrollen
         setTimeout(() => { missionList.scrollTop = missionList.scrollHeight; }, 10);
     }
 
