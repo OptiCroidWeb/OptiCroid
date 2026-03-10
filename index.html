@@ -130,7 +130,6 @@
     
     let active = false, isPaused = false, dino, objects, speed, sessionCoins, jumpCounter = 0, startTime, pauseStartTime, totalPauseTime = 0, spawnTimer, roundCounter = 0, missionFailed = false;
     
-    // Missionen mit den neuen Werten aktualisiert
     const missions = [
         { text: "Sammle 20 Münzen", goal: 20, reward: 30, type: 'coins' },
         { text: "Überlebe 120 Sek.", goal: 120, reward: 40, type: 'time' },
@@ -203,12 +202,30 @@
         if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
             e.preventDefault();
         }
-        if(isPaused) return;
-        if((e.key==='w'||e.key==='ArrowUp'||e.key===' ') && !dino.jump) { dino.dy = -15; dino.jump = true; jumpCounter++; } 
-        if(e.key==='s'||e.key==='ArrowDown') dino.duck = true;
+        if(!active || isPaused) return;
+        if((e.key.toLowerCase()==='w'||e.key==='ArrowUp'||e.key===' ') && !dino.jump) { dino.dy = -15; dino.jump = true; jumpCounter++; } 
+        if(e.key.toLowerCase()==='s'||e.key==='ArrowDown') dino.duck = true;
     }, false);
 
-    window.onkeyup = (e) => { if(e.key==='s'||e.key==='ArrowDown') dino.duck = false; };
+    window.addEventListener("keyup", (e) => { 
+        if(e.key.toLowerCase()==='s'||e.key==='ArrowDown') dino.duck = false; 
+    });
+
+    // Touch-Steuerung: Links ducken, rechts springen
+    canvas.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        if(!active || isPaused) return;
+        const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
+        if(touchX > canvas.width / 2) {
+            if(!dino.jump) { dino.dy = -15; dino.jump = true; jumpCounter++; }
+        } else {
+            dino.duck = true;
+        }
+    }, {passive: false});
+
+    canvas.addEventListener("touchend", (e) => {
+        dino.duck = false;
+    });
 
     function loop() {
         if(!active || isPaused) return; ctx.clearRect(0,0,750,300); speed += 0.0012;
@@ -260,6 +277,7 @@
     updateUI();
   </script>
 </section>
+
     
     <section id="Profil" class="content">
       <div id="loginArea">
