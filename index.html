@@ -89,7 +89,7 @@
       <a href="https://youtube.com/@tbrasstracks" target="_blank" class="youtube-btn">YouTube</a>
     </section>
 
-<section id="Spiele" class="content">
+    <section id="Spiele" class="content">
   <div id="gameContainer" style="text-align: center; font-family: 'Segoe UI', Roboto, sans-serif; max-width: 750px; margin: auto; padding: 10px; color: #eee; background: #1a1a1a; border-radius: 20px; touch-action: none;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 15px;">
         <div id="scoreDisplay" style="font-size: 22px; font-weight: 900; color: #f1c40f;">🪙 <span id="coinScore">0</span></div>
@@ -113,7 +113,7 @@
     </div>
 
     <div id="shopArea" style="margin-top: 15px; display: flex; align-items: center; gap: 15px; justify-content: center; background: #222; padding: 15px; border-radius: 15px;">
-        <div id="charList" style="display: flex; gap: 10px; overflow-x: scroll; padding: 10px 5px; width: 180px;"></div>
+        <div id="charList" style="display: flex; gap: 10px; overflow-x: auto; padding: 10px 5px; width: 220px; scrollbar-width: thin;"></div>
         <button id="startBtn" style="padding: 15px 25px; font-size: 18px; background: #f1c40f; color: #000; border: none; border-radius: 12px; cursor: pointer; font-weight: 900;">START</button>
     </div>
   </div>
@@ -157,10 +157,7 @@
                                     border: 1px solid ${isNext && missionActive ? '#fff' : '#444'}; 
                                     color: ${isCompleted || (isNext && missionActive) ? '#000' : '#888'}`;
                 div.innerHTML = `<span>${isCompleted ? '✅' : (isNext && missionActive ? '🎯' : '⚪')} ${m.text}</span> <b style="color:${isCompleted || (isNext && missionActive) ? '#000' : '#f1c40f'}">${m.reward}</b>`;
-                
-                if(isNext) {
-                    div.onclick = () => { missionActive = !missionActive; drawMissions(); };
-                }
+                if(isNext) { div.onclick = () => { missionActive = !missionActive; drawMissions(); }; }
                 missionList.appendChild(div);
             }
         });
@@ -199,7 +196,17 @@
     }
     
     btn.onclick = resetGame;
-    window.onkeydown = (e) => { if(isPaused) return; if((e.key==='w'||e.key==='ArrowUp'||e.key===' ') && !dino.jump) { dino.dy = -15; dino.jump = true; jumpCounter++; } if(e.key==='s'||e.key==='ArrowDown') dino.duck = true; };
+    
+    // Verhindert das Scrollen der Seite durch Pfeiltasten
+    window.addEventListener("keydown", (e) => {
+        if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
+            e.preventDefault();
+        }
+        if(isPaused) return;
+        if((e.key==='w'||e.key==='ArrowUp'||e.key===' ') && !dino.jump) { dino.dy = -15; dino.jump = true; jumpCounter++; } 
+        if(e.key==='s'||e.key==='ArrowDown') dino.duck = true;
+    }, false);
+
     window.onkeyup = (e) => { if(e.key==='s'||e.key==='ArrowDown') dino.duck = false; };
 
     function loop() {
@@ -243,11 +250,7 @@
                 else if(currentMission.type === 'ultra' && !missionFailed && sessionCoins >= 120 && time >= 1200 && jumpCounter >= 200) {
                     success = true; unlocked.push("🥶");
                 }
-                if(success) {
-                    completedMissionIndex++;
-                    missionActive = false;
-                    if(typeof currentMission.reward === 'number') wallet += currentMission.reward;
-                }
+                if(success) { completedMissionIndex++; missionActive = false; if(typeof currentMission.reward === 'number') wallet += currentMission.reward; }
             }
         }
         document.getElementById('finalScore').innerText = `${sessionCoins} gesammelt!`; 
