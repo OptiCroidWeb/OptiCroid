@@ -100,15 +100,13 @@
     <div id="missionPanel" style="background: #222; margin-bottom: 10px; padding: 15px; border-radius: 15px; border: 1px solid #444; position: relative; display: flex; align-items: center; justify-content: center;">
         <div style="position: absolute; top: -10px; left: 20px; background: #1a1a1a; padding: 0 10px; font-size: 12px; color: #f1c40f; font-weight: bold;">MISSION (WÄHLBAR)</div>
         <div id="missionScroll" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; width: 250px; scrollbar-width: none; gap: 0; align-items: center;"></div>
-        <style>
-            #missionScroll::-webkit-scrollbar { display: none; }
-            .mission-card { min-width: 100%; scroll-snap-align: center; padding: 5px; box-sizing: border-box; }
-            .mission-btn { width: 100%; padding: 12px; border-radius: 10px; border: 2px solid transparent; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 13px; }
-        </style>
     </div>
 
     <div id="wrapper" style="position: relative; border-radius: 12px; overflow: hidden; border: 4px solid #444; height: 300px; background: #000; display: flex; align-items: center; justify-content: center;">
         <canvas id="game" width="750" height="300" style="max-width: 100%; max-height: 100%; object-fit: contain; display: block;"></canvas>
+        
+        <button id="pauseBtn" onclick="togglePause()" style="position: absolute; top: 15px; right: 15px; padding: 8px 15px; background: rgba(241, 196, 15, 0.8); color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; z-index: 20; display: none;">STOPP</button>
+
         <div id="gameOverScreen" style="position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10;">
             <h1 style="font-size: 50px; margin: 0; color: #fff; text-align: center; line-height: 1.2;">Holga die Waldfee</h1>
             <p id="finalScore" style="font-size: 20px; margin: 15px 0;"></p>
@@ -123,10 +121,10 @@
   </div>
 
   <script>
-    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), missionScroll = document.getElementById('missionScroll'), gameOverScreen = document.getElementById('gameOverScreen'), charList = document.getElementById('charList');
+    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), missionScroll = document.getElementById('missionScroll'), gameOverScreen = document.getElementById('gameOverScreen'), charList = document.getElementById('charList'), pauseBtn = document.getElementById('pauseBtn');
     const emojis = ["🤠", "🐶", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐲", "🐳"];
     let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = localStorage.getItem('selectedEmoji') || "🤠";
-    let active = false, dino, objects, speed, sessionCoins, startTime, spawnTimer, particles = [], roundCounter = 0;
+    let active = false, isPaused = false, dino, objects, speed, sessionCoins, startTime, pauseStartTime, totalPauseTime = 0, spawnTimer, particles = [], roundCounter = 0;
     
     const missions = [
         { id: 0, text: "Sammle 15 Münzen", goal: 15, reward: 30, type: 'coins' },
@@ -135,15 +133,29 @@
     ];
     let activeMission = JSON.parse(localStorage.getItem('activeMission')) || null;
 
+    function togglePause() {
+        if (!active) return;
+        isPaused = !isPaused;
+        if (isPaused) {
+            pauseStartTime = Date.now();
+            pauseBtn.innerText = "FORTSETZEN";
+            pauseBtn.style.background = "#2ecc71";
+        } else {
+            totalPauseTime += Date.now() - pauseStartTime;
+            pauseBtn.innerText = "STOPP";
+            pauseBtn.style.background = "rgba(241, 196, 15, 0.8)";
+            loop();
+        }
+    }
+
     function drawMissions() {
         missionScroll.innerHTML = "";
         missions.forEach(m => {
             const isSelected = activeMission && activeMission.id === m.id;
             const card = document.createElement('div');
             card.className = "mission-card";
-            card.innerHTML = `<button class="mission-btn" style="background: ${isSelected ? '#f1c40f' : '#333'}; color: ${isSelected ? '#000' : '#fff'}; border-color: ${isSelected ? '#fff' : 'transparent'};">
+            card.innerHTML = `<button class="mission-btn" style="background: ${isSelected ? '#f1c40f' : '#333'}; color: ${isSelected ? '#000' : '#fff'}; border: 2px solid ${isSelected ? '#fff' : 'transparent'}; border-radius: 10px; width: 100%; padding: 12px; cursor: pointer; font-weight: bold; font-size: 13px;">
                 ${m.text} <span style="font-size: 10px; display: block;">+${m.reward} 🪙</span>
-                <span style="font-size: 9px; opacity: 0.7;">${isSelected ? 'AKTIV' : 'WÄHLEN'}</span>
             </button>`;
             card.onclick = () => {
                 activeMission = isSelected ? null : m;
@@ -177,27 +189,35 @@
     function resetGame() { 
         roundCounter++;
         dino = { x: 70, y: 260, dy: 0, jump: false, duck: false, angle: 0 }; 
-        objects = []; speed = 6.5; sessionCoins = 0; active = true; spawnTimer = 0; particles = []; 
-        startTime = Date.now(); gameOverScreen.style.display = 'none'; loop(); 
+        objects = []; speed = 6.5; sessionCoins = 0; active = true; isPaused = false; spawnTimer = 0; particles = []; 
+        startTime = Date.now(); totalPauseTime = 0; gameOverScreen.style.display = 'none'; 
+        pauseBtn.style.display = 'block'; pauseBtn.innerText = "STOPP"; pauseBtn.style.background = "rgba(241, 196, 15, 0.8)";
+        loop(); 
     }
     
     btn.onclick = resetGame;
     window.addEventListener("keydown", function(e) { if(["ArrowUp","ArrowDown"," "].indexOf(e.code) > -1) e.preventDefault(); }, false);
-    window.onkeydown = (e) => { if((e.key==='w'||e.key==='ArrowUp'||e.key===' ') && !dino.jump) { dino.dy = -15; dino.jump = true; } if(e.key==='s'||e.key==='ArrowDown') dino.duck = true; };
+    window.onkeydown = (e) => { 
+        if(isPaused) return;
+        if((e.key==='w'||e.key==='ArrowUp'||e.key===' ') && !dino.jump) { dino.dy = -15; dino.jump = true; } 
+        if(e.key==='s'||e.key==='ArrowDown') dino.duck = true; 
+    };
     window.onkeyup = (e) => { if(e.key==='s'||e.key==='ArrowDown') dino.duck = false; };
 
     function loop() {
-        if(!active) return; ctx.clearRect(0,0,750,300); speed += 0.0012;
+        if(!active || isPaused) return; ctx.clearRect(0,0,750,300); speed += 0.0012;
         let isAlt = (roundCounter % 2 === 0);
         let coinImg = isAlt ? "🎈" : "🪙";
         document.getElementById('coinScore').innerText = sessionCoins;
-        let timePassed = Math.floor((Date.now()-startTime)/1000);
+        let timePassed = Math.floor((Date.now() - startTime - totalPauseTime)/1000);
         timerEl.innerText = timePassed + "s";
         ctx.fillStyle = "#111"; ctx.fillRect(0,0,750,300); ctx.fillStyle = isAlt ? "#001f3f" : "#333"; ctx.fillRect(0,260,750,40);
+        
         particles.forEach((p, i) => { p.x += p.dx; p.y += p.dy; p.l--; ctx.fillStyle = p.c; ctx.fillRect(p.x, p.y, 3, 3); if(p.l <= 0) particles.splice(i, 1); });
         if(dino.jump) { dino.dy += 0.95; dino.y += dino.dy; dino.angle += 0.15; } else { dino.angle = 0; dino.y = 260; }
         if(dino.y >= 260) { dino.y = 260; dino.jump = false; }
         ctx.save(); ctx.translate(dino.x + 20, dino.y - (dino.duck ? 15 : 25)); ctx.rotate(dino.angle); ctx.font = dino.duck ? "40px serif" : "55px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(selectedEmoji, 0, 0); ctx.restore();
+        
         if(--spawnTimer <= 0) {
             let type = Math.random();
             if(type < 0.4) objects.push({x:800, y: Math.random()>0.5?160:230, t: coinImg});
@@ -205,6 +225,7 @@
             else objects.push({x:800, y: 220, t: isAlt?"🌩️":"🪨🪨"});
             spawnTimer = Math.max(30, 70 - (speed * 2)) + Math.random() * 35;
         }
+        
         for(let i = objects.length - 1; i >= 0; i--) {
             let obj = objects[i]; obj.x -= speed; ctx.font = (obj.t === "🪙" || obj.t === "🎈" ? "30px" : "45px") + " serif"; ctx.fillText(obj.t, obj.x, obj.y);
             if(dino.x < obj.x + 25 && dino.x + 30 > obj.x) {
@@ -214,11 +235,11 @@
             }
             if(obj.x < -100) objects.splice(i, 1);
         }
-        if(active) requestAnimationFrame(loop);
+        if(active && !isPaused) requestAnimationFrame(loop);
     }
 
     function gameOver(isAlt, time) { 
-        active = false;
+        active = false; pauseBtn.style.display = 'none';
         if(activeMission) {
             let success = false;
             if(activeMission.type === 'coins' && sessionCoins >= activeMission.goal) success = true;
