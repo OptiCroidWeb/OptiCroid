@@ -98,7 +98,7 @@
     </div>
 
     <div id="missionPanel" style="background: #222; margin-bottom: 15px; padding: 15px; border-radius: 15px; border: 1px solid #444; position: relative;">
-        <div style="position: absolute; top: -10px; left: 20px; background: #1a1a1a; padding: 0 10px; font-size: 12px; color: #f1c40f; font-weight: bold;">MISSIONS-PFAD</div>
+        <div style="position: absolute; top: -10px; left: 20px; background: #1a1a1a; padding: 0 10px; font-size: 12px; color: #f1c40f; font-weight: bold;">MISSIONS-PFAD (KLICK ZUM AKTIVIEREN)</div>
         <div id="missionList" style="display: flex; flex-direction: column; gap: 8px; max-height: 150px; overflow-y: auto; padding: 5px;"></div>
     </div>
 
@@ -120,13 +120,13 @@
 
   <script>
     const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), missionList = document.getElementById('missionList'), gameOverScreen = document.getElementById('gameOverScreen'), charList = document.getElementById('charList'), pauseBtn = document.getElementById('pauseBtn');
-    // Missions-Emoji "🥶" steht jetzt ganz vorne in der Liste
     const emojis = ["🥶", "🤠", "🐶", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐲", "🐳"];
     
     let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"];
     let wallet = parseInt(localStorage.getItem('totalCoins')) || 0;
     let selectedEmoji = localStorage.getItem('selectedEmoji') || "🤠";
     let completedMissionIndex = parseInt(localStorage.getItem('completedMissionIndex')) || -1;
+    let missionActive = false;
     
     let active = false, isPaused = false, dino, objects, speed, sessionCoins, jumpCounter = 0, startTime, pauseStartTime, totalPauseTime = 0, spawnTimer, roundCounter = 0, missionFailed = false;
     
@@ -139,7 +139,7 @@
 
     function togglePause() {
         if (!active) return;
-        if (completedMissionIndex === 2) missionFailed = true;
+        if (missionActive && completedMissionIndex === 2) missionFailed = true;
         isPaused = !isPaused;
         if (isPaused) { pauseStartTime = Date.now(); pauseBtn.innerText = "WEITER"; } 
         else { totalPauseTime += Date.now() - pauseStartTime; pauseBtn.innerText = "STOPP"; loop(); }
@@ -148,16 +148,19 @@
     function drawMissions() {
         missionList.innerHTML = "";
         missions.forEach((m, i) => {
-            // Nur anzeigen, wenn erledigt oder die aktuell nächste Mission
             if (i <= completedMissionIndex + 1) {
                 const isCompleted = i <= completedMissionIndex;
                 const isNext = i === completedMissionIndex + 1;
                 const div = document.createElement('div');
-                div.style.cssText = `padding: 10px; border-radius: 8px; font-size: 13px; text-align: left; display: flex; justify-content: space-between; align-items: center; 
-                                    background: ${isCompleted ? '#27ae60' : (isNext ? '#f1c40f33' : '#1a1a1a')}; 
-                                    border: 1px solid ${isNext ? '#f1c40f' : '#444'}; 
-                                    color: ${isCompleted ? '#fff' : (isNext ? '#fff' : '#555')}`;
-                div.innerHTML = `<span>${isCompleted ? '✅' : '🎯'} ${m.text}</span> <b style="color:${isCompleted ? '#fff' : '#f1c40f'}">${m.reward}</b>`;
+                div.style.cssText = `padding: 10px; border-radius: 8px; font-size: 13px; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: ${isNext ? 'pointer' : 'default'};
+                                    background: ${isCompleted ? '#27ae60' : (isNext && missionActive ? '#f1c40f' : '#333')}; 
+                                    border: 1px solid ${isNext && missionActive ? '#fff' : '#444'}; 
+                                    color: ${isCompleted || (isNext && missionActive) ? '#000' : '#888'}`;
+                div.innerHTML = `<span>${isCompleted ? '✅' : (isNext && missionActive ? '🎯' : '⚪')} ${m.text}</span> <b style="color:${isCompleted || (isNext && missionActive) ? '#000' : '#f1c40f'}">${m.reward}</b>`;
+                
+                if(isNext) {
+                    div.onclick = () => { missionActive = !missionActive; drawMissions(); };
+                }
                 missionList.appendChild(div);
             }
         });
@@ -171,13 +174,9 @@
             const price = isSpecial ? 0 : (i-1) * 15;
             const isUnlocked = unlocked.includes(e);
             const span = document.createElement('div');
-            
-            // Emoji Container für den Blur-Effekt
             const blurStyle = (isSpecial && !isUnlocked) ? 'filter: blur(6px);' : '';
-            
             span.style.cssText = `padding: 5px; background: #333; border-radius: 8px; border: 2px solid ${e === selectedEmoji ? "#f1c40f" : "transparent"}; opacity: ${isUnlocked ? "1" : "0.5"}; min-width: 55px; cursor: pointer; flex-shrink: 0;`;
             span.innerHTML = `<div style="font-size:24px; ${blurStyle}">${e}</div><div style="font-size:10px;color:#f1c40f">${isUnlocked ? "✔" : (isSpecial ? "Mission" : price)}</div>`;
-            
             span.onclick = () => { if(isUnlocked) { selectedEmoji = e; } else if(!isSpecial && wallet >= price) { wallet -= price; unlocked.push(e); selectedEmoji = e; } saveData(); updateUI(); };
             charList.appendChild(span);
         });
@@ -234,18 +233,21 @@
 
     function gameOver(isAlt, time) { 
         active = false; pauseBtn.style.display = 'none';
-        let currentMission = missions[completedMissionIndex + 1];
-        if(currentMission) {
-            let success = false;
-            if(currentMission.type === 'coins' && sessionCoins >= currentMission.goal) success = true;
-            else if(currentMission.type === 'time' && time >= currentMission.goal) success = true;
-            else if(currentMission.type === 'balloons' && isAlt && sessionCoins >= currentMission.goal) success = true;
-            else if(currentMission.type === 'ultra' && !missionFailed && sessionCoins >= 120 && time >= 1200 && jumpCounter >= 200) {
-                success = true; unlocked.push("🥶");
-            }
-            if(success) {
-                completedMissionIndex++;
-                if(typeof currentMission.reward === 'number') wallet += currentMission.reward;
+        if(missionActive) {
+            let currentMission = missions[completedMissionIndex + 1];
+            if(currentMission) {
+                let success = false;
+                if(currentMission.type === 'coins' && sessionCoins >= currentMission.goal) success = true;
+                else if(currentMission.type === 'time' && time >= currentMission.goal) success = true;
+                else if(currentMission.type === 'balloons' && isAlt && sessionCoins >= currentMission.goal) success = true;
+                else if(currentMission.type === 'ultra' && !missionFailed && sessionCoins >= 120 && time >= 1200 && jumpCounter >= 200) {
+                    success = true; unlocked.push("🥶");
+                }
+                if(success) {
+                    completedMissionIndex++;
+                    missionActive = false;
+                    if(typeof currentMission.reward === 'number') wallet += currentMission.reward;
+                }
             }
         }
         document.getElementById('finalScore').innerText = `${sessionCoins} gesammelt!`; 
