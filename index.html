@@ -121,9 +121,9 @@
     let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"];
     let wallet = parseInt(localStorage.getItem('totalCoins')) || 0;
     let selectedEmoji = localStorage.getItem('selectedEmoji') || "🤠";
-    let active = false, isPaused = false, dino, objects, speed, sessionCoins, spawnTimer, roundCounter = 0;
+    let active = false, isPaused = false, dino, objects, speed, sessionCoins, spawnTimer, roundCounter = 0, startTime, totalPauseTime = 0, pauseStartTime;
 
-    function togglePause() { if (!active) return; isPaused = !isPaused; pauseBtn.innerText = isPaused ? "WEITER" : "STOPP"; if(!isPaused) loop(); }
+    function togglePause() { if (!active) return; isPaused = !isPaused; pauseBtn.innerText = isPaused ? "WEITER" : "STOPP"; if (isPaused) pauseStartTime = Date.now(); else { totalPauseTime += Date.now() - pauseStartTime; loop(); } }
 
     function updateUI() {
         totalEl.innerText = wallet;
@@ -144,14 +144,17 @@
         roundCounter++;
         dino = { x: 70, y: 260, dy: 0, jump: false, duck: false }; 
         objects = []; speed = 6.5; sessionCoins = 0; active = true; isPaused = false; spawnTimer = 0;
+        startTime = Date.now(); totalPauseTime = 0;
         gameOverScreen.style.display = 'none'; pauseBtn.style.display = 'block'; loop(); 
     }
     
     btn.onclick = resetGame;
     
     window.addEventListener("keydown", (e) => {
-        if((e.code === "Space" || e.code === "ArrowUp") && !dino.jump) { e.preventDefault(); dino.dy = -14; dino.jump = true; dino.duck = false; }
-        if(e.code === "ArrowDown" && !dino.jump) { e.preventDefault(); dino.duck = true; }
+        if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) e.preventDefault();
+        if(!active || isPaused) return;
+        if((e.code === "Space" || e.code === "ArrowUp") && !dino.jump) { dino.dy = -14; dino.jump = true; dino.duck = false; }
+        if(e.code === "ArrowDown" && !dino.jump) dino.duck = true;
     });
     window.addEventListener("keyup", (e) => { if(e.code === "ArrowDown") dino.duck = false; });
 
@@ -159,6 +162,7 @@
         if(!active || isPaused) return; ctx.clearRect(0,0,750,300); speed += 0.0012;
         let isAlt = (roundCounter % 2 === 0), coinImg = isAlt ? "🎃" : "🌭";
         document.getElementById('coinScore').innerText = sessionCoins;
+        timerEl.innerText = Math.floor((Date.now() - startTime - totalPauseTime)/1000) + "s";
         
         ctx.fillStyle = "#111"; ctx.fillRect(0,0,750,300); 
         ctx.fillStyle = isAlt ? "#001f3f" : "#333"; ctx.fillRect(0,260,750,40); 
@@ -190,9 +194,7 @@
                     if (dino.y > obj.y - 50 && dino.y - 60 < obj.y) { sessionCoins++; wallet++; objects.splice(i,1); } 
                 } else {
                     if (obj.y === 260 && dino.y > 235) gameOver();
-                    if (obj.y === 215) {
-                        if (!dino.duck) gameOver(); // Trifft Kopf beim Stehen oder Springen
-                    }
+                    if (obj.y === 215 && !dino.duck) gameOver();
                 }
             }
             if(obj.x < -100) objects.splice(i, 1);
