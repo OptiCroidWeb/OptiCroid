@@ -105,7 +105,6 @@
     <div id="wrapper" style="position: relative; border-radius: 12px; overflow: hidden; border: 4px solid #444; height: 300px; background: #000; display: flex; align-items: center; justify-content: center;">
         <canvas id="game" width="750" height="300" style="max-width: 100%; max-height: 100%; object-fit: contain; display: block;"></canvas>
         <button id="pauseBtn" onclick="togglePause()" style="position: absolute; top: 15px; right: 15px; padding: 8px 15px; background: rgba(241, 196, 15, 0.8); color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; z-index: 20; display: none;">STOPP</button>
-        
         <button id="fsBtn" onclick="toggleFullscreen()" style="position: absolute; bottom: 10px; right: 10px; padding: 5px 10px; background: rgba(255, 255, 255, 0.2); color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; z-index: 20;">⛶</button>
 
         <div id="gameOverScreen" style="position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10;">
@@ -142,9 +141,7 @@
 
     function toggleFullscreen() {
         if (!document.fullscreenElement) {
-            wrapper.requestFullscreen().catch(err => {
-                alert(`Error: ${err.message}`);
-            });
+            wrapper.requestFullscreen().catch(err => { alert(`Error: ${err.message}`); });
         } else {
             document.exitFullscreen();
         }
@@ -212,33 +209,24 @@
     btn.onclick = resetGame;
     
     window.addEventListener("keydown", (e) => {
-        if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
-            e.preventDefault();
-        }
+        if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) { e.preventDefault(); }
         if(!active || isPaused) return;
         if((e.key.toLowerCase()==='w'||e.key==='ArrowUp'||e.key===' ') && !dino.jump) { dino.dy = -15; dino.jump = true; jumpCounter++; } 
         if(e.key.toLowerCase()==='s'||e.key==='ArrowDown') dino.duck = true;
     }, false);
 
-    window.addEventListener("keyup", (e) => { 
-        if(e.key.toLowerCase()==='s'||e.key==='ArrowDown') dino.duck = false; 
-    });
+    window.addEventListener("keyup", (e) => { if(e.key.toLowerCase()==='s'||e.key==='ArrowDown') dino.duck = false; });
 
     canvas.addEventListener("touchstart", (e) => {
         e.preventDefault();
         if(!active || isPaused) return;
         const rect = canvas.getBoundingClientRect();
         const touchX = e.touches[0].clientX - rect.left;
-        if(touchX > rect.width / 2) {
-            if(!dino.jump) { dino.dy = -15; dino.jump = true; jumpCounter++; }
-        } else {
-            dino.duck = true;
-        }
+        if(touchX > rect.width / 2) { if(!dino.jump) { dino.dy = -15; dino.jump = true; jumpCounter++; } } 
+        else { dino.duck = true; }
     }, {passive: false});
 
-    canvas.addEventListener("touchend", (e) => {
-        dino.duck = false;
-    });
+    canvas.addEventListener("touchend", (e) => { dino.duck = false; });
 
     function loop() {
         if(!active || isPaused) return; ctx.clearRect(0,0,750,300); speed += 0.0012;
@@ -247,16 +235,33 @@
         let timePassed = Math.floor((Date.now() - startTime - totalPauseTime)/1000);
         timerEl.innerText = timePassed + "s";
         ctx.fillStyle = "#111"; ctx.fillRect(0,0,750,300); ctx.fillStyle = isAlt ? "#001f3f" : "#333"; ctx.fillRect(0,260,750,40);
+        
         if(dino.jump) { dino.dy += 0.95; dino.y += dino.dy; dino.angle += 0.15; } else { dino.angle = 0; dino.y = 260; }
         if(dino.y >= 260) { dino.y = 260; dino.jump = false; }
+        
         ctx.save(); ctx.translate(dino.x + 20, dino.y - (dino.duck ? 15 : 25)); ctx.rotate(dino.angle); ctx.font = dino.duck ? "40px serif" : "55px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(selectedEmoji, 0, 0); ctx.restore();
+        
         if(--spawnTimer <= 0) {
             let type = Math.random();
-            if(type < 0.4) objects.push({x:800, y: Math.random()>0.5?160:230, t: coinImg});
-            else if(type < 0.7) objects.push({x:800, y: 260, t: isAlt?"🐄":"🌵"});
-            else objects.push({x:800, y: 220, t: isAlt?"🌩️":"🪨🪨"});
-            spawnTimer = Math.max(30, 70 - (speed * 2)) + Math.random() * 35;
+            if(type < 0.65) {
+                // Münzen in Wellenform
+                let amount = Math.floor(Math.random() * 5) + 4;
+                let startY = 200;
+                let amplitude = 40;
+                for(let k=0; k<amount; k++) {
+                    let waveY = startY + Math.sin(k * 0.8) * amplitude;
+                    objects.push({x: 800 + (k * 40), y: waveY, t: coinImg});
+                }
+                spawnTimer = 50;
+            } else if(type < 0.88) {
+                objects.push({x:800, y: 260, t: isAlt?"🐄":"🌵"});
+                spawnTimer = Math.max(30, 70 - (speed * 2)) + Math.random() * 35;
+            } else {
+                objects.push({x:800, y: 220, t: isAlt?"🌩️":"🪨🪨"});
+                spawnTimer = Math.max(30, 70 - (speed * 2)) + Math.random() * 35;
+            }
         }
+        
         for(let i = objects.length - 1; i >= 0; i--) {
             let obj = objects[i]; obj.x -= speed; ctx.font = (obj.t === "🪙" || obj.t === "🎈" ? "30px" : "45px") + " serif"; ctx.fillText(obj.t, obj.x, obj.y);
             if(dino.x < obj.x + 25 && dino.x + 30 > obj.x) {
@@ -278,9 +283,7 @@
                 if(currentMission.type === 'coins' && sessionCoins >= currentMission.goal) success = true;
                 else if(currentMission.type === 'time' && time >= currentMission.goal) success = true;
                 else if(currentMission.type === 'balloons' && isAlt && sessionCoins >= currentMission.goal) success = true;
-                else if(currentMission.type === 'ultra' && !missionFailed && sessionCoins >= 120 && time >= 1200 && jumpCounter >= 200) {
-                    success = true; unlocked.push("🥶");
-                }
+                else if(currentMission.type === 'ultra' && !missionFailed && sessionCoins >= 120 && time >= 1200 && jumpCounter >= 200) { success = true; unlocked.push("🥶"); }
                 if(success) { completedMissionIndex++; missionActive = false; if(typeof currentMission.reward === 'number') wallet += currentMission.reward; }
             }
         }
@@ -290,7 +293,6 @@
     updateUI();
   </script>
 </section>
-
     
     <section id="Profil" class="content">
       <div id="loginArea">
