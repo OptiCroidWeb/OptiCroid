@@ -108,7 +108,7 @@
         <button id="fsBtn" onclick="toggleFullscreen()" style="position: absolute; bottom: 10px; right: 10px; padding: 5px 10px; background: rgba(255, 255, 255, 0.2); color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; z-index: 20;">⛶</button>
 
         <div id="gameOverScreen" style="position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10;">
-            <h1 style="font-size: 50px; margin: 0; color: #fff; text-align: center; line-height: 1.2;">Holga die Waldfee</h1>
+            <h1 style="font-size: 50px; margin: 0; color: #fff; text-align: center; line-height: 1.2;">A Nue</h1>
             <p id="finalScore" style="font-size: 20px; margin: 15px 0;"></p>
             <button onclick="resetGame()" style="padding: 12px 40px; font-size: 20px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 900;">NOCHMAL</button>
         </div>
@@ -189,7 +189,7 @@
         charList.innerHTML = "";
         emojis.forEach((e, i) => {
             const isSpecial = (e === "🥶");
-            const price = isSpecial ? 0 : i * 50;
+            const price = isSpecial ? 0 : (i === 0 ? 0 : (i + 1) * 100);
             const isUnlocked = unlocked.includes(e);
             const span = document.createElement('div');
             const blurStyle = (isSpecial && !isUnlocked) ? 'filter: blur(6px);' : '';
