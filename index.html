@@ -114,9 +114,12 @@
         </div>
     </div>
 
-    <div id="shopArea" style="margin-top: 15px; display: flex; align-items: center; gap: 15px; justify-content: center; background: #222; padding: 15px; border-radius: 15px;">
+    <div id="shopArea" style="margin-top: 15px; display: flex; align-items: center; gap: 15px; justify-content: center; background: #222; padding: 15px; border-radius: 15px; flex-wrap: wrap;">
         <div id="charList" style="display: flex; gap: 10px; overflow-x: auto; padding: 10px 5px; width: 220px; scrollbar-width: thin;"></div>
-        <button id="startBtn" style="padding: 15px 25px; font-size: 18px; background: #f1c40f; color: #000; border: none; border-radius: 12px; cursor: pointer; font-weight: 900;">START</button>
+        <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+            <button id="startBtn" style="padding: 15px 25px; font-size: 18px; background: #f1c40f; color: #000; border: none; border-radius: 12px; cursor: pointer; font-weight: 900;">START</button>
+            <button onclick="resetAllData()" style="font-size: 7px; background: transparent; color: #555; border: none; cursor: pointer; padding: 2px; text-decoration: underline;">Reset</button>
+        </div>
     </div>
   </div>
 
@@ -138,6 +141,13 @@
         { text: "Sammle 40 Kürbisse", goal: 40, reward: 50, type: 'balloons' },
         { text: "ULTRA: 120🌭, 20m, 200 Hüpfer (Kein Stopp!)", goal: 120, reward: "🥶", type: 'ultra' }
     ];
+
+    function resetAllData() {
+        if(confirm("Spielstand wirklich löschen?")) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
 
     function toggleFullscreen() {
         if (!document.fullscreenElement) {
@@ -245,10 +255,10 @@
             let type = Math.random();
             if(type < 0.5) {
                 let amount = Math.floor(Math.random() * 5) + 3;
-                let isWave = Math.random() > 0.7; // Seltener Wellen, meistens am Boden
+                let isWave = Math.random() > 0.8;
                 for(let k=0; k<amount; k++) {
                     let yPos = isWave ? (200 + Math.sin(k * 0.8) * 40) : 230;
-                    objects.push({x: 800 + (k * 35), y: yPos, t: coinImg, isSmall: true});
+                    objects.push({x: 800 + (k * 35), y: yPos, t: coinImg});
                 }
                 spawnTimer = 45; 
             } else if(type < 0.8) {
