@@ -105,6 +105,9 @@
     <div id="wrapper" style="position: relative; border-radius: 12px; overflow: hidden; border: 4px solid #444; height: 300px; background: #000; display: flex; align-items: center; justify-content: center;">
         <canvas id="game" width="750" height="300" style="max-width: 100%; max-height: 100%; object-fit: contain; display: block;"></canvas>
         <button id="pauseBtn" onclick="togglePause()" style="position: absolute; top: 15px; right: 15px; padding: 8px 15px; background: rgba(241, 196, 15, 0.8); color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; z-index: 20; display: none;">STOPP</button>
+        
+        <button id="fsBtn" onclick="toggleFullscreen()" style="position: absolute; bottom: 10px; right: 10px; padding: 5px 10px; background: rgba(255, 255, 255, 0.2); color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; z-index: 20;">⛶</button>
+
         <div id="gameOverScreen" style="position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10;">
             <h1 style="font-size: 50px; margin: 0; color: #fff; text-align: center; line-height: 1.2;">Holga die Waldfee</h1>
             <p id="finalScore" style="font-size: 20px; margin: 15px 0;"></p>
@@ -119,7 +122,7 @@
   </div>
 
   <script>
-    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), missionList = document.getElementById('missionList'), gameOverScreen = document.getElementById('gameOverScreen'), charList = document.getElementById('charList'), pauseBtn = document.getElementById('pauseBtn');
+    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), missionList = document.getElementById('missionList'), gameOverScreen = document.getElementById('gameOverScreen'), charList = document.getElementById('charList'), pauseBtn = document.getElementById('pauseBtn'), wrapper = document.getElementById('wrapper');
     const emojis = ["🥶", "🤠", "🐶", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐲", "🐳"];
     
     let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"];
@@ -136,6 +139,16 @@
         { text: "Sammle 40 Ballons", goal: 40, reward: 50, type: 'balloons' },
         { text: "ULTRA: 120🪙, 20m, 200 Hüpfer (Kein Stopp!)", goal: 120, reward: "🥶", type: 'ultra' }
     ];
+
+    function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            wrapper.requestFullscreen().catch(err => {
+                alert(`Error: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
 
     function togglePause() {
         if (!active) return;
@@ -211,12 +224,12 @@
         if(e.key.toLowerCase()==='s'||e.key==='ArrowDown') dino.duck = false; 
     });
 
-    // Touch-Steuerung: Links ducken, rechts springen
     canvas.addEventListener("touchstart", (e) => {
         e.preventDefault();
         if(!active || isPaused) return;
-        const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
-        if(touchX > canvas.width / 2) {
+        const rect = canvas.getBoundingClientRect();
+        const touchX = e.touches[0].clientX - rect.left;
+        if(touchX > rect.width / 2) {
             if(!dino.jump) { dino.dy = -15; dino.jump = true; jumpCounter++; }
         } else {
             dino.duck = true;
