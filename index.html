@@ -210,7 +210,7 @@
     
     function resetGame() { 
         roundCounter++; missionFailed = false; jumpCounter = 0;
-        dino = { x: 70, y: 260, dy: 0, jump: false, duck: false, angle: 0, groundY: 260 }; 
+        dino = { x: 70, y: 260, dy: 0, jump: false, duck: false, angle: 0 }; 
         objects = []; speed = 6.5; sessionCoins = 0; active = true; isPaused = false; spawnTimer = 0;
         startTime = Date.now(); totalPauseTime = 0; gameOverScreen.style.display = 'none'; 
         pauseBtn.style.display = 'block'; loop(); 
@@ -250,10 +250,10 @@
         dino.dy += 0.95;
         dino.y += dino.dy;
         
-        // Plattform-Check (😶‍FOG)
+        // Kollision mit Wolken (Zweiter Boden)
         let onPlatform = false;
         objects.forEach(obj => {
-            if(obj.t === "😶‍🌫️" && dino.x + 30 > obj.x && dino.x < obj.x + 40 && dino.dy >= 0 && dino.y <= obj.y && dino.y + dino.dy >= obj.y - 10) {
+            if(obj.t === "😶‍🌫️" && dino.x + 25 > obj.x - 20 && dino.x < obj.x + 20 && dino.dy >= 0 && dino.y <= obj.y && dino.y + dino.dy >= obj.y - 10) {
                 dino.y = obj.y;
                 dino.dy = 0;
                 dino.jump = false;
@@ -261,6 +261,7 @@
             }
         });
 
+        // Boden-Kollision
         if(!onPlatform && dino.y >= 260) {
             dino.y = 260;
             dino.dy = 0;
@@ -273,18 +274,17 @@
         
         if(--spawnTimer <= 0) {
             let type = Math.random();
-            if(type < 0.3) { // Plattformen "😶‍🌫️"
-                let amount = Math.floor(Math.random() * 4) + 4;
-                let startH = 180 + Math.random() * 40;
+            if(type < 0.4) { // Wolken-Plattformen
+                let amount = Math.floor(Math.random() * 6) + 5;
+                let platY = 160; 
                 for(let k=0; k<amount; k++) {
-                    if(Math.random() > 0.2) { // Lücken einbauen
-                        let platY = startH - (k * 12);
-                        objects.push({x: 800 + (k * 45), y: platY, t: "😶‍🌫️"});
-                        if(Math.random() > 0.5) objects.push({x: 800 + (k * 45), y: platY - 30, t: coinImg});
+                    if(Math.random() > 0.15) { // Kleine Lücken einbauen
+                        objects.push({x: 800 + (k * 40), y: platY, t: "😶‍🌫️"});
+                        if(Math.random() > 0.4) objects.push({x: 800 + (k * 40), y: platY - 35, t: coinImg});
                     }
                 }
-                spawnTimer = 60;
-            } else if(type < 0.6) { // Boden-Hotdogs
+                spawnTimer = 70;
+            } else if(type < 0.65) { // Boden-Hotdogs
                 let amount = Math.floor(Math.random() * 5) + 3;
                 for(let k=0; k<amount; k++) objects.push({x: 800 + (k * 35), y: 230, t: coinImg});
                 spawnTimer = 45; 
@@ -299,10 +299,11 @@
         
         for(let i = objects.length - 1; i >= 0; i--) {
             let obj = objects[i]; obj.x -= speed; 
-            ctx.font = ((obj.t === "🌭" || obj.t === "🎃") ? "20px" : (obj.t === "😶‍🌫️" ? "40px" : "45px")) + " serif"; 
+            ctx.font = ((obj.t === "🌭" || obj.t === "🎃") ? "20px" : (obj.t === "😶‍🌫️" ? "45px" : "45px")) + " serif"; 
+            ctx.textAlign = "center";
             ctx.fillText(obj.t, obj.x, obj.y);
             
-            let hitWidth = (obj.t === "🌭" || obj.t === "🎃") ? 15 : (obj.t === "😶‍🌫️" ? 35 : 25);
+            let hitWidth = (obj.t === "🌭" || obj.t === "🎃") ? 15 : 25;
             if(dino.x < obj.x + hitWidth && dino.x + 30 > obj.x) {
                 if (obj.t === coinImg) { 
                     if (dino.y > obj.y - 35 && (dino.y - 45) < obj.y) { sessionCoins++; wallet++; objects.splice(i,1); } 
