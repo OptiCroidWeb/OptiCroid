@@ -92,7 +92,7 @@
     <section id="Spiele" class="content">
   <div id="gameContainer" style="text-align: center; font-family: 'Segoe UI', Roboto, sans-serif; max-width: 750px; margin: auto; padding: 10px; color: #eee; background: #1a1a1a; border-radius: 20px; touch-action: none;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 15px;">
-        <div id="scoreDisplay" style="font-size: 22px; font-weight: 900; color: #f1c40f;">🪙 <span id="coinScore">0</span></div>
+        <div id="scoreDisplay" style="font-size: 22px; font-weight: 900; color: #f1c40f;">🌭 <span id="coinScore">0</span></div>
         <div style="font-size: 18px; font-weight: bold; background: #333; padding: 4px 12px; border-radius: 8px;">⏱️ <span id="timer">0s</span></div>
         <div style="font-size: 16px; color: #888;">Guthaben: <span id="totalCoins">0</span></div>
     </div>
@@ -122,7 +122,7 @@
 
   <script>
     const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), totalEl = document.getElementById('totalCoins'), timerEl = document.getElementById('timer'), missionList = document.getElementById('missionList'), gameOverScreen = document.getElementById('gameOverScreen'), charList = document.getElementById('charList'), pauseBtn = document.getElementById('pauseBtn'), wrapper = document.getElementById('wrapper');
-    const emojis = ["🥶", "🤠", "🐶", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐲", "🐳"];
+    const emojis = ["🥶", "🤠", "🐶", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐧", "🐳"];
     
     let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"];
     let wallet = parseInt(localStorage.getItem('totalCoins')) || 0;
@@ -133,10 +133,10 @@
     let active = false, isPaused = false, dino, objects, speed, sessionCoins, jumpCounter = 0, startTime, pauseStartTime, totalPauseTime = 0, spawnTimer, roundCounter = 0, missionFailed = false;
     
     const missions = [
-        { text: "Sammle 20 Münzen", goal: 20, reward: 30, type: 'coins' },
+        { text: "Sammle 20 Hotdogs", goal: 20, reward: 30, type: 'coins' },
         { text: "Überlebe 120 Sek.", goal: 120, reward: 40, type: 'time' },
-        { text: "Sammle 40 Ballons", goal: 40, reward: 50, type: 'balloons' },
-        { text: "ULTRA: 120🪙, 20m, 200 Hüpfer (Kein Stopp!)", goal: 120, reward: "🥶", type: 'ultra' }
+        { text: "Sammle 40 Kürbisse", goal: 40, reward: 50, type: 'balloons' },
+        { text: "ULTRA: 120🌭, 20m, 200 Hüpfer (Kein Stopp!)", goal: 120, reward: "🥶", type: 'ultra' }
     ];
 
     function toggleFullscreen() {
@@ -179,7 +179,7 @@
         charList.innerHTML = "";
         emojis.forEach((e, i) => {
             const isSpecial = (e === "🥶");
-            const price = isSpecial ? 0 : (i-1) * 15;
+            const price = isSpecial ? 0 : i * 50;
             const isUnlocked = unlocked.includes(e);
             const span = document.createElement('div');
             const blurStyle = (isSpecial && !isUnlocked) ? 'filter: blur(6px);' : '';
@@ -230,7 +230,7 @@
 
     function loop() {
         if(!active || isPaused) return; ctx.clearRect(0,0,750,300); speed += 0.0012;
-        let isAlt = (roundCounter % 2 === 0); let coinImg = isAlt ? "🎈" : "🪙";
+        let isAlt = (roundCounter % 2 === 0); let coinImg = isAlt ? "🎃" : "🌭";
         document.getElementById('coinScore').innerText = sessionCoins;
         let timePassed = Math.floor((Date.now() - startTime - totalPauseTime)/1000);
         timerEl.innerText = timePassed + "s";
@@ -243,14 +243,12 @@
         
         if(--spawnTimer <= 0) {
             let type = Math.random();
-            // Erhöhte Hindernisrate wie früher, Münzen kleiner dazwischen
             if(type < 0.5) {
-                let amount = Math.floor(Math.random() * 6) + 4;
-                let startY = 190;
-                let amplitude = 50;
+                let amount = Math.floor(Math.random() * 5) + 3;
+                let isWave = Math.random() > 0.7; // Seltener Wellen, meistens am Boden
                 for(let k=0; k<amount; k++) {
-                    let waveY = startY + Math.sin(k * 0.9) * amplitude;
-                    objects.push({x: 800 + (k * 35), y: waveY, t: coinImg, isSmall: true});
+                    let yPos = isWave ? (200 + Math.sin(k * 0.8) * 40) : 230;
+                    objects.push({x: 800 + (k * 35), y: yPos, t: coinImg, isSmall: true});
                 }
                 spawnTimer = 45; 
             } else if(type < 0.8) {
@@ -264,12 +262,10 @@
         
         for(let i = objects.length - 1; i >= 0; i--) {
             let obj = objects[i]; obj.x -= speed; 
-            let fontSize = (obj.t === "🪙" || obj.t === "🎈") ? (obj.isSmall ? "18px" : "30px") : "45px";
-            ctx.font = fontSize + " serif"; 
+            ctx.font = ((obj.t === "🌭" || obj.t === "🎃") ? "20px" : "45px") + " serif"; 
             ctx.fillText(obj.t, obj.x, obj.y);
             
-            // Hitbox Anpassung für kleinere Münzen
-            let hitWidth = obj.isSmall ? 15 : 25;
+            let hitWidth = (obj.t === "🌭" || obj.t === "🎃") ? 15 : 25;
             if(dino.x < obj.x + hitWidth && dino.x + 30 > obj.x) {
                 if (obj.t === coinImg) { 
                     if (dino.y > obj.y - 35 && (dino.y - 45) < obj.y) { sessionCoins++; wallet++; objects.splice(i,1); } 
