@@ -5,21 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>OptiCroid</title>
   <link rel="icon" type="image/png" href="1768734429139.png">
-  <meta name="google-site-verification" content="1h0mJmEKKiB0WFa2w9Txokx6s4TYYGrI54m2dTZAwCk" />
-  <meta name="description" content="IT Dienstleistung OptiCroid/ Markus Sieber: (Digitales PC-Managment, Systemoptimierung und Intigration)">
-
   <style>
-    /* --- BASIS & FARBEN --- */
-    html, body { width: 100%; overflow-x: hidden; margin: 0; padding: 0; }
-    body { 
-        margin: 0; 
-        font-family: 'Segoe UI', Roboto, sans-serif; 
-        background-color: #0c1a26; 
-        color: #ffffff;
-        padding-bottom: 90px; 
-    }
-
-    /* --- NAVIGATION (GEWÖLBT) --- */
+    /* --- BASIS & LAYOUT --- */
+    html, body { width: 100%; margin: 0; padding: 0; background-color: #0c1a26; color: #ffffff; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
+    
+    /* --- NAVIGATION (IMMER SICHTBAR AM BODEN) --- */
     header { 
         background: #112638; 
         display: flex; 
@@ -31,72 +21,26 @@
         bottom: 0; 
         left: 0; 
         z-index: 10000; 
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 40px 40px 0 0; 
-        box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+        border-top: 2px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 -5px 25px rgba(0,0,0,0.8);
     }
-    nav { display: flex; justify-content: space-around; width: 100%; position: relative; }
-    nav a { 
-        text-decoration: none; 
-        color: rgba(255,255,255,0.6); 
-        display: flex; 
-        flex-direction: column; 
-        align-items: center; 
-        justify-content: center;
-        flex: 1;
-        position: relative;
-        cursor: pointer;
-        transition: color 0.3s;
-        height: 70px;
-    }
-    nav a span:last-child { display: none; } /* Texte unter Icons ausblenden */
-
-    /* GLAS-EFFEKT EMOJIS */
-    nav a span:first-child { 
-        font-size: 30px; 
-        transition: transform 0.3s ease, filter 0.3s ease;
-        filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5));
-        position: relative;
-    }
-    nav a span:first-child::before {
-        content: "";
-        position: absolute;
-        top: 5%; left: 15%; width: 70%; height: 40%;
-        background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0));
-        border-radius: 50% 50% 0 0; filter: blur(1px); opacity: 0; transition: opacity 0.3s;
-    }
-
-    /* AKTIVER LINK STATUS */
+    nav { display: flex; justify-content: space-around; width: 100%; }
+    nav a { text-decoration: none; color: rgba(255,255,255,0.5); flex: 1; text-align: center; cursor: pointer; transition: 0.3s; position: relative; height: 70px; display: flex; align-items: center; justify-content: center; }
+    nav a span { font-size: 30px; transition: transform 0.3s; }
+    
+    /* AKTIVER BUTTON EFFEKT */
     nav a.active-link { color: #ffffff; }
-    nav a.active-link span:first-child { transform: translateY(-15px) scale(1.2); filter: drop-shadow(0 5px 10px rgba(255,255,255,0.4)) brightness(1.2); }
-    nav a.active-link span:first-child::before { opacity: 1; }
-    nav a.active-link::after {
-        content: ""; position: absolute; bottom: 10px; width: 35px; height: 4px;
-        background: white; border-radius: 10px; box-shadow: 0 0 15px 3px white;
-    }
+    nav a.active-link span { transform: translateY(-10px) scale(1.2); }
+    nav a.active-link::after { content: ""; position: absolute; bottom: 8px; width: 30px; height: 4px; background: #65FE08; border-radius: 10px; box-shadow: 0 0 10px #65FE08; }
 
-    /* --- KACHEL-DESIGN (ZIFFERNBLÄTTER) --- */
-    main { padding: 20px; }
-    .content { 
-        display: none; 
-        text-align: center; 
-        background-color: #1a334a; 
-        margin: 20px auto; 
-        max-width: 90%; 
-        border-radius: 30px; 
-        box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.4);
-        line-height: 1.6; 
-        padding: 30px;
-        border: 1px solid rgba(255,255,255,0.05);
-    }
+    /* --- CONTENT BEREICHE --- */
+    main { padding: 20px; padding-bottom: 100px; display: flex; justify-content: center; }
+    .content { display: none; text-align: center; background-color: #1a334a; width: 90%; max-width: 800px; border-radius: 30px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); }
     .content.active { display: block; }
 
-    /* --- BUTTONS & ANIMATIONEN --- */
-    .email-button { background-color: #e31d1d; border: none; color: white; padding: 12px 25px; text-decoration: none; border-radius: 20px; display: inline-block; cursor: pointer; font-weight: bold; }
-    .Anrufen-button { background-color: #00aa00; border: none; color: white; padding: 12px 25px; text-decoration: none; border-radius: 20px; display: inline-block; cursor: pointer; font-weight: bold; }
-    .instagram-btn { background-color: #ff69b4; border: none; color: white; padding: 12px 25px; text-decoration: none; border-radius: 20px; display: inline-block; font-weight: bold; }
-    .youtube-btn { background-color: #bb0000; border: none; color: white; padding: 12px 25px; text-decoration: none; border-radius: 20px; display: inline-block; font-weight: bold; }
-    
+    /* BUTTONS & STYLING */
+    .email-button { background-color: #e31d1d; border: none; color: white; padding: 12px 25px; border-radius: 20px; cursor: pointer; font-weight: bold; text-decoration: none; margin: 5px; display: inline-block; }
+    .Anrufen-button { background-color: #00aa00; border: none; color: white; padding: 12px 25px; border-radius: 20px; cursor: pointer; font-weight: bold; text-decoration: none; margin: 5px; display: inline-block; }
     h1 { color: #65FE08; }
     h2 { color: #40E0D0; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -104,7 +48,7 @@
 </head>
 <body>
 
-  <header id="myHeader">
+  <header>
     <nav>
       <a href="#" onclick="showSection('startseite', this)" class="active-link"><span>🏠</span></a>
       <a href="#" onclick="showSection('Angebote', this)"><span>🫱🏾‍🫲🏽</span></a>
@@ -114,22 +58,19 @@
   </header>
 
   <main>
-    <div id="maintenance-bar" style="display: flex; align-items: center; justify-content: center; gap: 15px; padding: 15px; background: rgba(255,0,0,0.8); border-radius: 20px; margin-bottom: 20px; color: white;">
-      <div style="width: 35px; height: 35px; border: 5px solid black; border-top: 5px solid blue; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-      <div>
-        <strong>(500 Internal Server Error) Wird behoben</strong>
-        <div id="countdown-display" style="font-family: monospace; font-weight: bold;">
-          <span id="val-d"></span>:<span id="val-h"></span>:<span id="val-m"></span>:<span id="val-s"></span>
-        </div>
+    <div id="maintenance-bar" style="display: flex; align-items: center; justify-content: center; gap: 15px; padding: 15px; background: rgba(255,0,0,0.8); border-radius: 20px; margin-bottom: 20px; color: white; width: 90%; max-width: 800px;">
+      <div style="width: 30px; height: 30px; border: 4px solid black; border-top: 4px solid blue; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+      <div id="countdown-display" style="font-family: monospace; font-weight: bold;">
+        <span id="val-d"></span>:<span id="val-h"></span>:<span id="val-m"></span>:<span id="val-s"></span>
       </div>
     </div>
 
     <section id="startseite" class="content active">
-      <p style="color: #FF8C00; font-size: 40px; font-weight: 900;"><strong>IT Dienstleistung / OptiCroid</strong></p>
-      <img src="1768734429139.png" style="width:250px; border-radius: 20px;"/><br><br>
+      <p style="color: #FF8C00; font-size: clamp(20px, 5vw, 40px); font-weight: 900;">IT Dienstleistung / OptiCroid</p>
+      <img src="1768734429139.png" style="width:200px; border-radius: 50%; border: 4px solid #65FE08; margin: 20px 0;"/><br>
       <h1>Herzlich Willkommen</h1>
-      <a class="email-button" onclick="handleContact('mailto:opticroid@gmail.com')">E-Mail senden</a>
-      <a class="Anrufen-button" onclick="handleContact('tel:+4915206821179')">Anrufen</a>
+      <a class="email-button" href="mailto:opticroid@gmail.com">E-Mail senden</a>
+      <a class="Anrufen-button" href="tel:+4915206821179">Anrufen</a>
     </section>
 
     <section id="Angebote" class="content">
@@ -141,46 +82,43 @@
     </section>
 
     <section id="Infos" class="content">
-      <a onclick="showSection('Spiele', null)" style="position: absolute; top: 10px; right: 10px; background: #f1c40f; color: black; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 14px;">👀</a>
+      <a onclick="showSection('Spiele', null)" style="position: absolute; top: 15px; right: 15px; background: #f1c40f; color: black; padding: 10px; border-radius: 10px; cursor: pointer;">🎮</a>
       <h1>Informationen</h1>
       <p>OptiCroid - IT Dienstleistung<br>Markus Sieber, Steingaden</p>
-      <a href="https://youtube.com/@tbrasstracks" target="_blank" class="youtube-btn">YouTube</a>
     </section>
 
     <section id="Profil" class="content">
       <h1>Profil</h1>
-      <p>Persönlicher Bereich.</p>
+      <p>Hier kannst du deinen persönlichen Bereich gestalten.</p>
     </section>
 
     <section id="Spiele" class="content">
-      <div id="gameContainer" style="text-align: center; max-width: 800px; margin: auto; padding: 10px; background: #f0f4f8; border-radius: 20px; color: #333;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <div style="font-weight: bold; color: #0056b3;">Guthaben: <span id="totalCoins">0</span></div>
-            <div id="missionPanel" style="background: #fff; padding: 5px 10px; border-radius: 10px; border: 2px solid #0056b3;">
-                <div id="missionList" style="font-size: 12px; cursor: pointer;"></div>
-            </div>
+      <div id="gameContainer" style="text-align: center; background: #f0f4f8; border-radius: 20px; color: #333; padding: 15px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; color: #0056b3;">
+            <div>Guthaben: <span id="totalCoins">0</span></div>
+            <div id="missionList" style="font-size: 12px; cursor: pointer; border: 2px solid #0056b3; padding: 5px; border-radius: 10px;"></div>
         </div>
         <div id="wrapper" style="position: relative; border-radius: 15px; overflow: hidden; border: 5px solid #0056b3; aspect-ratio: 2.5 / 1; background: #fff;">
             <canvas id="game" width="750" height="300" style="width: 100%; height: 100%;"></canvas>
-            <button id="startBtn" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 15px 40px; background: #0056b3; color: white; border-radius: 50px; cursor: pointer; font-weight: bold; border: none;">START</button>
-            <button id="pauseBtn" style="position: absolute; top: 10px; right: 50px; display: none; z-index: 10;">STOPP</button>
+            <button id="startBtn" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 15px 40px; background: #0056b3; color: white; border-radius: 50px; border: none; cursor: pointer; font-weight: bold;">START</button>
+            <button id="pauseBtn" style="position: absolute; top: 10px; right: 50px; display: none;">STOPP</button>
             <button id="fsBtn" style="position: absolute; top: 10px; right: 10px; cursor: pointer; border: none; background: none;">⛶</button>
             <div id="gameOverScreen" style="position: absolute; inset: 0; background: rgba(255,255,255,0.9); display: none; flex-direction: column; align-items: center; justify-content: center;">
-                <h1>A Nuė</h1>
+                <h1>Spiel vorbei</h1>
                 <p id="finalScore"></p>
                 <button id="restartBtn" style="padding: 10px 30px; background: #0056b3; color: white; border-radius: 30px; border: none; cursor: pointer;">NOCHMAL</button>
             </div>
         </div>
         <div id="shopArea" style="margin-top: 15px; background: #fff; padding: 10px; border-radius: 15px;">
-            <div id="charList" style="display: flex; gap: 10px; overflow-x: auto;"></div>
-            <button onclick="resetAllData()" style="font-size: 9px; cursor: pointer;">Reset</button>
+            <div id="charList" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px;"></div>
+            <button onclick="resetAllData()" style="font-size: 9px; cursor: pointer; margin-top: 5px;">Reset Spielstand</button>
         </div>
       </div>
     </section>
   </main>
 
   <script>
-    /* --- WEBSITE FUNKTIONEN --- */
+    /* --- SEITEN-NAVIGATION --- */
     function showSection(id, element) {
       document.querySelectorAll('.content').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
@@ -190,8 +128,7 @@
       }
     }
 
-    function handleContact(url) { window.location.href = url; }
-
+    /* --- COUNTDOWN --- */
     function updateCountdown() {
       const target = new Date("March 14, 2026 19:49:00").getTime();
       const now = new Date().getTime();
@@ -205,7 +142,7 @@
     }
     setInterval(updateCountdown, 1000); updateCountdown();
 
-    /* --- KOMPLETTER SPIEL-CODE --- */
+    /* --- SPIELE-LOGIK --- */
     const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), restartBtn = document.getElementById('restartBtn'), totalEl = document.getElementById('totalCoins'), missionList = document.getElementById('missionList'), gameOverScreen = document.getElementById('gameOverScreen'), charList = document.getElementById('charList'), pauseBtn = document.getElementById('pauseBtn'), fsBtn = document.getElementById('fsBtn'), wrapper = document.getElementById('wrapper');
     const emojis = ["🥶", "🤠", "🐶", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐧", "🐳"];
     let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = localStorage.getItem('selectedEmoji') || "🤠", completedMissionIndex = parseInt(localStorage.getItem('completedMissionIndex')) || -1, missionActive = false;
@@ -216,7 +153,7 @@
     fsBtn.onclick = () => { if (!document.fullscreenElement) wrapper.requestFullscreen(); else document.exitFullscreen(); };
     function resetAllData() { if(confirm("Spielstand löschen?")) { localStorage.clear(); location.reload(); } }
     pauseBtn.onclick = () => { if (!active) return; isPaused = !isPaused; pauseBtn.innerText = isPaused ? "WEITER" : "STOPP"; if (isPaused) pauseStartTime = Date.now(); else { totalPauseTime += Date.now() - pauseStartTime; loop(); } };
-    function updateUI() { totalEl.innerText = wallet; charList.innerHTML = ""; emojis.forEach((e, i) => { const isSpecial = (e === "🥶"), price = isSpecial ? 0 : (i === 0 ? 0 : 50 + (i - 1) * 60), isUnlocked = unlocked.includes(e); const span = document.createElement('div'); span.style.cssText = `padding: 8px; background: #f8f9fa; border-radius: 12px; border: 3px solid ${e === selectedEmoji ? "#0056b3" : "#eee"}; opacity: ${isUnlocked ? "1" : "0.6"}; min-width: 60px; cursor: pointer; flex-shrink: 0;`; span.innerHTML = `<div style="font-size:26px; ${(isSpecial && !isUnlocked) ? 'filter: blur(6px);' : ''}">${e}</div><div style="font-size:10px;font-weight:bold;color:#0056b3">${isUnlocked ? "✔" : (isSpecial ? "Mission" : price)}</div>`; span.onclick = () => { if(isUnlocked) { selectedEmoji = e; saveData(); updateUI(); } else if(!isSpecial && wallet >= price) { wallet -= price; unlocked.push(e); selectedEmoji = e; saveData(); updateUI(); } }; charList.appendChild(span); }); const nextM = missions[completedMissionIndex + 1]; missionList.innerHTML = nextM ? (missionActive ? `🎯 ${nextM.text}` : `🆕 Klick für Mission: ${nextM.text}`) : "🏆 Alle Missionen beendet!"; missionList.onclick = () => { if(nextM) { missionActive = !missionActive; updateUI(); } }; }
+    function updateUI() { totalEl.innerText = wallet; charList.innerHTML = ""; emojis.forEach((e, i) => { const isSpecial = (e === "🥶"), price = isSpecial ? 0 : (i === 0 ? 0 : 50 + (i - 1) * 60), isUnlocked = unlocked.includes(e); const span = document.createElement('div'); span.style.cssText = `padding: 8px; background: #f8f9fa; border-radius: 12px; border: 3px solid ${e === selectedEmoji ? "#0056b3" : "#eee"}; opacity: ${isUnlocked ? "1" : "0.6"}; min-width: 60px; cursor: pointer; flex-shrink: 0;`; span.innerHTML = `<div style="font-size:26px; ${(isSpecial && !isUnlocked) ? 'filter: blur(6px);' : ''}">${e}</div><div style="font-size:10px;font-weight:bold;color:#0056b3">${isUnlocked ? "✔" : (isSpecial ? "Mission" : price)}</div>`; span.onclick = () => { if(isUnlocked) { selectedEmoji = e; saveData(); updateUI(); } else if(!isSpecial && wallet >= price) { wallet -= price; unlocked.push(e); selectedEmoji = e; saveData(); updateUI(); } }; charList.appendChild(span); }); const nextM = missions[completedMissionIndex + 1]; missionList.innerHTML = nextM ? (missionActive ? `🎯 ${nextM.text}` : `🆕 Mission: ${nextM.text}`) : "🏆 Beendet!"; missionList.onclick = () => { if(nextM) { missionActive = !missionActive; updateUI(); } }; }
     function saveData() { localStorage.setItem('totalCoins', wallet); localStorage.setItem('unlockedChars', JSON.stringify(unlocked)); localStorage.setItem('selectedEmoji', selectedEmoji); localStorage.setItem('completedMissionIndex', completedMissionIndex); }
     function resetGame() { if (audioCtx.state === 'suspended') audioCtx.resume(); roundCounter++; active = true; isPaused = false; dino = { x: 70, y: 260, dy: 0, jump: false, duck: false }; objects = []; speed = 8.5; sessionCoins = 0; spawnTimer = 0; startTime = Date.now(); totalPauseTime = 0; rotation = 0; gameOverScreen.style.display = 'none'; btn.style.display = 'none'; pauseBtn.style.display = 'block'; pauseBtn.innerText = "STOPP"; loop(); }
     btn.onclick = resetGame; restartBtn.onclick = resetGame;
