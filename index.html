@@ -100,38 +100,45 @@
     <section id="Profil" class="content">
     <div style="width: 100%; max-width: 800px; margin: 20px auto; background-color: #1a334a; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: 'Segoe UI', sans-serif;">
     
-    <div style="background: #112638; padding: 10px 20px 0; display: flex; align-items: flex-end; gap: 5px; border-bottom: 2px solid rgba(101, 254, 8, 0.3);">
-        <div style="background: #1a334a; color: #65FE08; padding: 8px 20px; border-radius: 12px 12px 0 0; font-size: 13px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05); border-bottom: none;">
-            📄 Editor.txt
-        </div>
+    <div style="background: #112638; padding: 15px; display: flex; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #65FE08;">
+        <button onclick="styleDoc('justifyLeft')" style="cursor:pointer; background:#0c1a26; color:white; border:1px solid #65FE08; border-radius:5px; padding:5px 10px;">Links</button>
+        <button onclick="styleDoc('justifyCenter')" style="cursor:pointer; background:#0c1a26; color:white; border:1px solid #65FE08; border-radius:5px; padding:5px 10px;">Mitte</button>
+        <button onclick="styleDoc('justifyRight')" style="cursor:pointer; background:#0c1a26; color:white; border:1px solid #65FE08; border-radius:5px; padding:5px 10px;">Rechts</button>
+        
+        <input type="color" onchange="styleDoc('foreColor', this.value)" style="height:32px; width:40px; border:none; background:none; cursor:pointer;">
+        <select onchange="styleDoc('fontSize', this.value)" style="background:#0c1a26; color:white; border:1px solid #65FE08; border-radius:5px;">
+            <option value="3">Normal</option>
+            <option value="1">Klein</option>
+            <option value="5">Groß</option>
+            <option value="7">Riesig</option>
+        </select>
+
+        <button onclick="downloadDoc()" style="margin-left:auto; cursor:pointer; background:#65FE08; color:#0c1a26; border:none; border-radius:5px; padding:5px 15px; font-weight:bold;">Speichern (.txt)</button>
     </div>
 
-    <div style="display: flex; gap: 20px; padding: 12px 20px; font-size: 14px; color: rgba(255,255,255,0.7); background: #1a334a;">
-        <span style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#65FE08'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Datei</span>
-        <span style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#65FE08'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Bearbeiten</span>
-        <span style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#65FE08'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Ansicht</span>
-    </div>
+    <div id="optic-editor-area" contenteditable="true" 
+        style="width: 100%; min-height: 400px; padding: 25px; background: #0c1a26; color: #ffffff; font-family: 'Segoe UI', sans-serif; font-size: 16px; outline: none; box-sizing: border-box; overflow-y: auto;"></div>
 
-    <textarea id="opticroid-editor" 
-        style="width: 100%; height: 400px; border: none; outline: none; padding: 25px; background: #0c1a26; color: #ffffff; font-family: 'Consolas', monospace; font-size: 16px; resize: none; box-sizing: border-box; line-height: 1.5;" 
-        spellcheck="false" 
-        placeholder="Schreibe hier etwas..."></textarea>
-
-    <div style="padding: 8px 20px; font-size: 11px; background: #112638; color: #40E0D0; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.05);">
-        <span>Windows (CRLF)</span>
-        <span>UTF-8 | 100%</span>
+    <div style="padding: 8px 20px; font-size: 11px; background: #112638; color: #40E0D0; border-top: 1px solid rgba(255,255,255,0.05);">
+        Status: Bereit (Nicht gespeichert)
     </div>
 </div>
 
 <script>
-    const opticEditor = document.getElementById('opticroid-editor');
-    
-    // Automatisches Speichern im Browser-Speicher
-    opticEditor.value = localStorage.getItem('opticroid_notepad_data') || '';
-    
-    opticEditor.addEventListener('input', () => {
-        localStorage.setItem('opticroid_notepad_data', opticEditor.value);
-    });
+    // Funktion für die Formatierung
+    function styleDoc(cmd, val) {
+        document.execCommand(cmd, false, val);
+    }
+
+    // Funktion für den Download
+    function downloadDoc() {
+        const text = document.getElementById('optic-editor-area').innerText;
+        const blob = new Blob([text], { type: 'text/plain' });
+        const anchor = document.createElement('a');
+        anchor.download = "OptiCroid_Notiz.txt";
+        anchor.href = window.URL.createObjectURL(blob);
+        anchor.click();
+    }
 </script>
      </section>
 </main>   
