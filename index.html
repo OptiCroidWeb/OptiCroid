@@ -98,141 +98,43 @@
     </section>
     
     <section id="Profil" class="content">
-    <div id="loginArea" style="text-align: center; padding-top: 20px;">
-        <div id="passContainer">
-            <input type="password" id="passInput" placeholder="Passwort eingeben" 
-                   style="width: 80%; padding: 12px; border-radius: 8px; border: 1px solid #ccc;" 
-                   oninput="checkPass()">
-        </div>
-        
-        <div id="editorWrapper" style="display: none; background: #fff; color: #000; border-radius: 12px; border: 1px solid #d1d1d1; overflow: hidden; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-top: 10px; font-family: 'Segoe UI', sans-serif;">
-            
-            <div style="background: #f9f9f9; padding: 10px 15px; border-bottom: 1px solid #eee; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                <div style="border: 1px solid #0067c0; border-radius: 4px; overflow: hidden; display: flex;">
-                    <button onclick="downloadText()" style="padding: 5px 15px; border: none; background: #fff; color: #0067c0; cursor: pointer; font-weight: bold;">Download</button>
-                </div>
-                <button onclick="window.print()" style="padding: 5px 15px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer;">Drucken</button>
-                <button onclick="document.getElementById('imgUpload').click()" style="padding: 5px 15px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer;">Bild</button>
-                <input type="file" id="imgUpload" style="display:none" accept="image/*" onchange="insertImage(this)">
-                
-                <div style="height: 20px; border-left: 1px solid #ddd; margin: 0 5px;"></div>
-                
-                <button onclick="exec('bold')" title="Fett"><b>B</b></button>
-                <button onclick="exec('italic')" title="Kursiv"><i>I</i></button>
-                <button onclick="exec('underline')" title="Unterstrichen"><u>U</u></button>
-                <button onclick="exec('strikeThrough')" title="Durchgestrichen"><s>S</s></button>
-                
-                <div style="height: 20px; border-left: 1px solid #ddd; margin: 0 5px;"></div>
-                
-                <button onclick="exec('justifyLeft')">L</button>
-                <button onclick="exec('justifyCenter')">M</button>
-                <button onclick="exec('justifyRight')">R</button>
-                
-                <input type="color" onchange="exec('foreColor', this.value)" style="width: 30px; height: 24px; cursor: pointer;">
-                
-                <button onclick="addTab()" style="padding: 5px 15px; border: 1px solid #ccc; background: #f3f3f3; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: auto;">+ Seite</button>
-            </div>
-            
-            <div id="tabsContainer" style="display: flex; background: #f0f0f0; border-bottom: 1px solid #e0e0e0; overflow-x: auto;"></div>
-            <div id="editArea" contenteditable="true" style="height: 550px; padding: 25px; outline: none; overflow-y: auto; line-height: 1.6; position: relative; background: #fff;"></div>
+    <div style="width: 100%; max-width: 800px; margin: 20px auto; background-color: #1a334a; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: 'Segoe UI', sans-serif;">
+    
+    <div style="background: #112638; padding: 10px 20px 0; display: flex; align-items: flex-end; gap: 5px; border-bottom: 2px solid rgba(101, 254, 8, 0.3);">
+        <div style="background: #1a334a; color: #65FE08; padding: 8px 20px; border-radius: 12px 12px 0 0; font-size: 13px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05); border-bottom: none;">
+            📄 Editor.txt
         </div>
     </div>
 
-    <div id="contextMenu" style="display:none; position: fixed; background: #fff; border: 1px solid #ccc; box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 12px; z-index: 10000; border-radius: 8px; min-width: 160px;">
-        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-            <button onclick="exec('bold')"><b>B</b></button>
-            <button onclick="exec('italic')"><i>I</i></button>
-            <button onclick="exec('underline')"><u>U</u></button>
-            <button onclick="exec('strikeThrough')"><s>S</s></button>
-        </div>
-        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-            <button onclick="exec('justifyLeft')" title="Links">L</button>
-            <button onclick="exec('justifyCenter')" title="Mitte">M</button>
-            <button onclick="exec('justifyRight')" title="Rechts">R</button>
-        </div>
-        <input type="color" onchange="exec('foreColor', this.value)" style="width: 100%; height: 25px; cursor: pointer; border: 1px solid #ddd;">
+    <div style="display: flex; gap: 20px; padding: 12px 20px; font-size: 14px; color: rgba(255,255,255,0.7); background: #1a334a;">
+        <span style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#65FE08'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Datei</span>
+        <span style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#65FE08'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Bearbeiten</span>
+        <span style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#65FE08'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Ansicht</span>
     </div>
 
-    <script>
-        const PASSWORT = "OptiCroid/31_008";
-        let docs = [{ title: "Seite 1", html: "" }];
-        let activeIdx = 0;
+    <textarea id="opticroid-editor" 
+        style="width: 100%; height: 400px; border: none; outline: none; padding: 25px; background: #0c1a26; color: #ffffff; font-family: 'Consolas', monospace; font-size: 16px; resize: none; box-sizing: border-box; line-height: 1.5;" 
+        spellcheck="false" 
+        placeholder="Schreibe hier etwas..."></textarea>
 
-        function checkPass() {
-            if (document.getElementById('passInput').value === PASSWORT) {
-                document.getElementById('passContainer').style.display = "none";
-                document.getElementById('editorWrapper').style.display = "block";
-                renderEditor();
-            }
-        }
+    <div style="padding: 8px 20px; font-size: 11px; background: #112638; color: #40E0D0; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.05);">
+        <span>Windows (CRLF)</span>
+        <span>UTF-8 | 100%</span>
+    </div>
+</div>
 
-        const editor = document.getElementById('editArea');
-        const menu = document.getElementById('contextMenu');
-
-        editor.oncontextmenu = (e) => {
-            e.preventDefault();
-            menu.style.display = 'block';
-            menu.style.left = e.clientX + 'px';
-            menu.style.top = e.clientY + 'px';
-        };
-        window.onclick = () => menu.style.display = 'none';
-
-        // Tastatur-Fixes für Leertaste, Tab, W, S
-        editor.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
-            }
-            if (e.key === ' ') {
-                // Verhindert Standard-Scrollen und sorgt für echtes Leerzeichen
-                // In contenteditable ersetzt das Markierungen automatisch
-            }
-        });
-
-        function exec(cmd, val = null) { document.execCommand(cmd, false, val); }
-
-        function insertImage(input) {
-            if (!input.files[0]) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = `<img src="${e.target.result}" style="width:250px; display:block; margin-bottom:10px;">`;
-                document.execCommand('insertHTML', false, img);
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-
-        function addTab() {
-            save();
-            docs.push({ title: "Seite " + (docs.length + 1), html: "" });
-            activeIdx = docs.length - 1;
-            renderEditor();
-        }
-
-        function renderEditor() {
-            const container = document.getElementById('tabsContainer');
-            container.innerHTML = docs.map((d, i) => `
-                <div onclick="selectTab(${i})" style="padding: 12px 20px; border-right: 1px solid #ddd; cursor: pointer; background: ${i === activeIdx ? '#fff' : '#f0f0f0'}; font-size: 13px; border-top: 3px solid ${i === activeIdx ? '#0067c0' : 'transparent'};">
-                    ${d.title} <span onclick="event.stopPropagation(); removeTab(${i})" style="color:#bbb; margin-left:8px;">×</span>
-                </div>
-            `).join('');
-            editor.innerHTML = docs[activeIdx].html;
-        }
-
-        function selectTab(i) { save(); activeIdx = i; renderEditor(); }
-        function removeTab(i) { if (docs.length > 1) { docs.splice(i, 1); activeIdx = 0; renderEditor(); } }
-        function save() { if (editor) docs[activeIdx].html = editor.innerHTML; }
-        
-        function downloadText() { 
-            save(); 
-            const blob = new Blob([editor.innerText], { type: "text/plain" });
-            const a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
-            a.download = docs[activeIdx].title + ".txt";
-            a.click();
-        }
-    </script>
-</section>
-</main>
+<script>
+    const opticEditor = document.getElementById('opticroid-editor');
+    
+    // Automatisches Speichern im Browser-Speicher
+    opticEditor.value = localStorage.getItem('opticroid_notepad_data') || '';
+    
+    opticEditor.addEventListener('input', () => {
+        localStorage.setItem('opticroid_notepad_data', opticEditor.value);
+    });
+</script>
+     </section>
+</main>   
 
     <section id="Spiele" class="content">
       <div id="gameContainer" style="text-align: center; background: #f0f4f8; border-radius: 20px; color: #333; padding: 15px;">
