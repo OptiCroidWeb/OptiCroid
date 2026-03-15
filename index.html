@@ -98,15 +98,77 @@
     </section>
     
     <section id="Profil" class="content">
-      <div id="loginArea">
-        <input type="password" id="passInput" placeholder="Passwort eingeben" style="width: 80%; padding: 10px; border-radius: 8px;"><br><br>
-        <button onclick="checkPass()" style="background:orange; color:black; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold;">anmelden</button>
-      </div>
-      <div id="secretContent" style="display:none;">
-        <h2 style="color:#65FE08;">Willkommen Markus</h2>
-      </div>
-    </section>
-  </main>
+    <div id="loginArea" style="text-align: center; padding-top: 20px;">
+        <div id="passContainer">
+            <input type="password" id="passInput" placeholder="Passwort eingeben" 
+                   style="width: 80%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-family: sans-serif;" 
+                   oninput="checkPass()">
+        </div>
+        
+        <div id="editorWrapper" style="display: none; background: #ffffff; color: #1a1a1a; border-radius: 12px; border: 1px solid #d1d1d1; overflow: hidden; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.08); margin-top: 10px;">
+            <div style="background: #f9f9f9; padding: 8px 16px; border-bottom: 1px solid #e5e5e5; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; gap: 20px;">
+                    <span style="cursor:pointer; font-weight: 500; color: #444;" onclick="downloadText()">Datei herunterladen</span>
+                </div>
+                <span style="font-size: 11px; color: #888; letter-spacing: 0.5px;">EDITOR V1.0</span>
+            </div>
+            
+            <div style="padding: 10px 15px; background: #ffffff; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 12px;">
+                <button onclick="addTab()" style="padding: 6px 14px; border-radius: 6px; border: 1px solid #c1c1c1; background: #f3f3f3; cursor: pointer; font-size: 13px;">+ Seite</button>
+                <div style="height: 20px; border-left: 1px solid #eee;"></div>
+                <label style="font-size: 12px; color: #555;">Größe:</label>
+                <input type="number" id="fSize" value="16" min="8" max="72" onchange="applySize()" style="width: 45px; padding: 4px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+
+            <div id="tabsContainer" style="display: flex; background: #f0f0f0; border-bottom: 1px solid #e0e0e0; overflow-x: auto;"></div>
+            <div id="editArea" style="height: 500px; padding: 0;"></div>
+        </div>
+    </div>
+
+    <script>
+        const PASSWORT = "OptiCroid/31_008";
+        let docs = [{ id: Date.now(), title: "Seite 1", text: "" }];
+        let activeIdx = 0;
+
+        function checkPass() {
+            if (document.getElementById('passInput').value === PASSWORT) {
+                document.getElementById('passContainer').style.display = "none";
+                document.getElementById('editorWrapper').style.display = "block";
+                renderEditor();
+            }
+        }
+
+        function addTab() {
+            docs.push({ id: Date.now(), title: "Seite " + (docs.length + 1), text: "" });
+            activeIdx = docs.length - 1;
+            renderEditor();
+        }
+
+        function renderEditor() {
+            const container = document.getElementById('tabsContainer');
+            container.innerHTML = docs.map((d, i) => `
+                <div onclick="selectTab(${i})" style="padding: 10px 20px; border-right: 1px solid #e0e0e0; cursor: pointer; background: ${i === activeIdx ? '#ffffff' : '#f0f0f0'}; display: flex; align-items: center; gap: 10px; font-size: 13px; border-top: 3px solid ${i === activeIdx ? '#0067c0' : 'transparent'}; transition: 0.2s;">
+                    ${d.title} <span onclick="event.stopPropagation(); removeTab(${i})" style="color:#aaa; font-size:16px;">×</span>
+                </div>
+            `).join('');
+            
+            const area = document.getElementById('editArea');
+            area.innerHTML = `<textarea id="txtIn" oninput="docs[${activeIdx}].text=this.value" style="width:100%; height:100%; border:none; outline:none; padding:20px; font-family:'Segoe UI Variable', sans-serif; font-size:${document.getElementById('fSize').value}px; resize:none; line-height: 1.6; box-sizing: border-box;">${docs[activeIdx].text}</textarea>`;
+        }
+
+        function selectTab(i) { activeIdx = i; renderEditor(); }
+        function removeTab(i) { if (docs.length > 1) { docs.splice(i, 1); activeIdx = 0; renderEditor(); } }
+        function applySize() { const el = document.getElementById('txtIn'); if (el) el.style.fontSize = document.getElementById('fSize').value + "px"; }
+
+        function downloadText() {
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(new Blob([docs[activeIdx].text], { type: "text/plain" }));
+            a.download = docs[activeIdx].title + ".txt";
+            a.click();
+        }
+    </script>
+</section>
+</main>
 
     <section id="Spiele" class="content">
       <div id="gameContainer" style="text-align: center; background: #f0f4f8; border-radius: 20px; color: #333; padding: 15px;">
