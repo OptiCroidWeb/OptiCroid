@@ -101,39 +101,35 @@
     <div style="width: 100%; max-width: 800px; margin: 20px auto; background-color: #1a334a; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: 'Segoe UI', sans-serif;">
     
     <div style="background: #112638; padding: 15px; display: flex; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #65FE08; align-items: center;">
-        <button onmousedown="event.preventDefault(); document.execCommand('justifyLeft')" style="cursor:pointer; background:#0c1a26; color:white; border:1px solid #65FE08; border-radius:8px; padding:5px 12px;">Links</button>
-        <button onmousedown="event.preventDefault(); document.execCommand('justifyCenter')" style="cursor:pointer; background:#0c1a26; color:white; border:1px solid #65FE08; border-radius:8px; padding:5px 12px;">Mitte</button>
-        <button onmousedown="event.preventDefault(); document.execCommand('justifyRight')" style="cursor:pointer; background:#0c1a26; color:white; border:1px solid #65FE08; border-radius:8px; padding:5px 12px;">Rechts</button>
+        <button onmousedown="event.preventDefault(); execCmd('justifyLeft')" style="cursor:pointer; background:#0c1a26; color:white; border:1px solid #65FE08; border-radius:8px; padding:5px 12px;">Links</button>
+        <button onmousedown="event.preventDefault(); execCmd('justifyCenter')" style="cursor:pointer; background:#0c1a26; color:white; border:1px solid #65FE08; border-radius:8px; padding:5px 12px;">Mitte</button>
+        <button onmousedown="event.preventDefault(); execCmd('justifyRight')" style="cursor:pointer; background:#0c1a26; color:white; border:1px solid #65FE08; border-radius:8px; padding:5px 12px;">Rechts</button>
         
-        <input type="color" oninput="document.execCommand('foreColor', false, this.value)" onmousedown="focusEditor()" style="height:32px; width:40px; border:none; background:none; cursor:pointer;">
+        <input type="color" oninput="execCmd('foreColor', this.value)" style="height:32px; width:40px; border:none; background:none; cursor:pointer;">
         
-        <select id="fontSizeSelect" onchange="document.execCommand('fontSize', false, this.value)" onmousedown="focusEditor()" style="background:#0c1a26; color:white; border:1px solid #65FE08; border-radius:8px; padding:4px;">
-            <option value="1">10px</option>
-            <option value="2">13px</option>
-            <option value="3" selected>16px</option>
-            <option value="4">18px</option>
-            <option value="5">24px</option>
-            <option value="6">32px</option>
-            <option value="7">48px</option>
+        <select onchange="execCmd('fontSize', this.value)" style="background:#0c1a26; color:white; border:1px solid #65FE08; border-radius:8px; padding:4px;">
+            <option value="1">10</option>
+            <option value="2">13</option>
+            <option value="3" selected>16</option>
+            <option value="4">18</option>
+            <option value="5">24</option>
+            <option value="6">32</option>
+            <option value="7">48</option>
         </select>
 
-        <button onclick="downloadAsTxt()" style="margin-left:auto; cursor:pointer; background:#65FE08; color:#0c1a26; border:none; border-radius:8px; padding:7px 18px; font-weight:bold;">Datei Speichern</button>
+        <button onclick="downloadAsTxt()" style="margin-left:auto; cursor:pointer; background:#65FE08; color:#0c1a26; border:none; border-radius:8px; padding:7px 18px; font-weight:bold;">Speichern</button>
     </div>
 
     <div style="background: #0c1a26; padding: 20px; display: flex; justify-content: center; overflow-y: auto; max-height: 80vh;">
         <div id="optic-editor" contenteditable="true" 
-            style="width: 100%; aspect-ratio: 1 / 1.414; max-width: 210mm; background: white; color: black; padding: 20mm; box-sizing: border-box; outline: none; box-shadow: 0 0 15px rgba(0,0,0,0.3); font-size: 16px; line-height: 1.5; overflow-wrap: break-word;"></div>
-    </div>
-
-    <div style="padding: 8px 20px; font-size: 11px; background: #112638; color: #40E0D0; border-top: 1px solid rgba(255,255,255,0.05);">
-        DIN A4 Format | Schriftgröße in Stufen (1-7)
+            style="width: 100%; aspect-ratio: 1 / 1.414; max-width: 210mm; background: white; color: black; padding: 20mm; box-sizing: border-box; outline: none; box-shadow: 0 0 15px rgba(0,0,0,0.3); font-size: 16px; line-height: 1.5; text-align: left; display: block;"></div>
     </div>
 </div>
 
 <script>
-    function focusEditor() {
-        // Verhindert Fokusverlust beim Klicken auf Controls
-        setTimeout(() => document.getElementById('optic-editor').focus(), 1);
+    function execCmd(cmd, value = null) {
+        document.execCommand(cmd, false, value);
+        document.getElementById('optic-editor').focus();
     }
 
     function downloadAsTxt() {
