@@ -105,15 +105,31 @@
                    oninput="checkPass()">
         </div>
         
-        <div id="editorWrapper" style="display: none; background: #fff; color: #000; border-radius: 12px; border: 1px solid #d1d1d1; overflow: hidden; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-top: 10px; font-family: 'Segoe UI', sans-serif; position: relative;">
+        <div id="editorWrapper" style="display: none; background: #fff; color: #000; border-radius: 12px; border: 1px solid #d1d1d1; overflow: hidden; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-top: 10px; font-family: 'Segoe UI', sans-serif;">
             
-            <div style="background: #f9f9f9; padding: 10px 15px; border-bottom: 1px solid #eee; display: flex; gap: 10px;">
+            <div style="background: #f9f9f9; padding: 10px 15px; border-bottom: 1px solid #eee; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
                 <div style="border: 1px solid #0067c0; border-radius: 4px; overflow: hidden; display: flex;">
                     <button onclick="downloadText()" style="padding: 5px 15px; border: none; background: #fff; color: #0067c0; cursor: pointer; font-weight: bold;">Download</button>
                 </div>
                 <button onclick="window.print()" style="padding: 5px 15px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer;">Drucken</button>
+                <button onclick="document.getElementById('imgUpload').click()" style="padding: 5px 15px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer;">Bild</button>
                 <input type="file" id="imgUpload" style="display:none" accept="image/*" onchange="insertImage(this)">
-                <button onclick="document.getElementById('imgUpload').click()" style="padding: 5px 15px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer;">Bild einfügen</button>
+                
+                <div style="height: 20px; border-left: 1px solid #ddd; margin: 0 5px;"></div>
+                
+                <button onclick="exec('bold')" title="Fett"><b>B</b></button>
+                <button onclick="exec('italic')" title="Kursiv"><i>I</i></button>
+                <button onclick="exec('underline')" title="Unterstrichen"><u>U</u></button>
+                <button onclick="exec('strikeThrough')" title="Durchgestrichen"><s>S</s></button>
+                
+                <div style="height: 20px; border-left: 1px solid #ddd; margin: 0 5px;"></div>
+                
+                <button onclick="exec('justifyLeft')">L</button>
+                <button onclick="exec('justifyCenter')">M</button>
+                <button onclick="exec('justifyRight')">R</button>
+                
+                <input type="color" onchange="exec('foreColor', this.value)" style="width: 30px; height: 24px; cursor: pointer;">
+                
                 <button onclick="addTab()" style="padding: 5px 15px; border: 1px solid #ccc; background: #f3f3f3; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: auto;">+ Seite</button>
             </div>
             
@@ -123,32 +139,23 @@
     </div>
 
     <div id="contextMenu" style="display:none; position: fixed; background: #fff; border: 1px solid #ccc; box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 12px; z-index: 10000; border-radius: 8px; min-width: 160px;">
-        <div style="display: flex; gap: 5px; margin-bottom: 10px; justify-content: space-between;">
-            <button onclick="exec('bold')" style="width: 30px; height: 30px; font-weight: bold;">B</button>
-            <button onclick="exec('italic')" style="width: 30px; height: 30px; font-style: italic;">I</button>
-            <button onclick="exec('underline')" style="width: 30px; height: 30px; text-decoration: underline;">U</button>
-            <button onclick="exec('strikeThrough')" style="width: 30px; height: 30px; text-decoration: line-through;">S</button>
+        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+            <button onclick="exec('bold')"><b>B</b></button>
+            <button onclick="exec('italic')"><i>I</i></button>
+            <button onclick="exec('underline')"><u>U</u></button>
+            <button onclick="exec('strikeThrough')"><s>S</s></button>
         </div>
-        <div style="font-size: 11px; color: #666; margin-bottom: 4px;">Textfarbe:</div>
-        <input type="color" onchange="exec('foreColor', this.value)" style="width: 100%; height: 25px; cursor: pointer; border: 1px solid #ddd; margin-bottom: 10px;">
-        <select onchange="exec('fontSize', this.value)" style="width: 100%; padding: 4px; border-radius: 4px;">
-            <option value="3">Normal</option>
-            <option value="5">Groß</option>
-            <option value="7">Riesig</option>
-        </select>
+        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+            <button onclick="exec('justifyLeft')" title="Links">L</button>
+            <button onclick="exec('justifyCenter')" title="Mitte">M</button>
+            <button onclick="exec('justifyRight')" title="Rechts">R</button>
+        </div>
+        <input type="color" onchange="exec('foreColor', this.value)" style="width: 100%; height: 25px; cursor: pointer; border: 1px solid #ddd;">
     </div>
-
-    <style>
-        .resizable-img { position: relative; display: inline-block; cursor: move; line-height: 0; margin: 10px 0; border: 1px dashed transparent; }
-        .resizable-img:hover { border-color: #0067c0; }
-        .resizable-img img { display: block; width: 250px; user-select: none; }
-        .resizer { width: 12px; height: 12px; background: #0067c0; position: absolute; right: -6px; bottom: -6px; cursor: nwse-resize; border-radius: 2px; }
-        .rotator { width: 12px; height: 12px; background: #2ecc71; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); border-radius: 50%; cursor: alias; border: 1px solid #fff; }
-    </style>
 
     <script>
         const PASSWORT = "OptiCroid/31_008";
-        let docs = [{ title: "Seite 1", html: "Hier schreiben..." }];
+        let docs = [{ title: "Seite 1", html: "" }];
         let activeIdx = 0;
 
         function checkPass() {
@@ -159,8 +166,10 @@
             }
         }
 
+        const editor = document.getElementById('editArea');
         const menu = document.getElementById('contextMenu');
-        document.getElementById('editArea').oncontextmenu = (e) => {
+
+        editor.oncontextmenu = (e) => {
             e.preventDefault();
             menu.style.display = 'block';
             menu.style.left = e.clientX + 'px';
@@ -168,42 +177,28 @@
         };
         window.onclick = () => menu.style.display = 'none';
 
+        // Tastatur-Fixes für Leertaste, Tab, W, S
+        editor.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
+            }
+            if (e.key === ' ') {
+                // Verhindert Standard-Scrollen und sorgt für echtes Leerzeichen
+                // In contenteditable ersetzt das Markierungen automatisch
+            }
+        });
+
         function exec(cmd, val = null) { document.execCommand(cmd, false, val); }
 
         function insertImage(input) {
             if (!input.files[0]) return;
             const reader = new FileReader();
             reader.onload = (e) => {
-                const container = document.createElement('div');
-                container.className = 'resizable-img';
-                container.contentEditable = 'false';
-                container.innerHTML = `<div class="rotator"></div><img src="${e.target.result}"><div class="resizer"></div>`;
-                document.getElementById('editArea').prepend(container);
-                initImg(container);
+                const img = `<img src="${e.target.result}" style="width:250px; display:block; margin-bottom:10px;">`;
+                document.execCommand('insertHTML', false, img);
             };
             reader.readAsDataURL(input.files[0]);
-        }
-
-        function initImg(div) {
-            const img = div.querySelector('img');
-            const res = div.querySelector('.resizer');
-            const rot = div.querySelector('.rotator');
-            let angle = 0;
-
-            res.onmousedown = (e) => {
-                e.preventDefault();
-                const startW = img.width; const startX = e.clientX;
-                const move = (m) => { img.style.width = (startW + (m.clientX - startX)) + 'px'; };
-                const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
-                window.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
-            };
-
-            rot.onmousedown = (e) => {
-                e.preventDefault();
-                const move = (m) => { angle += m.movementX * 2; img.style.transform = `rotate(${angle}deg)`; };
-                const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
-                window.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
-            };
         }
 
         function addTab() {
@@ -220,13 +215,21 @@
                     ${d.title} <span onclick="event.stopPropagation(); removeTab(${i})" style="color:#bbb; margin-left:8px;">×</span>
                 </div>
             `).join('');
-            document.getElementById('editArea').innerHTML = docs[activeIdx].html;
+            editor.innerHTML = docs[activeIdx].html;
         }
 
         function selectTab(i) { save(); activeIdx = i; renderEditor(); }
         function removeTab(i) { if (docs.length > 1) { docs.splice(i, 1); activeIdx = 0; renderEditor(); } }
-        function save() { if (document.getElementById('editArea')) docs[activeIdx].html = document.getElementById('editArea').innerHTML; }
-        function downloadText() { save(); const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([document.getElementById('editArea').innerText], { type: "text/plain" })); a.download = docs[activeIdx].title + ".txt"; a.click(); }
+        function save() { if (editor) docs[activeIdx].html = editor.innerHTML; }
+        
+        function downloadText() { 
+            save(); 
+            const blob = new Blob([editor.innerText], { type: "text/plain" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = docs[activeIdx].title + ".txt";
+            a.click();
+        }
     </script>
 </section>
 </main>
