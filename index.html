@@ -178,19 +178,70 @@
       }
     }
 
-    /* --- COUNTDOWN --- */
-    function updateCountdown() {
-      const target = new Date("March 21, 2026 20:00:00").getTime();
-      const now = new Date().getTime();
-      const diff = target - now;
-      if (diff <= 0) { document.getElementById("maintenance-bar").style.display = "none"; return; }
-      const d = Math.floor(diff / (1000 * 60 * 60 * 24)), h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)), s = Math.floor((diff % (1000 * 60)) / 1000);
-      document.getElementById("val-d").innerText = String(d).padStart(2, '0');
-      document.getElementById("val-h").innerText = String(h).padStart(2, '0');
-      document.getElementById("val-m").innerText = String(m).padStart(2, '0');
-      document.getElementById("val-s").innerText = String(s).padStart(2, '0');
+    /* --- COUNTDOWN & LOADING LOGIK --- */
+function updateCountdown() {
+    const target = new Date("March 21, 2026 20:20:00").getTime();
+    const now = new Date().getTime();
+    const diff = target - now;
+    const overlay = document.getElementById("maintenance-overlay");
+    const oldBar = document.getElementById("maintenance-bar");
+
+    if (diff <= 0) {
+        if (overlay) overlay.style.display = "none";
+        if (oldBar) oldBar.style.display = "none";
+        return;
     }
-    setInterval(updateCountdown, 1000); updateCountdown();
+
+    // Zeige das Overlay nur, wenn noch nicht in dieser Session freigeschaltet
+    if (overlay && !sessionStorage.getItem('siteUnlocked')) {
+        overlay.style.display = "flex";
+    }
+
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24)), 
+          h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), 
+          m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)), 
+          s = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    // Befüllt die Zahlen im Overlay
+    const elD = document.getElementById("val-d"), elH = document.getElementById("val-h"), 
+          elM = document.getElementById("val-m"), elS = document.getElementById("val-s");
+    
+    if (elD) elD.innerText = String(d).padStart(2, '0');
+    if (elH) elH.innerText = String(h).padStart(2, '0');
+    if (elM) elM.innerText = String(m).padStart(2, '0');
+    if (elS) elS.innerText = String(s).padStart(2, '0');
+}
+
+function startLoadingSimulation() {
+    const step1 = document.getElementById('m-content-step1');
+    const step2 = document.getElementById('m-content-step2');
+    const txt = document.getElementById('loading-text');
+    const container = document.getElementById('loading-container');
+
+    if (step1) step1.style.display = 'none';
+    if (step2) step2.style.display = 'block';
+
+    // Ablauf der Texte und Animation (Gesamt 20 Sek.)
+    setTimeout(() => { if(txt) txt.innerText = "Sie werden gleich freigegeben"; }, 5000);
+    
+    setTimeout(() => { 
+        if(txt) txt.innerText = "Willkommen"; 
+        if(container) {
+            container.style.transform = "scale(1.8)";
+            container.style.opacity = "0";
+            container.style.transition = "all 5s ease-in-out";
+        }
+    }, 15000);
+
+    setTimeout(() => { 
+        const overlay = document.getElementById('maintenance-overlay');
+        if (overlay) overlay.style.display = 'none';
+        sessionStorage.setItem('siteUnlocked', 'true'); 
+    }, 20000);
+}
+
+setInterval(updateCountdown, 1000); 
+updateCountdown();
     
 /* --- NEUE LOGIK FÜR DIREKT-LINKS --- */
     window.addEventListener('load', () => {
