@@ -60,12 +60,27 @@
   </header>
 
   <main>
-    <div id="maintenance-bar" style="display: flex; align-items: center; justify-content: center; gap: 15px; padding: 15px; background: rgba(255,0,0,0.8); border-radius: 20px; margin-bottom: 20px; color: white; width: 90%; max-width: 800px;">
-      <div style="width: 30px; height: 30px; border: 4px solid black; border-top: 4px solid blue; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-      <div id="countdown-display" style="font-family: monospace; font-weight: bold;">
-        <span id="val-d"></span>:<span id="val-h"></span>:<span id="val-m"></span>:<span id="val-s"></span>
+    <div id="maintenance-overlay" style="position: fixed; inset: 0; background: #0c1a26; z-index: 20000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;">
+  
+  <div id="m-content-step1">
+    <div style="background: rgba(150, 0, 0, 0.9); padding: 40px; border-radius: 30px; border: 3px solid red; box-shadow: 0 0 60px rgba(255,0,0,0.4);">
+      <h1 style="color: white; margin: 0 0 20px 0; font-size: 28px;">Wartungsarbeiten</h1>
+      <div style="font-family: monospace; font-size: 45px; font-weight: bold; color: white; margin-bottom: 30px;">
+        <span id="val-d">00</span>:<span id="val-h">00</span>:<span id="val-m">00</span>:<span id="val-s">00</span>
       </div>
+      <button onclick="startLoadingSimulation()" style="background: white; color: #cc0000; border: none; padding: 18px 35px; border-radius: 50px; font-weight: 900; cursor: pointer; font-size: 18px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+        Seite trotzdem besuchen
+      </button>
     </div>
+  </div>
+
+  <div id="m-content-step2" style="display: none;">
+    <div id="loading-container" style="transition: all 5s ease-in-out;">
+      <div style="width: 90px; height: 90px; border: 10px solid rgba(255,255,255,0.1); border-top: 10px solid #65FE08; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 40px;"></div>
+      <h2 id="loading-text" style="color: #65FE08; font-family: 'Segoe UI', sans-serif; font-size: 24px; font-weight: 300;">Einen Moment</h2>
+    </div>
+  </div>
+</div>
 
     <section id="startseite" class="content active">
       <p style="color: #FF8C00; font-size: clamp(20px, 5vw, 40px); font-weight: 900;">IT Dienstleistung / OptiCroid</p>
