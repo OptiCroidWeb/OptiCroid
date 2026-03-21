@@ -112,8 +112,23 @@
       
       <div style="display: flex; align-items: center; gap: 15px; margin: 10px 0;">
         <p style="color: #65FE08; font-size: 24px; font-weight: bold; margin: 0;">15,00 €</p>
-        <button onclick="navigator.share({title: 'OptiCroid Produkt', url: window.location.href.split('#')[0] + '#Produkte'})" 
-                style="background: rgba(255,255,255,0.1); border: none; cursor: pointer; padding: 5px 10px; border-radius: 10px; color: #40E0D0; font-size: 16px; display: flex; align-items: center; gap: 5px;">
+        
+        <button onclick="
+          const url = window.location.href.split('#')[0] + '#Produkte';
+          const btn = this;
+          const oldHTML = btn.innerHTML;
+          if (navigator.share) {
+            navigator.share({ title: 'OptiCroid Produkt', url: url }).catch(() => {});
+          } else {
+            navigator.clipboard.writeText(url);
+            btn.innerHTML = '<span>✅</span> <small style=\'font-size: 10px;\'>Kopiert!</small>';
+            btn.style.color = '#65FE08';
+            setTimeout(() => { 
+              btn.innerHTML = oldHTML; 
+              btn.style.color = '#40E0D0'; 
+            }, 2000);
+          }" 
+          style="background: rgba(255,255,255,0.1); border: none; cursor: pointer; padding: 5px 10px; border-radius: 10px; color: #40E0D0; font-size: 16px; display: flex; align-items: center; gap: 5px; transition: 0.3s;">
           <span>🔗</span> <small style="font-size: 10px;">Teilen</small>
         </button>
       </div>
