@@ -191,7 +191,18 @@
       document.getElementById("val-s").innerText = String(s).padStart(2, '0');
     }
     setInterval(updateCountdown, 1000); updateCountdown();
-
+    
+/* --- NEUE LOGIK FÜR DIREKT-LINKS --- */
+    window.addEventListener('load', () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        // Sucht den passenden Link im Menü anhand der ID im Link
+        const targetLink = document.querySelector(`nav a[onclick*='${hash}']`);
+        if (targetLink) {
+          showSection(hash, targetLink);
+        }
+      }
+    });
     /* --- SPIELE-LOGIK --- */
     const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), restartBtn = document.getElementById('restartBtn'), totalEl = document.getElementById('totalCoins'), missionList = document.getElementById('missionList'), gameOverScreen = document.getElementById('gameOverScreen'), charList = document.getElementById('charList'), pauseBtn = document.getElementById('pauseBtn'), fsBtn = document.getElementById('fsBtn'), wrapper = document.getElementById('wrapper');
     const emojis = ["🥶", "🤠", "🐶", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐧", "🐳"];
