@@ -98,7 +98,7 @@
     </section>
     
     <section id="Produkte" class="content">
-  <h1 style="margin-botton: 30px;">Verkaufsangebote</h1>
+  <h1 style="margin-bottom: 30px;">Verkaufsangebote</h1>
   
   <div style="background: #112638; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; align-items: center; max-width: 400px; margin: 0 auto; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
     
@@ -108,11 +108,18 @@
 
     <div style="text-align: left; width: 100%;">
       <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin: 0;">Angebot</p>
-      <h3 style="margin: 5px 0; color: #ffffff;">Wirelles Gaming Maus</h3>
-      <p style="color: #65FE08; font-size: 24px; font-weight: bold; margin: 10px 0;">15,00 €</p>
+      <h3 style="margin: 5px 0; color: #ffffff;">Wireless Gaming Maus</h3>
+      
+      <div style="display: flex; align-items: center; gap: 15px; margin: 10px 0;">
+        <p style="color: #65FE08; font-size: 24px; font-weight: bold; margin: 0;">15,00 €</p>
+        <button onclick="navigator.share({title: 'OptiCroid Produkt', url: window.location.href.split('#')[0] + '#Produkte'})" 
+                style="background: rgba(255,255,255,0.1); border: none; cursor: pointer; padding: 5px 10px; border-radius: 10px; color: #40E0D0; font-size: 16px; display: flex; align-items: center; gap: 5px;">
+          <span>🔗</span> <small style="font-size: 10px;">Teilen</small>
+        </button>
+      </div>
     </div>
 
-    <a href="mailto:opticroid@gmail.com?subject=Interesse an Produkt&body=Hallo, ich habe Interesse an dem Produkt..." 
+    <a href="mailto:opticroid@gmail.com?subject=Interesse an Produkt&body=Hallo, ich habe Interesse an der Wireless Gaming Maus..." 
        style="background-color: #f1c40f; color: #000; text-decoration: none; padding: 15px; width: 100%; border-radius: 50px; font-weight: bold; margin-top: 20px; transition: 0.3s; text-align: center;">
        Artikel erwerben
     </a>
