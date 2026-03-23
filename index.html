@@ -99,7 +99,6 @@
     </section>
 
     <section id="Infos" class="content">
-      <a onclick="showSection('Spiele')" style="position: absolute; top: 10px; right: 10px; background: #f1c40f; color: black; padding: 4px 7px; border-radius: 4px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 7px; z-index: 10;">⛄</a>
       <h1 style="color:#65FE08;text-align: center;">Infos</h1>
       <p style="font-size: 18px;"><br><br>Fehlerbehebung und gute Zusammenarbeit</p>
       <p style="font-size: 18px;"><br>___</p><br>
@@ -197,31 +196,6 @@
   </div>
 </section>
     </main>
-  
-    <section id="Spiele" class="content">
-      <div id="gameContainer" style="width: 100%; text-align: center; background: #112638; border-radius: 30px; color: #ffffff; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); font-family: 'Segoe UI', sans-serif;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 10px;">
-            <div style="background: rgba(101, 254, 8, 0.1); padding: 8px 16px; border-radius: 15px; font-weight: 700; color: #65FE08; border: 1px solid rgba(101, 254, 8, 0.3);">🪙 <span id="totalCoins">0</span></div>
-            <div id="missionList" style="font-size: 13px; font-weight: 600; cursor: pointer; background: rgba(64, 224, 208, 0.1); color: #40E0D0; padding: 8px 16px; border-radius: 15px; border: 1px solid rgba(64, 224, 208, 0.3); transition: 0.3s;"></div>
-        </div>
-        <div id="wrapper" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5); aspect-ratio: 2.5 / 1; background: #0c1a26; margin: 0 auto; border: 1px solid rgba(255,255,255,0.1);">
-            <canvas id="game" width="750" height="300" style="width: 100%; height: 100%; display: block;"></canvas>
-            <button id="startBtn" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 18px 45px; background: #65FE08; color: #0c1a26; border-radius: 50px; border: none; cursor: pointer; font-weight: 900; font-size: 18px; letter-spacing: 1px; box-shadow: 0 0 20px rgba(101, 254, 8, 0.4);">START</button>
-            <button id="pauseBtn" style="position: absolute; top: 15px; right: 60px; display: none; background: rgba(255,255,255,0.1); border: none; color: white; padding: 5px 12px; border-radius: 8px; cursor: pointer; font-size: 12px;">STOPP</button>
-            <button id="fsBtn" style="position: absolute; top: 15px; right: 15px; cursor: pointer; border: none; background: rgba(255,255,255,0.1); color: white; padding: 5px; border-radius: 8px; width: 30px;">⛶</button>
-            <div id="gameOverScreen" style="position: absolute; inset: 0; background: rgba(12, 26, 38, 0.9); backdrop-filter: blur(4px); display: none; flex-direction: column; align-items: center; justify-content: center; color: white; z-index: 10;">
-                <h1 style="margin: 0; font-size: 32px; color: #e31d1d;">Spiel vorbei</h1>
-                <p style="font-size: 48px; font-weight: 800; margin: 10px 0; color: #65FE08;" id="finalScore"></p>
-                <button id="restartBtn" style="padding: 12px 35px; background: #40E0D0; color: #0c1a26; border-radius: 50px; border: none; cursor: pointer; font-weight: bold; font-size: 16px;">ERNEUT VERSUCHEN</button>
-            </div>
-        </div>
-        <div id="shopArea" style="margin-top: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
-            <div id="charList" style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; scroll-behavior: smooth;"></div>
-            <button onclick="resetAllData()" style="font-size: 10px; color: rgba(255,255,255,0.3); cursor: pointer; margin-top: 10px; background: none; border: none; text-decoration: underline;">Spielstand zurücksetzen</button>
-        </div>
-      </div>
-    </section>
-  </main>
 
   <script>
     /* --- SEITEN-NAVIGATION --- */
@@ -307,94 +281,6 @@ updateCountdown();
         const targetLink = document.querySelector(`nav a[onclick*='${hash}']`);
         if (targetLink) {
           showSection(hash, targetLink);
-        }
-      }
-    });
-    /* --- SPIELE-LOGIK --- */
-    const canvas = document.getElementById('game'), ctx = canvas.getContext('2d'), btn = document.getElementById('startBtn'), restartBtn = document.getElementById('restartBtn'), totalEl = document.getElementById('totalCoins'), missionList = document.getElementById('missionList'), gameOverScreen = document.getElementById('gameOverScreen'), charList = document.getElementById('charList'), pauseBtn = document.getElementById('pauseBtn'), fsBtn = document.getElementById('fsBtn'), wrapper = document.getElementById('wrapper');
-    const emojis = ["🥶", "🤠", "🐶", "😎", "🤩", "🤑", "💩", "👽", "⛄", "🥵", "😈", "🤖", "🐯", "🦄", "🐧", "🐳"];
-    let unlocked = JSON.parse(localStorage.getItem('unlockedChars')) || ["🤠"], wallet = parseInt(localStorage.getItem('totalCoins')) || 0, selectedEmoji = localStorage.getItem('selectedEmoji') || "🤠", completedMissionIndex = parseInt(localStorage.getItem('completedMissionIndex')) || -1, missionActive = false;
-    let active = false, isPaused = false, dino, objects, speed, sessionCoins, startTime, pauseStartTime, totalPauseTime = 0, spawnTimer, roundCounter = 0, rotation = 0;
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playSound(freq, type, dur) { try { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime); osc.connect(gain); gain.connect(audioCtx.destination); gain.gain.setValueAtTime(0.05, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + dur); osc.start(); osc.stop(audioCtx.currentTime + dur); } catch(e) {} }
-    const missions = [{ text: "Sammle 100🌭", goal: 100, reward: 30, type: 'coins' }, { text: "Überlebe 75s", goal: 75, reward: 40, type: 'time' }, { text: "Sammle 40🎃", goal: 40, reward: 50, type: 'balloons' }, { text: "ULTRA: Pro-Lauf", goal: 120, reward: "🥶", type: 'ultra' }];
-    fsBtn.onclick = () => { if (!document.fullscreenElement) wrapper.requestFullscreen(); else document.exitFullscreen(); };
-    function resetAllData() { if(confirm("Spielstand wirklich löschen?")) { localStorage.clear(); location.reload(); } }
-    pauseBtn.onclick = () => { if (!active) return; isPaused = !isPaused; pauseBtn.innerText = isPaused ? "WEITER" : "STOPP"; if (isPaused) pauseStartTime = Date.now(); else { totalPauseTime += Date.now() - pauseStartTime; loop(); } };
-    
-    function updateUI() { 
-        totalEl.innerText = wallet; 
-        charList.innerHTML = ""; 
-        emojis.forEach((e, i) => { 
-            const isSpecial = (e === "🥶"), price = isSpecial ? 0 : (i === 0 ? 0 : 50 + (i - 1) * 60), isUnlocked = unlocked.includes(e); 
-            const span = document.createElement('div'); 
-            span.style.cssText = `padding: 10px; background: #1a334a; border-radius: 15px; border: 3px solid ${e === selectedEmoji ? "#65FE08" : "transparent"}; box-shadow: 0 4px 10px rgba(0,0,0,0.3); opacity: ${isUnlocked ? "1" : "0.5"}; min-width: 70px; cursor: pointer; flex-shrink: 0; transition: transform 0.1s; color: white;`; 
-            span.innerHTML = `<div style="font-size:28px; margin-bottom:4px; ${(isSpecial && !isUnlocked) ? 'filter: blur(6px);' : ''}">${e}</div><div style="font-size:11px;font-weight:800;color:#40E0D0">${isUnlocked ? "AKTIV" : (isSpecial ? "QUEST" : price + " 🪙")}</div>`; 
-            span.onclick = () => { if(isUnlocked) { selectedEmoji = e; saveData(); updateUI(); } else if(!isSpecial && wallet >= price) { wallet -= price; unlocked.push(e); selectedEmoji = e; saveData(); updateUI(); } }; 
-            charList.appendChild(span); 
-        }); 
-        const nextM = missions[completedMissionIndex + 1]; 
-        missionList.innerHTML = nextM ? (missionActive ? `🎯 ${nextM.text}` : `🆕 Mission: ${nextM.text}`) : "🏆 Alle Ziele erreicht!"; 
-        missionList.onclick = () => { if(nextM) { missionActive = !missionActive; updateUI(); } }; 
-    }
-
-    function loop() { 
-        if(!active || isPaused) return; 
-        ctx.clearRect(0,0,750,300); 
-        speed += 0.0018; 
-        let isAlt = (roundCounter % 2 === 0), coinImg = isAlt ? "🎃" : "🌭"; 
-        let timePassed = Math.floor((Date.now() - startTime - totalPauseTime)/1000); 
-        
-        ctx.fillStyle = "#0c1a26"; 
-        ctx.fillRect(0,0,750,300); 
-        ctx.fillStyle = "#65FE08"; 
-        ctx.fillRect(0,258,750,2); 
-        
-        ctx.shadowBlur = 0; 
-        ctx.fillStyle = "rgba(255,255,255,0.9)"; 
-        ctx.font = "bold 22px 'Segoe UI', sans-serif"; 
-        ctx.textAlign = "left"; 
-        ctx.fillText(`${coinImg} ${sessionCoins}`, 25, 40); 
-        ctx.textAlign = "right"; 
-        ctx.fillText(`⏱️ ${timePassed}s`, 725, 40); 
-        
-        dino.dy += 1.1; 
-        dino.y += dino.dy; 
-        if(dino.y >= 260) { dino.y = 260; dino.dy = 0; dino.jump = false; rotation = 0; } 
-        
-        ctx.save(); 
-        ctx.translate(dino.x + 20, dino.y - (dino.duck ? 15 : 25)); 
-        if(dino.jump) { rotation += 0.22; ctx.rotate(rotation); } 
-        ctx.font = dino.duck ? "42px serif" : "58px serif"; 
-        ctx.textAlign = "center"; 
-        ctx.textBaseline = "middle"; 
-        ctx.fillText(selectedEmoji, 0, 0); 
-        ctx.restore(); 
-        
-        if(--spawnTimer <= 0) { 
-            let type = Math.random(); 
-            if(type < 0.45) { for(let k=0; k<5; k++) objects.push({x: 800 + (k * 35), y: 235, t: coinImg}); spawnTimer = 45; } 
-            else { let isDuck = Math.random() > 0.5; objects.push({x: 820, y: isDuck ? 205 : 260, t: isDuck ? (isAlt ? "🌩️" : "🦅") : (isAlt ? "🐄" : "🌵")}); spawnTimer = 60; } 
-        } 
-        
-        for(let i = objects.length - 1; i >= 0; i--) { 
-            let obj = objects[i]; 
-            obj.x -= speed; 
-            ctx.font = (obj.t === "🌭" || obj.t === "🎃") ? "26px serif" : "48px serif"; 
-            ctx.textAlign = "center"; 
-            ctx.fillText(obj.t, obj.x, obj.y); 
-            if(dino.x < obj.x + 22 && dino.x + 32 > obj.x - 22) { 
-                if (obj.t === coinImg) { 
-                    if (dino.y > obj.y - 55 && dino.y - 65 < obj.y) { sessionCoins++; wallet++; objects.splice(i,1); playSound(850, 'triangle', 0.1); } 
-                } else if ((obj.y === 260 && dino.y > 230) || (obj.y === 205 && (!dino.duck || dino.jump))) { 
-                    playSound(120, 'sawtooth', 0.4); 
-                    gameOver(isAlt, timePassed); 
-                } 
-            } 
-            if(obj.x < -100) objects.splice(i, 1); 
-        } 
-        if(active && !isPaused) requestAnimationFrame(loop); 
-    }
   </script>
 </body>
 </html>
