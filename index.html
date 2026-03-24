@@ -295,16 +295,95 @@ function startLoadingSimulation() {
 setInterval(updateCountdown, 1000); 
 updateCountdown();
     
-/* --- NEUE LOGIK FÜR DIREKT-LINKS --- */
-    window.addEventListener('load', () => {
-      const hash = window.location.hash.replace('#', '');
-      if (hash) {
-        // Sucht den passenden Link im Menü anhand der ID im Link
+/* --- SEITEN-NAVIGATION --- */
+function showSection(id, element) {
+    document.querySelectorAll('.content').forEach(s => s.classList.remove('active'));
+    const section = document.getElementById(id);
+    if (section) section.classList.add('active');
+    
+    if (element) {
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active-link'));
+        element.classList.add('active-link');
+    }
+}
+
+/* --- COUNTDOWN & LOADING LOGIK --- */
+function updateCountdown() {
+    const target = new Date("March 24, 2026 10:35:00").getTime();
+    const now = new Date().getTime();
+    const diff = target - now;
+    const overlay = document.getElementById("maintenance-overlay");
+
+    if (diff <= 0) {
+        if (overlay) overlay.style.display = "none";
+        return;
+    }
+
+    if (overlay && !sessionStorage.getItem('siteUnlocked')) {
+        overlay.style.display = "flex";
+    }
+
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24)), 
+          h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), 
+          m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)), 
+          s = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    const elD = document.getElementById("val-d"), elH = document.getElementById("val-h"), 
+          elM = document.getElementById("val-m"), elS = document.getElementById("val-s");
+    
+    if (elD) elD.innerText = String(d).padStart(2, '0');
+    if (elH) elH.innerText = String(h).padStart(2, '0');
+    if (elM) elM.innerText = String(m).padStart(2, '0');
+    if (elS) elS.innerText = String(s).padStart(2, '0');
+}
+
+function startLoadingSimulation() {
+    const step1 = document.getElementById('m-content-step1');
+    const step2 = document.getElementById('m-content-step2');
+    const txt = document.getElementById('loading-text');
+    const container = document.getElementById('loading-container');
+
+    if (step1) step1.style.display = 'none';
+    if (step2) step2.style.display = 'block';
+
+    setTimeout(() => { if(txt) txt.innerText = "Sie werden gleich freigegeben"; }, 5000);
+    
+    setTimeout(() => { 
+        if(txt) txt.innerText = "Willkommen"; 
+        if(container) {
+            container.style.transform = "scale(1.8)";
+            container.style.opacity = "0";
+            container.style.transition = "all 5s ease-in-out";
+        }
+    }, 15000);
+
+    setTimeout(() => { 
+        const overlay = document.getElementById('maintenance-overlay');
+        if (overlay) overlay.style.display = 'none';
+        sessionStorage.setItem('siteUnlocked', 'true'); 
+    }, 20000);
+}
+
+setInterval(updateCountdown, 1000); 
+updateCountdown();
+
+/* --- DIREKT-LINKS LOGIK --- */
+window.addEventListener('load', () => {
+    const hash = window.location.hash.replace('#', '');
+    if (!hash) return;
+
+    // Prüfen, ob es ein Produkt (prod1, prod2...) ist
+    if (hash.startsWith('prod')) {
+        const prodNav = document.querySelector("nav a[onclick*='Produkte']");
+        showSection('Produkte', prodNav);
+        if (typeof openProduct === "function") {
+            openProduct(hash);
+        }
+    } else {
+        // Normale Sektion
         const targetLink = document.querySelector(`nav a[onclick*='${hash}']`);
-        if (targetLink) {
-          showSection(hash, targetLink);
-  }
-  }
+        if (targetLink) showSection(hash, targetLink);
+    }
 });
   </script>
 </body>
