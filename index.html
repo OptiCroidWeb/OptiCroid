@@ -192,11 +192,21 @@ function showAllProducts() {
 function shareProduct(event, id) {
   event.stopPropagation();
   const url = window.location.origin + window.location.pathname + '#' + id;
-  if (navigator.share) {
-    navigator.share({ title: 'Produkt ansehen', url: url });
+  
+  // Prüft, ob das Gerät das native Teilen-Fenster unterstützt
+  if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    navigator.share({ 
+      title: 'Produkt ansehen', 
+      text: 'Schau dir dieses Angebot an!',
+      url: url 
+    }).catch(() => {
+      // Falls der Nutzer abbricht oder ein Fehler auftritt
+      navigator.clipboard.writeText(url);
+    });
   } else {
+    // Hier müsstest du ein eigenes kleines HTML-Fenster (Modal) mit App-Icons bauen
     navigator.clipboard.writeText(url);
-    alert('Link kopiert!');
+    alert('Link wurde kopiert! Du kannst ihn jetzt in deinen Apps einfügen.');
   }
 }
 
