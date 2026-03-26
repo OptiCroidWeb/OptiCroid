@@ -387,18 +387,27 @@ updateCountdown();
 
 /* --- DIREKT-LINKS LOGIK --- */
 window.addEventListener('load', () => {
-    const hash = window.location.hash.replace('#', '');
+    // decodeURIComponent sorgt dafür, dass Leerzeichen und Schrägstriche richtig erkannt werden
+    const hash = decodeURIComponent(window.location.hash.replace('#', ''));
     if (!hash) return;
 
-    // Prüfen, ob es ein Produkt (prod1, prod2...) ist
     if (hash.startsWith('OptiCroid-Produkt//')) {
+        // Erst die Sektion "Produkte" aktivieren
         const prodNav = document.querySelector("nav a[onclick*='Produkte']");
         showSection('Produkte', prodNav);
-        if (typeof openProduct === "function") {
-            openProduct(hash);
-        }
+        
+        // Eine winzige Verzögerung geben, damit die Sektion sichtbar ist, bevor das Produkt geöffnet wird
+        setTimeout(() => {
+            if (typeof openProduct === "function") {
+                const targetElement = document.getElementById(hash);
+                if (targetElement) {
+                    openProduct(hash);
+                } else {
+                    console.log("Produkt-ID nicht gefunden:", hash);
+                }
+            }
+        }, 100);
     } else {
-        // Normale Sektion
         const targetLink = document.querySelector(`nav a[onclick*='${hash}']`);
         if (targetLink) showSection(hash, targetLink);
     }
