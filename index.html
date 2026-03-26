@@ -391,7 +391,7 @@ window.addEventListener('load', () => {
     if (!hash) return;
 
     // Prüfen, ob es ein Produkt (prod1, prod2...) ist
-    if (hash.startsWith('prod')) {
+    if (hash.startsWith('OptiCroid-Produkt//')) {
         const prodNav = document.querySelector("nav a[onclick*='Produkte']");
         showSection('Produkte', prodNav);
         if (typeof openProduct === "function") {
