@@ -513,27 +513,28 @@ function checkLogin() {
 
 /* --- DIREKT-LINKS LOGIK --- */
 window.addEventListener('load', () => {
-    // decodeURIComponent sorgt dafür, dass Leerzeichen und Schrägstriche richtig erkannt werden
     const hash = decodeURIComponent(window.location.hash.replace('#', ''));
     if (!hash) return;
 
+    // 1. Spezielle Prüfung für das Special Angebot
+    if (hash === "!Special Angebot") {
+        showSection('!Special Angebot');
+        return;
+    }
+
+    // 2. Prüfung für Produkte
     if (hash.startsWith('OptiCroid-Produkt//')) {
-        // Erst die Sektion "Produkte" aktivieren
         const prodNav = document.querySelector("nav a[onclick*='Produkte']");
         showSection('Produkte', prodNav);
         
-        // Eine winzige Verzögerung geben, damit die Sektion sichtbar ist, bevor das Produkt geöffnet wird
         setTimeout(() => {
             if (typeof openProduct === "function") {
                 const targetElement = document.getElementById(hash);
-                if (targetElement) {
-                    openProduct(hash);
-                } else {
-                    console.log("Produkt-ID nicht gefunden:", hash);
-                }
+                if (targetElement) openProduct(hash);
             }
         }, 100);
     } else {
+        // 3. Prüfung für normale Navigations-Tabs
         const targetLink = document.querySelector(`nav a[onclick*='${hash}']`);
         if (targetLink) showSection(hash, targetLink);
     }
