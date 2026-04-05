@@ -516,11 +516,11 @@ window.addEventListener('load', () => {
     const hash = decodeURIComponent(window.location.hash.replace('#', ''));
     if (!hash) return;
 
-    // 1. Spezielle Prüfung für das Special Angebot
-    if (hash === "OptiCroid Special Angebot") {
-        showSection('!Special Angebot');
-        return;
-    }
+    // 1. Prüfung für das Special Angebot
+if (hash.includes('OptiCroid Special Angebot')) {
+    showSection('!Special Angebot');
+    return;
+}
 
     // 2. Prüfung für Produkte
     if (hash.startsWith('OptiCroid-Produkt//')) {
