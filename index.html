@@ -131,6 +131,65 @@
     </section>
 
     <section id="Special Angebot" class="content">
+      <div style="text-align: left; width: 100%;">
+      <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin: 0;">!Special Angebot</p>
+      <h3 style="margin: 5px 0; color: #ffffff;">MDM/DNS von Schul iPads deaktivieren</h3>
+      <div style="display: flex; align-items: center; gap: 15px; margin: 10px 0;">
+        <p style="color: #65FE08; font-size: 24px; font-weight: bold; margin: 0;">10,00 €</p>
+        <button onclick="shareProduct(event, 'OptiCroid-Produkt//MDM/DNS Schul iPads deaktivieren')" style="background: rgba(255,255,255,0.1); border: none; cursor: pointer; padding: 5px 10px; border-radius: 10px; color: #40E0D0; font-size: 16px; display: flex; align-items: center; gap: 5px; transition: 0.3s;">
+          <span>🔗</span> <small style="font-size: 10px;">Teilen</small>
+        </button>
+      </div>
+    </div>
+    <a href="mailto:opticroid@gmail.com?subject=Interesse an Produkt&body=Hallo, ich habe Interesse am !Special Angebot..." style="background-color: #f1c40f; color: #000; text-decoration: none; padding: 15px; width: 100%; border-radius: 50px; font-weight: bold; margin-top: 20px; transition: 0.3s; text-align: center;">Kaufen</a>
+</div>
+</section>
+
+<script>
+function openProduct(id) {
+  document.querySelectorAll('.product-card, .prod-sep').forEach(el => el.style.display = 'none');
+  document.getElementById(id).style.display = 'flex';
+  document.getElementById('back-button').style.display = 'block';
+  document.getElementById('main-title').style.display = 'none';
+  window.history.pushState(null, null, '#' + id);
+}
+
+function showAllProducts() {
+  document.querySelectorAll('.product-card').forEach(el => el.style.display = 'flex');
+  document.querySelectorAll('.prod-sep').forEach(el => el.style.display = 'block');
+  document.getElementById('back-button').style.display = 'none';
+  document.getElementById('main-title').style.display = 'block';
+  window.history.pushState(null, null, '#Produkte');
+}
+
+function shareProduct(event, id) {
+  event.stopPropagation();
+  const url = window.location.origin + window.location.pathname + '#' + id;
+  
+  // Prüft, ob das Gerät das native Teilen-Fenster unterstützt
+  if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    navigator.share({ 
+      title: 'Produkt ansehen', 
+      text: 'Schau dir dieses Angebot an!',
+      url: url 
+    }).catch(() => {
+      // Falls der Nutzer abbricht oder ein Fehler auftritt
+      navigator.clipboard.writeText(url);
+    });
+  } else {
+    // Hier müsstest du ein eigenes kleines HTML-Fenster (Modal) mit App-Icons bauen
+    navigator.clipboard.writeText(url);
+    alert('Link wurde kopiert! Du kannst ihn jetzt in deinen Apps einfügen.');
+  }
+}
+
+window.onload = function() {
+  const hash = window.location.hash.replace('#', '');
+  if (hash && hash !== 'Produkte' && document.getElementById(hash)) {
+    openProduct(hash);
+  }
+};
+</script>
 
     <section id="Angebote" class="content">
       <h1>Übersicht</h1>
@@ -215,7 +274,7 @@
     </div>
     <div style="text-align: left; width: 100%;">
       <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin: 0;">Angebot</p>
-      <h3 style="margin: 5px 0; color: #ffffff;">Headse Halterung (Ink. RGB & UDB Anschlüsse)</h3>
+      <h3 style="margin: 5px 0; color: #ffffff;">Headse Halterung (Ink. RGB & USB Anschlüsse)</h3>
       <div style="display: flex; align-items: center; gap: 15px; margin: 10px 0;">
         <p style="color: #65FE08; font-size: 24px; font-weight: bold; margin: 0;">15,00 €</p>
         <button onclick="shareProduct(event, 'OptiCroid-Produkt//Headse Halterung (Ink. RGB & USB Anschlüsse)')" style="background: rgba(255,255,255,0.1); border: none; cursor: pointer; padding: 5px 10px; border-radius: 10px; color: #40E0D0; font-size: 16px; display: flex; align-items: center; gap: 5px; transition: 0.3s;">
