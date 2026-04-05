@@ -46,6 +46,33 @@
     h1 { color: #65FE08; }
     h2 { color: #40E0D0; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* Styling für den Special-Button */
+.special-offer-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #FFD700; /* Knalliges Gelb */
+    color: #000;
+    padding: 10px 20px;
+    font-weight: 900;
+    text-decoration: none;
+    font-size: 14px;
+    border-radius: 0 30px 0 30px; /* Rechts oben eckig (liegt an), links unten halbkreis */
+    box-shadow: -5px 5px 15px rgba(0,0,0,0.3);
+    z-index: 10;
+    transition: transform 0.2s;
+}
+
+.special-offer-btn:hover {
+    transform: scale(1.05);
+    background: #fff;
+}
+
+/* Container muss relativ sein, damit Button oben rechts klebt */
+#startseite {
+    position: relative;
+}
   </style>
 </head>
 <body>
