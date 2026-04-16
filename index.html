@@ -7,36 +7,22 @@
   <link rel="icon" type="image/png" href="Logo.png">
   <style>
     /* --- BASIS & LAYOUT --- */
-    html, body { width: 100%; margin: 0; padding: 0; background-color: #0c1a26; color: #ffffff; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
-    
-    /* --- NAVIGATION (IMMER SICHTBAR AM BODEN) --- */
-    header { 
-        background: #112638; 
-        display: flex; 
-        justify-content: space-around; 
-        align-items: center; 
-        width: 100%; 
-        height: 70px; 
-        position: fixed; 
-        bottom: 0; 
-        left: 0; 
-        z-index: 10000; 
-        border-top: 2px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 -5px 25px rgba(0,0,0,0.8);
-    }
-    nav { display: flex; justify-content: space-around; width: 100%; }
-    nav a { text-decoration: none; color: rgba(255,255,255,0.5); flex: 1; text-align: center; cursor: pointer; transition: 0.3s; position: relative; height: 70px; display: flex; align-items: center; justify-content: center; }
-    nav a span { font-size: 30px; transition: transform 0.3s; }
-    
-    /* AKTIVER BUTTON EFFEKT */
-    nav a.active-link { color: #ffffff; }
-    nav a.active-link span { transform: translateY(-10px) scale(1.2); }
-    nav a.active-link::after { content: ""; position: absolute; bottom: 8px; width: 30px; height: 4px; background: #65FE08; border-radius: 10px; box-shadow: 0 0 10px #65FE08; }
+    html, body { width: 100%; margin: 0; padding: 0; background-color: #0c1a26; color: #ffffff; font-family: 'Segoe UI', sans-serif; overflow-y: auto; }
 
-    /* --- CONTENT BEREICHE --- */
-    main { padding: 20px; padding-bottom: 100px; display: flex; justify-content: center; }
-    .content { display: none; text-align: center; background-color: #1a334a; width: 90%; max-width: 800px; border-radius: 30px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); }
-    .content.active { display: block; }
+    /* --- CONTENT BEREICHE UNTEREINANDER --- */
+    main { padding: 40px 20px; display: flex; flex-direction: column; align-items: center; gap: 50px; }
+    
+    .content { 
+        display: block; /* Zeigt alle Sektionen immer an */
+        text-align: center; 
+        background-color: #1a334a; 
+        width: 90%; 
+        max-width: 800px; 
+        border-radius: 30px; 
+        padding: 40px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+        border: 1px solid rgba(255,255,255,0.05); 
+    }
 
     /* BUTTONS & STYLING */
     .email-button { background-color: #e31d1d; border: none; color: white; padding: 12px 25px; border-radius: 20px; cursor: pointer; font-weight: bold; text-decoration: none; margin: 5px; display: inline-block; }
@@ -45,160 +31,56 @@
     .Instagram-button { background-color: #FF69B4; border: none; color: white; padding: 12px 25px; border-radius: 20px; cursor: pointer; font-weight: bold; text-decoration: none; margin: 5px; display: inline-block; }
     h1 { color: #65FE08; }
     h2 { color: #40E0D0; }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
 
-    /* Styling für den Special-Button */
-.special-offer-btn {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: #FFD700; /* Knalliges Gelb */
-    color: #000;
-    padding: 10px 20px;
-    font-weight: 900;
-    text-decoration: none;
-    font-size: 14px;
-    border-radius: 0 30px 0 30px; /* Rechts oben eckig (liegt an), links unten halbkreis */
-    box-shadow: -5px 5px 15px rgba(0,0,0,0.3);
-    z-index: 10;
-    transition: transform 0.2s;
-}
-
-.special-offer-btn:hover {
-    transform: scale(1.05);
-    background: #fff;
-}
-
-/* Container muss relativ sein, damit Button oben rechts klebt */
-#startseite {
-    position: relative;
-}
+    /* Styling für den Special-Button (angepasst für Scroll-Layout) */
+    .special-offer-btn {
+        display: inline-block;
+        background: #FFD700;
+        color: #000;
+        padding: 10px 25px;
+        font-weight: 900;
+        text-decoration: none;
+        font-size: 16px;
+        border-radius: 50px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        margin-bottom: 25px;
+        transition: transform 0.2s;
+    }
+    .special-offer-btn:hover { transform: scale(1.05); background: #fff; }
   </style>
 </head>
 <body>
 
-  <header>
-    <nav>
-      <a href="#" onclick="showSection('startseite', this)" class="active-link"><span>🛖</span></a>
-      <a href="#" onclick="showSection('Übersicht', this)"><span>🫴</span></a>
-      <a href="#" onclick="showSection('Infos', this)"><span>👀</span></a>
-    </nav>
-  </header>
-
   <main>
-    <div id="maintenance-overlay" style="position: fixed; inset: 0; background: #0c1a26; z-index: 20000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;">
-  
-  <div id="m-content-step1">
-    <div style="background: rgba(150, 0, 0, 0.9); padding: 40px; border-radius: 30px; border: 3px solid red; box-shadow: 0 0 60px rgba(255,0,0,0.4);">
-      <h1 style="color: white; margin: 0 0 20px 0; font-size: 28px;">Wartungsarbeiten</h1>
-      <div style="font-family: monospace; font-size: 45px; font-weight: bold; color: white; margin-bottom: 30px;">
-        <span id="val-d">00</span>:<span id="val-h">00</span>:<span id="val-m">00</span>:<span id="val-s">00</span>
-      </div>
-      <button onclick="showLogin()" style="background: white; color: #cc0000; border: none; padding: 18px 35px; border-radius: 50px; font-weight: 900; cursor: pointer; font-size: 18px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
-        Seite trotzdem besuchen
-      </button>
-    </div>
-</div>
-
-<div id="m-content-login" style="display: none; background-color: #1a334a; padding: 40px; border-radius: 30px; border: 1px solid #65FE08; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-  <h2 style="color: #65FE08; margin-bottom: 20px;">Interner Zugang</h2>
-  <input type="text" id="login-user" placeholder="Benutzername" style="background: #0c1a26; border: 1px solid #65FE08; color: white; padding: 12px; border-radius: 10px; margin: 10px 0; width: 80%; outline: none;">
-  <br>
-  <input type="password" id="login-pass" placeholder="Passwort" style="background: #0c1a26; border: 1px solid #65FE08; color: white; padding: 12px; border-radius: 10px; margin: 10px 0; width: 80%; outline: none;">
-  <br>
-  <button onclick="checkLogin()" style="background: #65FE08; color: #0c1a26; border: none; padding: 12px 30px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.3s;">
-    Anmelden
-  </button>
-  <p id="login-error" style="color: #ff4444; margin-top: 15px; display: none; font-size: 14px;">Benutzername oder Passwort falsch!</p>
-</div>
-
-  <div id="m-content-step2" style="display: none;">
-    <div id="loading-container" style="transition: all 5s ease-in-out;">
-      <div style="width: 90px; height: 90px; border: 10px solid rgba(255,255,255,0.1); border-top: 10px solid #65FE08; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 40px;"></div>
-      <h2 id="loading-text" style="color: #65FE08; font-family: 'Segoe UI', sans-serif; font-size: 24px; font-weight: 300;">Einen Moment</h2>
-    </div>
-  </div>
-</div>
-
-    <section id="startseite" class="content active">
-      <a href="#" class="special-offer-btn" onclick="showSection('!Special Angebot', document.querySelector('nav a[onclick*=\'Special Angebot\']'))">!Special Angebot</a>
-      <p style="color: #FF8C00; font-size: clamp(20px, 5vw, 40px); font-weight: 900;"><strang>Computer-Assistent</strang></p>
+    <section id="startseite" class="content">
+      <a href="mailto:opticroid@gmail.com?subject=Interesse an Produkt" class="special-offer-btn">!Special Angebot</a>
+      <p style="color: #FF8C00; font-size: clamp(20px, 5vw, 40px); font-weight: 900;"><strong>Computer-Assistent</strong></p>
       <img src="Logo.png" style="width:200px; border-radius: 50%; border: 4px solid #65FE08; margin: 20px 0;"/><br>
-<p>style="color:gold;text-align: center;"><strang>Privat & mit Freude kostenlos</strang></p>
-
+      <p style="color:gold;text-align: center;"><strong>Privat & mit Freude kostenlos</strong></p>
       <a class="email-button" href="mailto:opticroid@gmail.com">E-Mail</a>
       <a class="Anrufen-button" href="tel:+4915206821179">Anrufen</a>
     </section>
 
-    <section id="!Special Angebot" class="content">
+    <section id="special" class="content">
       <div style="text-align: left; width: 100%;">
-      <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin: 0;">!Special Angebot</p>
-      <h3 style="margin: 5px 0; color: #ffffff;">MDM/DNS von Schul iPads deaktivieren</h3>
-      <div style="display: flex; align-items: center; gap: 15px; margin: 10px 0;">
-        <p style="color: #65FE08; font-size: 24px; font-weight: bold; margin: 0;">10,00 €</p>
-        <button onclick="shareProduct(event, 'OptiCroid Special Angebot//MDM/DNS Schul iPads deaktivieren')" style="background: rgba(255,255,255,0.1); border: none; cursor: pointer; padding: 5px 10px; border-radius: 10px; color: #40E0D0; font-size: 16px; display: flex; align-items: center; gap: 5px; transition: 0.3s;">
-          <span>🔗</span> <small style="font-size: 10px;">Teilen</small>
-        </button>
+        <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin: 0;">!Special Angebot</p>
+        <h3 style="margin: 5px 0; color: #ffffff;">MDM/DNS von Schul iPads deaktivieren</h3>
+        <div style="display: flex; align-items: center; gap: 15px; margin: 10px 0;">
+          <p style="color: #65FE08; font-size: 24px; font-weight: bold; margin: 0;">10,00 €</p>
+          <button onclick="shareProduct(event, 'special')" style="background: rgba(255,255,255,0.1); border: none; cursor: pointer; padding: 5px 10px; border-radius: 10px; color: #40E0D0;">
+            <span>🔗</span> <small>Teilen</small>
+          </button>
+        </div>
       </div>
-    </div>
-    <a href="mailto:opticroid@gmail.com?subject=Interesse an Produkt&body=Hallo, ich habe Interesse am !Special Angebot..." style="background-color: #f1c40f; color: #000; text-decoration: none; padding: 15px; width: 100%; border-radius: 50px; font-weight: bold; margin-top: 20px; transition: 0.3s; text-align: center;">Interesse</a>
-</div><br>
-      <div class="prod-sep" style="background: #112638; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 25px; max-width: 400px; margin: 20px auto; box-shadow: 0 10px 20px rgba(0,0,0,0.3); text-align: center; line-height: 1.5;">
-  <span style="color: #ffffff; font-weight: 500;">
-    ❗Mit der Speziell erworbenen Software Lizenz kann eine MDM/ DNS Einschränkung der Schule oder anderem... für iPad´s deaktiviert werden<br><br><strong>Nur "5-Geräte" möglich</strong>
-  </span>
-</div>
-</section>
-
-<script>
-function openProduct(id) {
-  document.querySelectorAll('.product-card, .prod-sep').forEach(el => el.style.display = 'none');
-  document.getElementById(id).style.display = 'flex';
-  document.getElementById('back-button').style.display = 'block';
-  document.getElementById('main-title').style.display = 'none';
-  window.history.pushState(null, null, '#' + id);
-}
-
-function showAllProducts() {
-  document.querySelectorAll('.product-card').forEach(el => el.style.display = 'flex');
-  document.querySelectorAll('.prod-sep').forEach(el => el.style.display = 'block');
-  document.getElementById('back-button').style.display = 'none';
-  document.getElementById('main-title').style.display = 'block';
-  window.history.pushState(null, null, '#Special Angebot');
-}
-
-function shareProduct(event, id) {
-  event.stopPropagation();
-  const url = window.location.origin + window.location.pathname + '#' + id;
-  
-  // Prüft, ob das Gerät das native Teilen-Fenster unterstützt
-  if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-    navigator.share({ 
-      title: 'Produkt ansehen', 
-      text: 'Schau dir dieses Angebot an!',
-      url: url 
-    }).catch(() => {
-      // Falls der Nutzer abbricht oder ein Fehler auftritt
-      navigator.clipboard.writeText(url);
-    });
-  } else {
-    // Hier müsstest du ein eigenes kleines HTML-Fenster (Modal) mit App-Icons bauen
-    navigator.clipboard.writeText(url);
-    alert('Link wurde kopiert! Du kannst ihn jetzt in deinen Apps einfügen.');
-  }
-}
-
-window.onload = function() {
-  const hash = window.location.hash.replace('#', '');
-  if (hash && hash !== 'Produkte' && document.getElementById(hash)) {
-    openProduct(hash);
-  }
-};
-</script>
+      <a href="mailto:opticroid@gmail.com?subject=Interesse am Special Angebot" style="background-color: #f1c40f; color: #000; text-decoration: none; padding: 15px; width: 100%; border-radius: 50px; font-weight: bold; margin-top: 20px; display: block;">Interesse</a>
+      <div style="background: #112638; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 25px; margin-top: 20px; line-height: 1.5;">
+        <span style="color: #ffffff;">❗Mit der Software Lizenz kann eine MDM/DNS Einschränkung deaktiviert werden. <br><br><strong>Nur "5-Geräte" möglich</strong></span>
+      </div>
+    </section>
 
     <section id="Übersicht" class="content">
       <h1>Übersicht</h1>
-      <p><strang>Alle zulezt Erledigten Aufräge!</strang></p><br>
+      <p><strong>Alle zuletzt Erledigten Aufträge!</strong></p><br>
       <h2>Digitales PC Management</h2>
       <p>Websiten Programmierung, Windows 11 Support, Systemoptimierung, Virus Entfernung.</p>
       <h2>Hardware</h2>
@@ -206,223 +88,28 @@ window.onload = function() {
     </section>
 
     <section id="Infos" class="content">
-      <h1 style="color:#65FE08;text-align: center;">Infos</h1>
-      <p style="font-size: 18px;"><br><br>Freundliche Computer-Hilfe</p>
-      <p style="font-size: 18px;"><br>___</p><br>
-      <p style="font-size: 18px;">Wenn der PC hakt oder das Tablet streikt, helfe ich dir gerne<br>mit Freude weiter. Ich unterstütze dich privat bei der Einrichtung oder Fehlersuche.<br>Damit deine Technik wieder reibungslos läuft. Ganz einfach und von Mensch zu Mensch.<br><br></p>
-      <h1 style="color:#65FE08;text-align: center;">Kontakt-Daten</h1>
-      <br>
+      <h1 style="color:#65FE08;">Infos</h1>
+      <p>Wenn der PC hakt, helfe ich dir gerne privat bei der Einrichtung oder Fehlersuche. Damit deine Technik wieder läuft. Ganz einfach von Mensch zu Mensch.</p>
+      <h1 style="color:#65FE08;">Kontakt-Daten</h1>
       <p style="font-size: 20px;">Computer-Assistent<br>Markus Sieber<br>86989 Steingaden<br>E-mail: opticroid@gmail.com<br>Tel: +49 (0) 15206821179</p>
-      <br>
-      <h1 style="color:#65FE08;text-align: center;">Zusatz</h1>
-      <br>
-      <p style="font-size: 18px;">Zudem erscheinen auf dem Kanal @Tbrasstracks Trompeten Videos🎺</p>
+      <h1 style="color:#65FE08;">Zusatz</h1>
+      <p>Auf dem Kanal @Tbrasstracks erscheinen Trompeten Videos 🎺</p>
       <a class="Instagram-button" href="https://www.instagram.com/tbrasstracks">Instagram</a>
       <a class="YouTube-button" href="http://www.youtube.com/@Tbrasstracks">YouTube</a>
     </section>
-    </main>
+  </main>
 
   <script>
-    /* --- SEITEN-NAVIGATION --- */
-    function showSection(id, element) {
-      document.querySelectorAll('.content').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      if(element) {
-        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active-link'));
-        element.classList.add('active-link');
+    function shareProduct(event, id) {
+      event.stopPropagation();
+      const url = window.location.origin + window.location.pathname + '#' + id;
+      if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        navigator.share({ title: 'Produkt ansehen', text: 'Schau dir dieses Angebot an!', url: url });
+      } else {
+        navigator.clipboard.writeText(url);
+        alert('Link wurde kopiert!');
       }
     }
-
-    /* --- COUNTDOWN & LOADING LOGIK --- */
-function updateCountdown() {
-    const target = new Date("March 26, 2026 20:15:00").getTime();
-    const now = new Date().getTime();
-    const diff = target - now;
-    const overlay = document.getElementById("maintenance-overlay");
-    const oldBar = document.getElementById("maintenance-bar");
-
-    if (diff <= 0) {
-        if (overlay) overlay.style.display = "none";
-        if (oldBar) oldBar.style.display = "none";
-        return;
-    }
-
-    // Zeige das Overlay nur, wenn noch nicht in dieser Session freigeschaltet
-    if (overlay && !sessionStorage.getItem('siteUnlocked')) {
-        overlay.style.display = "flex";
-    }
-
-    const d = Math.floor(diff / (1000 * 60 * 60 * 24)), 
-          h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), 
-          m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)), 
-          s = Math.floor((diff % (1000 * 60)) / 1000);
-    
-    // Befüllt die Zahlen im Overlay
-    const elD = document.getElementById("val-d"), elH = document.getElementById("val-h"), 
-          elM = document.getElementById("val-m"), elS = document.getElementById("val-s");
-    
-    if (elD) elD.innerText = String(d).padStart(2, '0');
-    if (elH) elH.innerText = String(h).padStart(2, '0');
-    if (elM) elM.innerText = String(m).padStart(2, '0');
-    if (elS) elS.innerText = String(s).padStart(2, '0');
-}
-
-function startLoadingSimulation() {
-    const step1 = document.getElementById('m-content-step1');
-    const step2 = document.getElementById('m-content-step2');
-    const txt = document.getElementById('loading-text');
-    const container = document.getElementById('loading-container');
-
-    if (step1) step1.style.display = 'none';
-    if (step2) step2.style.display = 'block';
-
-    // Ablauf der Texte und Animation (Gesamt 20 Sek.)
-    setTimeout(() => { if(txt) txt.innerText = "Sie werden gleich freigegeben"; }, 5000);
-    
-    setTimeout(() => { 
-        if(txt) txt.innerText = "Willkommen"; 
-        if(container) {
-            container.style.transform = "scale(1.8)";
-            container.style.opacity = "0";
-            container.style.transition = "all 5s ease-in-out";
-        }
-    }, 15000);
-
-    setTimeout(() => { 
-        const overlay = document.getElementById('maintenance-overlay');
-        if (overlay) overlay.style.display = 'none';
-        sessionStorage.setItem('siteUnlocked', 'true'); 
-    }, 20000);
-}
-
-setInterval(updateCountdown, 1000); 
-updateCountdown();
-    
-/* --- SEITEN-NAVIGATION --- */
-function showSection(id, element) {
-    document.querySelectorAll('.content').forEach(s => s.classList.remove('active'));
-    const section = document.getElementById(id);
-    if (section) section.classList.add('active');
-    
-    if (element) {
-        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active-link'));
-        element.classList.add('active-link');
-    }
-}
-
-/* --- COUNTDOWN & LOADING LOGIK --- */
-function updateCountdown() {
-    const target = new Date("March 26, 2026 20:15:00").getTime();
-    const now = new Date().getTime();
-    const diff = target - now;
-    const overlay = document.getElementById("maintenance-overlay");
-
-    if (diff <= 0) {
-        if (overlay) overlay.style.display = "none";
-        return;
-    }
-
-    if (overlay && !sessionStorage.getItem('siteUnlocked')) {
-        overlay.style.display = "flex";
-    }
-
-    const d = Math.floor(diff / (1000 * 60 * 60 * 24)), 
-          h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), 
-          m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)), 
-          s = Math.floor((diff % (1000 * 60)) / 1000);
-    
-    const elD = document.getElementById("val-d"), elH = document.getElementById("val-h"), 
-          elM = document.getElementById("val-m"), elS = document.getElementById("val-s");
-    
-    if (elD) elD.innerText = String(d).padStart(2, '0');
-    if (elH) elH.innerText = String(h).padStart(2, '0');
-    if (elM) elM.innerText = String(m).padStart(2, '0');
-    if (elS) elS.innerText = String(s).padStart(2, '0');
-}
-
-function startLoadingSimulation() {
-    const step1 = document.getElementById('m-content-step1');
-    const step2 = document.getElementById('m-content-step2');
-    const txt = document.getElementById('loading-text');
-    const container = document.getElementById('loading-container');
-
-    if (step1) step1.style.display = 'none';
-    if (step2) step2.style.display = 'block';
-
-    setTimeout(() => { if(txt) txt.innerText = "Sie werden gleich freigegeben"; }, 5000);
-    
-    setTimeout(() => { 
-        if(txt) txt.innerText = "Willkommen"; 
-        if(container) {
-            container.style.transform = "scale(1.8)";
-            container.style.opacity = "0";
-            container.style.transition = "all 5s ease-in-out";
-        }
-    }, 15000);
-
-    setTimeout(() => { 
-        const overlay = document.getElementById('maintenance-overlay');
-        if (overlay) overlay.style.display = 'none';
-        sessionStorage.setItem('siteUnlocked', 'true'); 
-    }, 20000);
-}
-
-setInterval(updateCountdown, 1000); 
-updateCountdown();
-
-    // ... (hier steht dein bisheriger Code wie updateCountdown etc.)
-
-setInterval(updateCountdown, 1000); 
-updateCountdown();
-
-// FÜGE ES GENAU HIER EIN:
-function showLogin() {
-    document.getElementById('m-content-step1').style.display = 'none';
-    document.getElementById('m-content-login').style.display = 'block';
-}
-
-function checkLogin() {
-    const user = document.getElementById('login-user').value;
-    const pass = document.getElementById('login-pass').value;
-
-    if (user === "User" && pass === "User") {
-        document.getElementById('m-content-login').style.display = 'none';
-        startLoadingSimulation(); 
-    } else {
-        document.getElementById('login-error').style.display = 'block';
-        document.getElementById('m-content-login').style.transform = "translateX(5px)";
-        setTimeout(() => document.getElementById('m-content-login').style.transform = "translateX(0)", 100);
-    }
-}
-
-/* --- DIREKT-LINKS LOGIK --- */
-window.addEventListener('load', () => {
-    const hash = decodeURIComponent(window.location.hash.replace('#', ''));
-    if (!hash) return;
-
-    // 1. Prüfung für das Special Angebot
-if (hash.includes('OptiCroid Special Angebot//')) {
-    showSection('!Special Angebot');
-    return;
-}
-
-    // 2. Prüfung für Produkte
-    if (hash.startsWith('OptiCroid-Produkt//')) {
-        const prodNav = document.querySelector("nav a[onclick*='Produkte']");
-        showSection('Produkte', prodNav);
-        
-        setTimeout(() => {
-            if (typeof openProduct === "function") {
-                const targetElement = document.getElementById(hash);
-                if (targetElement) openProduct(hash);
-            }
-        }, 100);
-    } else {
-        // 3. Prüfung für normale Navigations-Tabs
-        const targetLink = document.querySelector(`nav a[onclick*='${hash}']`);
-        if (targetLink) showSection(hash, targetLink);
-    }
-});
   </script>
 </body>
 </html>
