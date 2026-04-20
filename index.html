@@ -76,12 +76,11 @@
 
   <div style="padding: 15px 0; border-bottom: 1px solid #eee;">
     <details>
-      <p>Öffnungszeiten</p><summary style="cursor: pointer; list-style: none;"><span style="color: green;">Geöffnet</span> ▼</summary>
-      <div style="padding-top: 10px; color: #70757a; font-size: 0.9em;">
-        Montag: 13:30–17:30<br>Dienstag: 13:30–17:30<br>Mittwoch: 13:30–17:30<br>
-        Donnerstag: 13:30–17:30<br>Freitag: 13:30–17:30<br>Samstag: 09:30–17:30<br>Sonntag:
-geschlossen
-      </div>
+      <summary style="cursor: pointer; list-style: none; font-weight: bold;">
+        Öffnungszeiten: <span id="status-text">Prüfe...</span> ▼
+      </summary>
+      <table id="opening-table" style="width: 100%; margin-top: 15px; color: #ffffff; font-size: 0.9em; border-collapse: collapse; text-align: left;">
+        </table>
     </details>
   </div>
 
@@ -89,7 +88,6 @@ geschlossen
     <a href="tel:+49 15206821179" style="text-decoration: none; color: #3c4043;">+49 15206821179</a>
   </div>
 </section>
-
 
     <section id="special" class="content">
       <div style="text-align: left; width: 100%;">
@@ -129,34 +127,62 @@ geschlossen
   </main>
 
   <script>
-  function updateBusinessStatus() {
-    const statusSpan = document.querySelector('summary span');
+  // Die festen Zeiten als Datenquelle
+  const schedule = [
+    { day: "Sonntag", open: 0, close: 0, label: "geschlossen" },
+    { day: "Montag", open: 13.5, close: 17.5, label: "13:30–17:30" },
+    { day: "Dienstag", open: 13.5, close: 17.5, label: "13:30–17:30" },
+    { day: "Mittwoch", open: 13.5, close: 17.5, label: "13:30–17:30" },
+    { day: "Donnerstag", open: 13.5, close: 17.5, label: "13:30–17:30" },
+    { day: "Freitag", open: 13.5, close: 17.5, label: "13:30–17:30" },
+    { day: "Samstag", open: 9.5, close: 17.5, label: "09:30–17:30" }
+  ];
+
+  function updateStatus() {
     const now = new Date();
-    const day = now.getDay(); // 0=So, 1=Mo...
-    const hour = now.getHours();
-    const min = now.getMinutes();
-    const currentTime = hour + min / 60;
+    const currentDayIdx = now.getDay(); // 0=So, 1=Mo...
+    const currentTime = now.getHours() + now.getMinutes() / 60;
+    
+    const statusEl = document.getElementById('status-text');
+    const tableEl = document.getElementById('opening-table');
 
-    let isOpen = false;
+    // 1. Status (Geöffnet/Geschlossen) berechnen
+    const today = schedule[currentDayIdx];
+    const isOpen = today.open !== 0 && currentTime >= today.open && currentTime < today.close;
+    
+    statusEl.textContent = isOpen ? "Geöffnet" : "Geschlossen";
+    statusEl.style.color = isOpen ? "#65FE08" : "#ff4d4d";
 
-    if (day >= 1 && day <= 5) { // Mo-Fr
-      if (currentTime >= 13.5 && currentTime < 17.5) isOpen = true;
-    } else if (day === 6) { // Sa
-      if (currentTime >= 9.5 && currentTime < 17.5) isOpen = true;
+    // 2. Tabelle sortieren (Heute zuerst)
+    let tableHtml = "";
+    for (let i = 0; i < 7; i++) {
+      const idx = (currentDayIdx + i) % 7;
+      const item = schedule[idx];
+      const isToday = i === 0;
+      
+      tableHtml += `
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); ${isToday ? 'color: #65FE08; font-weight: bold;' : ''}">
+          <td style="padding: 8px 0; width: 50%;">${item.day}</td>
+          <td style="padding: 8px 0; text-align: right; font-family: monospace;">${item.label}</td>
+        </tr>`;
     }
+    tableEl.innerHTML = tableHtml;
+  }
 
-    if (isOpen) {
-      statusSpan.textContent = "Geöffnet";
-      statusSpan.style.color = "green";
+  function shareProduct(event, id) {
+    event.stopPropagation();
+    const url = window.location.origin + window.location.pathname + '#' + id;
+    if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      navigator.share({ title: 'OptiCroid Angebot', text: 'Schau dir das an!', url: url });
     } else {
-      statusSpan.textContent = "Geschlossen";
-      statusSpan.style.color = "red";
+      navigator.clipboard.writeText(url);
+      alert('Link wurde kopiert!');
     }
   }
 
-  // Startet die Prüfung sofort und alle 60 Sekunden
-  updateBusinessStatus();
-  setInterval(updateBusinessStatus, 60000);
+  // Initial ausführen und jede Minute wiederholen
+  updateStatus();
+  setInterval(updateStatus, 60000);
 </script>
 </body>
 </html>
