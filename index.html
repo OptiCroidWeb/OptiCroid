@@ -129,16 +129,34 @@ geschlossen
   </main>
 
   <script>
-    function shareProduct(event, id) {
-      event.stopPropagation();
-      const url = window.location.origin + window.location.pathname + '#' + id;
-      if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        navigator.share({ title: 'Produkt ansehen', text: 'Schau dir dieses Angebot an!', url: url });
-      } else {
-        navigator.clipboard.writeText(url);
-        alert('Link wurde kopiert!');
-      }
+  function updateBusinessStatus() {
+    const statusSpan = document.querySelector('summary span');
+    const now = new Date();
+    const day = now.getDay(); // 0=So, 1=Mo...
+    const hour = now.getHours();
+    const min = now.getMinutes();
+    const currentTime = hour + min / 60;
+
+    let isOpen = false;
+
+    if (day >= 1 && day <= 5) { // Mo-Fr
+      if (currentTime >= 13.5 && currentTime < 17.5) isOpen = true;
+    } else if (day === 6) { // Sa
+      if (currentTime >= 9.5 && currentTime < 17.5) isOpen = true;
     }
-  </script>
+
+    if (isOpen) {
+      statusSpan.textContent = "Geöffnet";
+      statusSpan.style.color = "green";
+    } else {
+      statusSpan.textContent = "Geschlossen";
+      statusSpan.style.color = "red";
+    }
+  }
+
+  // Startet die Prüfung sofort und alle 60 Sekunden
+  updateBusinessStatus();
+  setInterval(updateBusinessStatus, 60000);
+</script>
 </body>
 </html>
