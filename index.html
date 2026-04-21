@@ -7,18 +7,31 @@
   <title>OptiCroid</title>
   <link rel="icon" type="Logo.png" href="Logo.png">
   <style>
+        /* Neu hinzugefügt: Stellt sicher, dass Abstände die Box nicht verbreitern */
+    * { box-sizing: border-box; }
+
+    /* body angepasst: Verhindert seitliches Wackeln/Scrollen */
+    html, body { width: 100%; margin: 0; padding: 0; background-color: #0c1a26; color: #ffffff; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
+
+    /* main angepasst: Seitlicher Abstand (Padding) für mobile Geräte */
+    main { padding: 40px 10px; display: flex; flex-direction: column; align-items: center; gap: 50px; width: 100%; }
+
+    /* .content angepasst: Breite auf 95% erhöht und flexibles Padding (5%) */
     .content { 
         display: block; 
         text-align: center; 
         background-color: #1a334a; 
-        width: 90%; 
+        width: 95%; 
         max-width: 800px; 
         border-radius: 30px; 
-        padding: 40px; 
+        padding: 5%; 
         box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-        border: 1px solid rgba(255,255,255,0.05); 
-        box-sizing: border-box; /* Verhindert das Überlaufen des Rands */
+        border: 1px solid rgba(255,255,255,0.05);
+        margin: 0 auto;
     }
+
+    /* Neu hinzugefügt: Bilder passen sich jetzt automatisch der Box-Größe an */
+    img { max-width: 100%; height: auto; }
     /* --- BASIS & LAYOUT --- */
     html, body { width: 100%; margin: 0; padding: 0; background-color: #0c1a26; color: #ffffff; font-family: 'Segoe UI', sans-serif; overflow-y: auto; }
 
