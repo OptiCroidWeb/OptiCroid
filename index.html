@@ -150,7 +150,7 @@
     { day: "Sonntag", open: 0, close: 0, label: "geschlossen" },
     { day: "Montag", open: 13.5, close: 17.5, label: "13:30–17:30" },
     { day: "Dienstag", open: 13.5, close: 17.5, label: "13:30–17:30" },
-    { day: "Mittwoch", open: 21.0, close: 21.5, label: "13:30–17:30" },
+    { day: "Mittwoch", open: 13.5, close: 17.5, label: "13:30–17:30" },
     { day: "Donnerstag", open: 13.5, close: 17.5, label: "13:30–17:30" },
     { day: "Freitag", open: 13.5, close: 17.5, label: "13:30–17:30" },
     { day: "Samstag", open: 9.5, close: 17.5, label: "09:30–17:30" }
@@ -161,7 +161,7 @@
   function launchRocket() {
     const rocket = document.createElement('div');
     rocket.innerHTML = '🚀';
-    rocket.style.cssText = 'position:fixed; bottom:-60px; left:50%; font-size:50px; transition:all 5s linear; z-index:1000; pointer-events:none;';
+    rocket.style.cssText = 'position:fixed; bottom:-60px; left:50%; font-size:50px; transition:all 10s linear; z-index:1000; pointer-events:none;';
     document.body.appendChild(rocket);
     setTimeout(() => { rocket.style.transform = 'translateY(-120vh) scale(2)'; }, 100);
     setTimeout(() => rocket.remove(), 5500);
