@@ -146,7 +146,6 @@
   </main>
 
   <script>
-  // Die festen Zeiten als Datenquelle
   const schedule = [
     { day: "Sonntag", open: 0, close: 0, label: "geschlossen" },
     { day: "Montag", open: 13.5, close: 17.5, label: "13:30–17:30" },
@@ -157,51 +156,63 @@
     { day: "Samstag", open: 9.5, close: 17.5, label: "09:30–17:30" }
   ];
 
+  let lastStatus = null;
+
+  function launchRocket() {
+    const rocket = document.createElement('div');
+    rocket.innerHTML = '🚀';
+    rocket.style.position = 'fixed';
+    rocket.style.bottom = '-50px';
+    rocket.style.left = '50%';
+    rocket.style.fontSize = '50px';
+    rocket.style.transition = 'all 5s linear';
+    rocket.style.zIndex = '1000';
+    document.body.appendChild(rocket);
+    
+    setTimeout(() => {
+      rocket.style.transform = 'translateY(-120vh) scale(2)';
+    }, 100);
+    setTimeout(() => rocket.remove(), 5500);
+  }
+
   function updateStatus() {
     const now = new Date();
-    const currentDayIdx = now.getDay(); // 0=So, 1=Mo...
-    const currentTime = now.getHours() + now.getMinutes() / 60;
-    
-    const statusEl = document.getElementById('status-text');
-    const tableEl = document.getElementById('opening-table');
-
-    // 1. Status (Geöffnet/Geschlossen) berechnen
-    const today = schedule[currentDayIdx];
+    const currentTime = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+    const today = schedule[now.getDay()];
     const isOpen = today.open !== 0 && currentTime >= today.open && currentTime < today.close;
     
-    statusEl.textContent = isOpen ? "Geöffnet" : "Geschlossen";
-    statusEl.style.color = isOpen ? "#65FE08" : "#ff4d4d";
+    const statusEl = document.getElementById('status-text');
+    const newStatusText = isOpen ? "Geöffnet" : "Geschlossen";
 
-    // 2. Tabelle sortieren (Heute zuerst)
+    if (lastStatus === "Geschlossen" && newStatusText === "Geöffnet") {
+      launchRocket();
+    }
+    
+    lastStatus = newStatusText;
+    statusEl.textContent = newStatusText;
+    statusEl.style.color = isOpen ? "#65FE08" : "#ff4d4d";
+    
+    // Tabelle nur einmal pro Minute neu zeichnen für Performance
+    if (now.getSeconds() === 0 || !document.getElementById('opening-table').innerHTML) {
+        renderTable(now.getDay());
+    }
+  }
+
+  function renderTable(currentDayIdx) {
     let tableHtml = "";
     for (let i = 0; i < 7; i++) {
       const idx = (currentDayIdx + i) % 7;
       const item = schedule[idx];
-      const isToday = i === 0;
-      
-      tableHtml += `
-        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); ${isToday ? 'color: #65FE08; font-weight: bold;' : ''}">
+      tableHtml += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05); ${i === 0 ? 'color: #65FE08; font-weight: bold;' : ''}">
           <td style="padding: 8px 0; width: 50%;">${item.day}</td>
           <td style="padding: 8px 0; text-align: right; font-family: monospace;">${item.label}</td>
         </tr>`;
     }
-    tableEl.innerHTML = tableHtml;
+    document.getElementById('opening-table').innerHTML = tableHtml;
   }
 
-  function shareProduct(event, id) {
-    event.stopPropagation();
-    const url = window.location.origin + window.location.pathname + '#' + id;
-    if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      navigator.share({ title: 'OptiCroid Angebot', text: 'Schau dir das an!', url: url });
-    } else {
-      navigator.clipboard.writeText(url);
-      alert('Link wurde kopiert!');
-    }
-  }
-
-  // Initial ausführen und jede Minute wiederholen
   updateStatus();
-  setInterval(updateStatus, 60000);
+  setInterval(updateStatus, 1000); // Prüft jede Sekunde
 </script>
 </body>
 </html>
