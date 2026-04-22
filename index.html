@@ -164,47 +164,41 @@
     rocket.style.cssText = 'position:fixed; bottom:-60px; left:50%; font-size:50px; transition:all 10s linear; z-index:1000; pointer-events:none;';
     document.body.appendChild(rocket);
     setTimeout(() => { rocket.style.transform = 'translateY(-120vh) scale(2)'; }, 100);
-    setTimeout(() => rocket.remove(), 5500);
+    setTimeout(() => rocket.remove(), 10500);
+  }
+
+  function renderTable() {
+    const now = new Date();
+    const currentDayIdx = now.getDay();
+    const tableEl = document.getElementById('opening-table');
+    let tableHtml = "";
+    for (let i = 0; i < 7; i++) {
+      const idx = (currentDayIdx + i) % 7;
+      const item = schedule[idx];
+      tableHtml += `
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); ${i === 0 ? 'color: #65FE08; font-weight: bold;' : ''}">
+          <td style="padding: 8px 0; width: 50%;">${item.day}</td>
+          <td style="padding: 8px 0; text-align: right; font-family: monospace;">${item.label}</td>
+        </tr>`;
+    }
+    tableEl.innerHTML = tableHtml;
   }
 
   function updateStatus() {
     const now = new Date();
-    const currentDayIdx = now.getDay();
     const currentTime = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
-    
-    const today = schedule[currentDayIdx];
+    const today = schedule[now.getDay()];
     const isOpen = today.open !== 0 && currentTime >= today.open && currentTime < today.close;
     const newStatusText = isOpen ? "Geöffnet" : "Geschlossen";
 
     const statusEl = document.getElementById('status-text');
-    const tableEl = document.getElementById('opening-table');
+    if (lastStatus === "Geschlossen" && newStatusText === "Geöffnet") launchRocket();
 
-    // Rakete zünden, wenn von Geschlossen auf Geöffnet gewechselt wird
-    if (lastStatus === "Geschlossen" && newStatusText === "Geöffnet") {
-      launchRocket();
-    }
-    
     lastStatus = newStatusText;
     statusEl.textContent = newStatusText;
     statusEl.style.color = isOpen ? "#65FE08" : "#ff4d4d";
-
-    // Tabelle zeichnen (Heute + 6 Tage), falls sie noch leer ist
-    if (tableEl.innerHTML === "") {
-      let tableHtml = "";
-      for (let i = 0; i < 7; i++) {
-        const idx = (currentDayIdx + i) % 7;
-        const item = schedule[idx];
-        tableHtml += `
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); ${i === 0 ? 'color: #65FE08; font-weight: bold;' : ''}">
-            <td style="padding: 8px 0; width: 50%;">${item.day}</td>
-            <td style="padding: 8px 0; text-align: right; font-family: monospace;">${item.label}</td>
-          </tr>`;
-      }
-      tableEl.innerHTML = tableHtml;
-    }
   }
 
-  // Funktionen für den Share-Button (damit diese erhalten bleiben)
   function shareProduct(event, id) {
     event.stopPropagation();
     const url = window.location.origin + window.location.pathname + '#' + id;
@@ -216,6 +210,8 @@
     }
   }
 
+  // Alles beim Laden starten
+  renderTable();
   updateStatus();
   setInterval(updateStatus, 1000);
 </script>
