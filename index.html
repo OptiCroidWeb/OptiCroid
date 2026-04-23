@@ -145,7 +145,42 @@
     </section>
   </main>
 
-  <script>
+  <section id="Business Informationen" class="content" style="background-color: rgba(255, 215, 0, 0.15); border: 1px solid rgba(255, 215, 0, 0.3); box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);">
+  <div style="display: flex; justify-content: space-around; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+    <a href="tel:+49 15206821179" style="text-decoration: none; text-align: center; color: #1a73e8; font-weight: bold;">Anruf</a>
+    <a href="mailto:opticroid@gmail.com" style="text-decoration: none; text-align: center; color: #1a73e8; font-weight: bold;">E-Mail</a>
+  </div>
+
+  <div style="padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); color: #FFD700; font-weight: bold;">
+    <span>IT-Hilfe</span>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+    <div style="text-align: left;">Umkreis: Steingaden<br><small style="color: #bbb;">5 Min.</small></div>
+    <img src="Screenshot_20260420_161537_Google.jpg" alt="Standort" style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px; background: #ddd;">
+  </div>
+
+  <div style="padding: 15px 0;">
+    <div style="font-weight: bold; margin-bottom: 5px;">
+      Öffnungszeiten: <span id="status-text">Prüfe...</span>
+    </div>
+    
+    <div id="today-row" style="display: flex; justify-content: space-between; color: #65FE08; font-weight: bold; padding: 5px 0;">
+      <span>Heute:</span>
+      <span id="today-time" style="font-family: monospace;">--:--</span>
+    </div>
+
+    <details>
+      <summary style="cursor: pointer; list-style: none; font-size: 0.8em; color: #bbb; margin-top: 5px;">
+        Weitere Tage anzeigen ▼
+      </summary>
+      <table id="opening-table" style="width: 100%; margin-top: 10px; color: #ffffff; font-size: 0.9em; border-collapse: collapse; text-align: left;">
+      </table>
+    </details>
+  </div>
+</section>
+
+<script>
   const schedule = [
     { day: "Sonntag", open: 0, close: 0, label: "geschlossen" },
     { day: "Montag", open: 13.5, close: 17.5, label: "13:30–17:30" },
@@ -167,29 +202,23 @@
     setTimeout(() => rocket.remove(), 10500);
   }
 
-  function renderTable() {
+  function renderOpeningData() {
     const now = new Date();
     const currentDayIdx = now.getDay();
-    const tableEl = document.getElementById('opening-table');
     
-    // Den heutigen Tag für die Zeile unter "Öffnungszeiten" vorbereiten
+    // Heute-Zeile füllen
     const today = schedule[currentDayIdx];
-    
-    let tableHtml = `
-      <tr style="color: #65FE08; font-weight: bold;">
-        <td style="padding: 8px 0; width: 50%;">Heute:</td>
-        <td style="padding: 8px 0; text-align: right; font-family: monospace;">${today.label}</td>
-      </tr>
-      <tr><td colspan="2" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding: 4px 0;"></td></tr>
-    `;
+    document.getElementById('today-time').textContent = today.label;
 
-    // Die folgenden 6 Tage
+    // Tabelle für die restlichen 6 Tage
+    const tableEl = document.getElementById('opening-table');
+    let tableHtml = "";
     for (let i = 1; i < 7; i++) {
       const idx = (currentDayIdx + i) % 7;
       const item = schedule[idx];
       tableHtml += `
         <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0.8;">
-          <td style="padding: 8px 0;">${item.day}</td>
+          <td style="padding: 8px 0; width: 50%;">${item.day}</td>
           <td style="padding: 8px 0; text-align: right; font-family: monospace;">${item.label}</td>
         </tr>`;
     }
@@ -203,29 +232,16 @@
     const isOpen = today.open !== 0 && currentTime >= today.open && currentTime < today.close;
     const newStatusText = isOpen ? "Geöffnet" : "Geschlossen";
 
-    // Text oben in der Summary: "Öffnungszeiten: Geöffnet ▼"
     const statusEl = document.getElementById('status-text');
-    if (statusEl) {
-      statusEl.textContent = newStatusText;
-      statusEl.style.color = isOpen ? "#65FE08" : "#ff4d4d";
-    }
+    statusEl.textContent = newStatusText;
+    statusEl.style.color = isOpen ? "#65FE08" : "#ff4d4d";
 
     if (lastStatus === "Geschlossen" && newStatusText === "Geöffnet") launchRocket();
     lastStatus = newStatusText;
   }
 
-  function shareProduct(event, id) {
-    event.stopPropagation();
-    const url = window.location.origin + window.location.pathname + '#' + id;
-    if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      navigator.share({ title: 'OptiCroid Angebot', text: 'Schau dir das an!', url: url });
-    } else {
-      navigator.clipboard.writeText(url);
-      alert('Link wurde kopiert!');
-    }
-  }
-
-  renderTable();
+  // Initialisierung
+  renderOpeningData();
   updateStatus();
   setInterval(updateStatus, 1000);
 </script>
