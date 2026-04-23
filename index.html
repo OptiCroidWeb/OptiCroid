@@ -37,7 +37,7 @@
 
     /* --- CONTENT BEREICHE UNTEREINANDER --- */
     main { padding: 40px 20px; display: flex; flex-direction: column; align-items: center; gap: 50px; }
-    
+
     .content { 
         display: block; /* Zeigt alle Sektionen immer an */
         text-align: center; 
@@ -145,83 +145,13 @@
     </section>
   </main>
 
-  <section id="Business Informationen" class="content" style="background-color: rgba(255, 215, 0, 0.15); border: 1px solid rgba(255, 215, 0, 0.3); box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);">
-  <div style="display: flex; justify-content: space-around; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-    <a href="tel:+49 15206821179" style="text-decoration: none; text-align: center; color: #1a73e8; font-weight: bold;">Anruf</a>
-    <a href="mailto:opticroid@gmail.com" style="text-decoration: none; text-align: center; color: #1a73e8; font-weight: bold;">E-Mail</a>
-  </div>
-
-  <div style="padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); color: #FFD700; font-weight: bold;">
-    <span>IT-Hilfe</span>
-  </div>
-
-  <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-    <div style="text-align: left;">Umkreis: Steingaden<br><small style="color: #bbb;">5 Min.</small></div>
-    <img src="Screenshot_20260420_161537_Google.jpg" alt="Standort" style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px; background: #ddd;">
-  </div>
-
-  <div style="padding: 15px 0;">
-    <div style="font-weight: bold; margin-bottom: 5px;">
-      Öffnungszeiten: <span id="status-text">Prüfe...</span>
-    </div>
-    
-    <div id="today-row" style="display: flex; justify-content: space-between; color: #65FE08; font-weight: bold; padding: 5px 0;">
-      <span>Heute:</span>
-      <span id="today-time" style="font-family: monospace;">--:--</span>
-    </div>
-
-    <details>
-      <summary style="cursor: pointer; list-style: none; font-size: 0.8em; color: #bbb; margin-top: 5px;">
-        Weitere Tage anzeigen ▼
-      </summary>
-      <table id="opening-table" style="width: 100%; margin-top: 10px; color: #ffffff; font-size: 0.9em; border-collapse: collapse; text-align: left;">
-      </table>
-    </details>
-  </div>
-</section>
-
-<section id="Business Informationen" class="content" style="background-color: rgba(255, 215, 0, 0.15); border: 1px solid rgba(255, 215, 0, 0.3); box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);">
-  <div style="display: flex; justify-content: space-around; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-    <a href="tel:+49 15206821179" style="text-decoration: none; text-align: center; color: #1a73e8; font-weight: bold;">Anruf</a>
-    <a href="mailto:opticroid@gmail.com" style="text-decoration: none; text-align: center; color: #1a73e8; font-weight: bold;">E-Mail</a>
-  </div>
-
-  <div style="padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); color: #FFD700; font-weight: bold;">
-    <span>IT-Hilfe</span>
-  </div>
-
-  <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-    <div style="text-align: left;">Umkreis: Steingaden<br><small style="color: #bbb;">5 Min.</small></div>
-    <img src="Screenshot_20260420_161537_Google.jpg" alt="Standort" style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px; background: #ddd;">
-  </div>
-
-  <div style="padding: 15px 0;">
-    <div style="font-weight: bold; color: #ffffff; margin-bottom: 5px;">
-      Öffnungszeiten: <span id="status-text">Prüfe...</span>
-    </div>
-    
-    <div id="today-display" style="display: flex; justify-content: space-between; color: #65FE08; font-weight: bold; padding-bottom: 10px;">
-      <span>Heute:</span>
-      <span id="today-time-val">--:--</span>
-    </div>
-
-    <details>
-      <summary style="cursor: pointer; list-style: none; font-weight: bold; color: #ffffff;">
-        Weitere Tage ▼
-      </summary>
-      <table id="opening-table" style="width: 100%; margin-top: 15px; color: #ffffff; font-size: 0.9em; border-collapse: collapse; text-align: left;">
-      </table>
-    </details>
-  </div>
-</section>
-
-<script>
+  <script>
   const schedule = [
     { day: "Sonntag", open: 0, close: 0, label: "geschlossen" },
     { day: "Montag", open: 13.5, close: 17.5, label: "13:30–17:30" },
     { day: "Dienstag", open: 13.5, close: 17.5, label: "13:30–17:30" },
     { day: "Mittwoch", open: 13.5, close: 17.5, label: "13:30–17:30" },
-    { day: "Donnerstag", open: 13.5, close: 17.5, label: "13:30–17:30" },
+    { day: "Donnerstag", open: 0, close: 0, label: "geschlossen" },
     { day: "Freitag", open: 13.5, close: 17.5, label: "13:30–17:30" },
     { day: "Samstag", open: 9.5, close: 17.5, label: "09:30–17:30" }
   ];
@@ -237,42 +167,53 @@
     setTimeout(() => rocket.remove(), 10500);
   }
 
-  function updateDisplay() {
+  function renderTable() {
     const now = new Date();
     const currentDayIdx = now.getDay();
-    const currentTime = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+    const tableEl = document.getElementById('opening-table');
+    let tableHtml = "";
+    for (let i = 0; i < 7; i++) {
+      const idx = (currentDayIdx + i) % 7;
+      const item = schedule[idx];
+      tableHtml += `
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); ${i === 0 ? 'color: #65FE08; font-weight: bold;' : ''}">
+          <td style="padding: 8px 0; width: 50%;">${item.day}</td>
+          <td style="padding: 8px 0; text-align: right; font-family: monospace;">${item.label}</td>
+        </tr>`;
+    }
+    tableEl.innerHTML = tableHtml;
+  }
 
-    const today = schedule[currentDayIdx];
+  function updateStatus() {
+    const now = new Date();
+    const currentTime = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+    const today = schedule[now.getDay()];
     const isOpen = today.open !== 0 && currentTime >= today.open && currentTime < today.close;
     const newStatusText = isOpen ? "Geöffnet" : "Geschlossen";
 
-    // Status und Heute-Zeile (immer sichtbar)
-    document.getElementById('status-text').textContent = newStatusText;
-    document.getElementById('status-text').style.color = isOpen ? "#65FE08" : "#ff4d4d";
-    document.getElementById('today-time-val').textContent = today.label;
-
+    const statusEl = document.getElementById('status-text');
     if (lastStatus === "Geschlossen" && newStatusText === "Geöffnet") launchRocket();
-    lastStatus = newStatusText;
 
-    // Tabelle für die restlichen 6 Tage (nur wenn sie leer ist)
-    const tableEl = document.getElementById('opening-table');
-    if (tableEl.innerHTML === "") {
-      let tableHtml = "";
-      for (let i = 1; i < 7; i++) {
-        const idx = (currentDayIdx + i) % 7;
-        const item = schedule[idx];
-        tableHtml += `
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-            <td style="padding: 8px 0; width: 50%;">${item.day}</td>
-            <td style="padding: 8px 0; text-align: right; font-family: monospace;">${item.label}</td>
-          </tr>`;
-      }
-      tableEl.innerHTML = tableHtml;
+    lastStatus = newStatusText;
+    statusEl.textContent = newStatusText;
+    statusEl.style.color = isOpen ? "#65FE08" : "#ff4d4d";
+  }
+
+  function shareProduct(event, id) {
+    event.stopPropagation();
+    const url = window.location.origin + window.location.pathname + '#' + id;
+    if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      navigator.share({ title: 'OptiCroid Angebot', text: 'Schau dir das an!', url: url });
+    } else {
+      navigator.clipboard.writeText(url);
+      alert('Link wurde kopiert!');
     }
   }
 
-  updateDisplay();
-  setInterval(updateDisplay, 1000);
+  // Alles beim Laden starten
+  renderTable();
+  updateStatus();
+  setInterval(updateStatus, 1000);
 </script>
 </body>
 </html>
