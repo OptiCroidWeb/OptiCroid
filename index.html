@@ -179,13 +179,14 @@
     if (lastStatus === "Geschlossen" && statusText === "Geöffnet") launchRocket();
     lastStatus = statusText;
 
-    // Anzeige der aktuellen Zeit direkt im Header-Bereich
-    statusEl.innerHTML = `<span style="color: ${isOpen ? '#65FE08' : '#ff4d4d'}">${statusText}</span> <span style="color: #65FE08; margin-left: 5px;">(Heute: ${today.label})</span>`;
+    // Status oben, heute-Zeit mit Abstand in neuer Zeile
+    statusEl.innerHTML = `
+      <span style="color: ${isOpen ? '#65FE08' : '#ff4d4d'}">${statusText}</span>
+      <div style="color: #65FE08; font-size: 0.9em; margin-top: 5px;">Heute: ${today.label}</div>
+    `;
 
     const tableEl = document.getElementById('opening-table');
     let tableHtml = "";
-    
-    // Die restlichen 6 Tage in der Liste anzeigen
     for (let i = 1; i < 7; i++) {
       const idx = (currentDayIdx + i) % 7;
       const item = schedule[idx];
