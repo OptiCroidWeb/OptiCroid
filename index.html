@@ -151,7 +151,7 @@
     { day: "Montag", open: 13.5, close: 17.5, label: "13:30–17:30" },
     { day: "Dienstag", open: 13.5, close: 17.5, label: "13:30–17:30" },
     { day: "Mittwoch", open: 13.5, close: 17.5, label: "13:30–17:30" },
-    { day: "Donnerstag", open: 13.5, close: 17.5, label: "13:30-17:30" },
+    { day: "Donnerstag", open: 13.5, close: 17.5, label: "13:30–17:30" },
     { day: "Freitag", open: 13.5, close: 17.5, label: "13:30–17:30" },
     { day: "Samstag", open: 9.5, close: 17.5, label: "09:30–17:30" }
   ];
@@ -172,7 +172,7 @@
     const currentDayIdx = now.getDay();
     const tableEl = document.getElementById('opening-table');
     let tableHtml = "";
-    // Zeigt nur die nächsten 6 Tage in der Liste
+    // Zeigt nur die folgenden 6 Tage in der aufklappbaren Liste
     for (let i = 1; i < 7; i++) {
       const idx = (currentDayIdx + i) % 7;
       const item = schedule[idx];
@@ -192,11 +192,16 @@
     const isOpen = today.open !== 0 && currentTime >= today.open && currentTime < today.close;
     const newStatusText = isOpen ? "Geöffnet" : "Geschlossen";
 
-    const statusEl = document.getElementById('status-text');
-    // Setzt das Label oben auf "Heute"
-    const summary = document.querySelector('summary');
-    if (summary) {
-      summary.innerHTML = `Heute: <span id="status-text" style="color: ${isOpen ? '#65FE08' : '#ff4d4d'}">${newStatusText}</span> ▼`;
+    // Ändert nur den Text in der Summary-Zeile (Heute: Status ▼)
+    const statusTextEl = document.getElementById('status-text');
+    if (statusTextEl) {
+      statusTextEl.textContent = newStatusText;
+      statusTextEl.style.color = isOpen ? "#65FE08" : "#ff4d4d";
+    }
+
+    const summaryLabel = document.querySelector('summary');
+    if (summaryLabel && !summaryLabel.innerHTML.includes("Heute:")) {
+      summaryLabel.innerHTML = `Heute: <span id="status-text" style="color: ${isOpen ? '#65FE08' : '#ff4d4d'}">${newStatusText}</span> ▼`;
     }
 
     if (lastStatus === "Geschlossen" && newStatusText === "Geöffnet") launchRocket();
