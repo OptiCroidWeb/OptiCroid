@@ -171,14 +171,25 @@
     const now = new Date();
     const currentDayIdx = now.getDay();
     const tableEl = document.getElementById('opening-table');
-    let tableHtml = "";
-    // Zeigt nur die folgenden 6 Tage in der aufklappbaren Liste
+    
+    // Den heutigen Tag für die Zeile unter "Öffnungszeiten" vorbereiten
+    const today = schedule[currentDayIdx];
+    
+    let tableHtml = `
+      <tr style="color: #65FE08; font-weight: bold;">
+        <td style="padding: 8px 0; width: 50%;">Heute:</td>
+        <td style="padding: 8px 0; text-align: right; font-family: monospace;">${today.label}</td>
+      </tr>
+      <tr><td colspan="2" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding: 4px 0;"></td></tr>
+    `;
+
+    // Die folgenden 6 Tage
     for (let i = 1; i < 7; i++) {
       const idx = (currentDayIdx + i) % 7;
       const item = schedule[idx];
       tableHtml += `
-        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-          <td style="padding: 8px 0; width: 50%;">${item.day}</td>
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); opacity: 0.8;">
+          <td style="padding: 8px 0;">${item.day}</td>
           <td style="padding: 8px 0; text-align: right; font-family: monospace;">${item.label}</td>
         </tr>`;
     }
@@ -192,16 +203,11 @@
     const isOpen = today.open !== 0 && currentTime >= today.open && currentTime < today.close;
     const newStatusText = isOpen ? "Geöffnet" : "Geschlossen";
 
-    // Ändert nur den Text in der Summary-Zeile (Heute: Status ▼)
-    const statusTextEl = document.getElementById('status-text');
-    if (statusTextEl) {
-      statusTextEl.textContent = newStatusText;
-      statusTextEl.style.color = isOpen ? "#65FE08" : "#ff4d4d";
-    }
-
-    const summaryLabel = document.querySelector('summary');
-    if (summaryLabel && !summaryLabel.innerHTML.includes("Heute:")) {
-      summaryLabel.innerHTML = `Heute: <span id="status-text" style="color: ${isOpen ? '#65FE08' : '#ff4d4d'}">${newStatusText}</span> ▼`;
+    // Text oben in der Summary: "Öffnungszeiten: Geöffnet ▼"
+    const statusEl = document.getElementById('status-text');
+    if (statusEl) {
+      statusEl.textContent = newStatusText;
+      statusEl.style.color = isOpen ? "#65FE08" : "#ff4d4d";
     }
 
     if (lastStatus === "Geschlossen" && newStatusText === "Geöffnet") launchRocket();
