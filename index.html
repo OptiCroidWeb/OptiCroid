@@ -172,11 +172,12 @@
     const currentDayIdx = now.getDay();
     const tableEl = document.getElementById('opening-table');
     let tableHtml = "";
-    for (let i = 0; i < 7; i++) {
+    // Zeigt nur die nächsten 6 Tage in der Liste
+    for (let i = 1; i < 7; i++) {
       const idx = (currentDayIdx + i) % 7;
       const item = schedule[idx];
       tableHtml += `
-        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); ${i === 0 ? 'color: #65FE08; font-weight: bold;' : ''}">
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
           <td style="padding: 8px 0; width: 50%;">${item.day}</td>
           <td style="padding: 8px 0; text-align: right; font-family: monospace;">${item.label}</td>
         </tr>`;
@@ -192,11 +193,14 @@
     const newStatusText = isOpen ? "Geöffnet" : "Geschlossen";
 
     const statusEl = document.getElementById('status-text');
-    if (lastStatus === "Geschlossen" && newStatusText === "Geöffnet") launchRocket();
+    // Setzt das Label oben auf "Heute"
+    const summary = document.querySelector('summary');
+    if (summary) {
+      summary.innerHTML = `Heute: <span id="status-text" style="color: ${isOpen ? '#65FE08' : '#ff4d4d'}">${newStatusText}</span> ▼`;
+    }
 
+    if (lastStatus === "Geschlossen" && newStatusText === "Geöffnet") launchRocket();
     lastStatus = newStatusText;
-    statusEl.textContent = newStatusText;
-    statusEl.style.color = isOpen ? "#65FE08" : "#ff4d4d";
   }
 
   function shareProduct(event, id) {
@@ -210,7 +214,6 @@
     }
   }
 
-  // Alles beim Laden starten
   renderTable();
   updateStatus();
   setInterval(updateStatus, 1000);
