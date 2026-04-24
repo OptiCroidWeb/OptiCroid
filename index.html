@@ -160,7 +160,7 @@
 
   function launchRocket() {
     const rocket = document.createElement('div');
-    rocket.innerHTML = '🚀';
+    rocket.innerHTML = '🍃';
     rocket.style.cssText = 'position:fixed; bottom:-60px; left:50%; font-size:50px; transition:all 10s linear; z-index:1000; pointer-events:none;';
     document.body.appendChild(rocket);
     setTimeout(() => { rocket.style.transform = 'translateY(-120vh) scale(2)'; }, 100);
@@ -182,7 +182,7 @@
     // Status oben, heute-Zeit mit Abstand in neuer Zeile
     statusEl.innerHTML = `
       <span style="color: ${isOpen ? '#65FE08' : '#ff4d4d'}">${statusText}</span>
-      <div style="color: #65FE08; font-size: 0.9em; margin-top: 5px;">Heute: ${today.label}</div>
+      <div style="color: #268fbd; font-size: 0.9em; margin-top: 5px;">Heute: ${today.label}</div>
     `;
 
     const tableEl = document.getElementById('opening-table');
