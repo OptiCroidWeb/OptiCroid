@@ -89,12 +89,6 @@
   </style>
 </head>
 <body>
-<div id="notification-overlay">
-  <div class="notification-box">
-    <div id="notif-content"></div>
-    <button onclick="document.getElementById('notification-overlay').style.display='none'">Okay</button>
-  </div>
-</div>
 
   <main>
     <section id="startseite" class="content">
@@ -164,44 +158,6 @@
   </main>
 
   <script>
-setTimeout(() => {
-  const now = new Date();
-  const currentTime = now.getHours() + now.getMinutes() / 60;
-  const currentDayIdx = now.getDay();
-  const today = schedule[currentDayIdx];
-  const isOpen = today.open !== 0 && currentTime >= today.open && currentTime < today.close;
-  
-  const notifContent = document.getElementById('notif-content');
-  const overlay = document.getElementById('notification-overlay');
-  
-  let message = `<strong>Telefonsupport ${isOpen ? 'geöffnet' : 'geschlossen'}</strong><br>`;
-  
-  if (isOpen) {
-    const closeTime = today.label.split('–')[1];
-    message += `schließt heute um: ${closeTime}`;
-  } else {
-    // Suche nach dem nächsten Tag, der nicht geschlossen ist
-    let nextDayText = "morgen";
-    let foundDay = null;
-    
-    for (let i = 1; i <= 7; i++) {
-      let nextIdx = (currentDayIdx + i) % 7;
-      if (schedule[nextIdx].open !== 0) {
-        foundDay = schedule[nextIdx];
-        if (i > 1) nextDayText = foundDay.day; // Wenn nicht morgen, nenne den Wochentag
-        break;
-      }
-    }
-    
-    const openTime = foundDay.label.split('–')[0];
-    message += `öffnet ${nextDayText} um: ${openTime}`;
-  }
-  
-  notifContent.innerHTML = message;
-  overlay.style.display = 'flex';
-}, 100);
-
-
   const schedule = [
     { day: "Sonntag", open: 0, close: 0, label: "geschlossen" },
     { day: "Montag", open: 13.5, close: 17.5, label: "13:30–17:30" },
