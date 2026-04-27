@@ -191,10 +191,32 @@
     if (lastStatus === "Geschlossen" && statusText === "Geöffnet") launchRocket();
     lastStatus = statusText;
 
-    // Status oben, heute-Zeit mit Abstand in neuer Zeile
+    let subText = "";
+    if (today.open === 0) {
+      let nextDay = null;
+      for (let i = 1; i < 7; i++) {
+        let check = schedule[(currentDayIdx + i) % 7];
+        if (check.open !== 0) { nextDay = check; break; }
+      }
+      subText = `${nextDay.day}: ${nextDay.label}`;
+    } else if (isOpen) {
+      let diff = today.close - currentTime;
+      let closeTime = today.label.split('–')[1];
+      subText = (diff <= 1.5) ? `Schließt demnächst: ${closeTime}` : `Schließt um: ${closeTime}`;
+    } else {
+      if (currentTime < today.open) {
+        let diff = today.open - currentTime;
+        let openTime = today.label.split('–')[0];
+        subText = (diff <= 1.5) ? `Öffnet demnächst: ${openTime}` : `Öffnet um: ${openTime}`;
+      } else {
+        let tomorrow = schedule[(currentDayIdx + 1) % 7];
+        subText = (tomorrow.open !== 0) ? `Öffnet morgen: ${tomorrow.label.split('–')[0]}` : "Heute geschlossen";
+      }
+    }
+
     statusEl.innerHTML = `
       <span style="color: ${isOpen ? '#65FE08' : '#ff4d4d'}">${statusText}</span>
-      <div style="color: #268fbd; font-size: 0.9em; margin-top: 5px;">Heute: ${today.label}</div>
+      <div style="color: #268fbd; font-size: 0.9em; margin-top: 5px;">${subText}</div>
     `;
 
     const tableEl = document.getElementById('opening-table');
