@@ -197,6 +197,13 @@
         let check = schedule[(currentDayIdx + i) % 7];
         if (check.open !== 0) { nextDay = check; break; }
       }
+const callBtn = document.getElementById('call-btn');
+callBtn.onclick = function(e) {
+  if (!isOpen) {
+    e.preventDefault();
+    alert("TELEFON SUPPORT\nGeschlossen");
+  }
+};
       subText = `${nextDay.day}: ${nextDay.label}`;
     } else if (isOpen) {
       let diff = today.close - currentTime;
