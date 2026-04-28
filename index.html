@@ -197,13 +197,6 @@
         let check = schedule[(currentDayIdx + i) % 7];
         if (check.open !== 0) { nextDay = check; break; }
       }
-const callBtn = document.getElementById('call-btn');
-callBtn.onclick = function(e) {
-  if (!isOpen) {
-    e.preventDefault();
-    alert("TELEFON SUPPORT\nGeschlossen");
-  }
-};
       subText = `${nextDay.day}: ${nextDay.label}`;
     } else if (isOpen) {
       let diff = today.close - currentTime;
@@ -237,6 +230,17 @@ callBtn.onclick = function(e) {
         </tr>`;
     }
     tableEl.innerHTML = tableHtml;
+
+    // --- HIER IST DIE NEUE LOGIK FÜR DEN ANRUF-BUTTON ---
+    const callBtn = document.getElementById('call-btn');
+    if (callBtn) {
+      callBtn.onclick = function(e) {
+        if (!isOpen) {
+          e.preventDefault();
+          alert("TELEFON SUPPORT\nGeschlossen");
+        }
+      };
+    }
   }
 
   function shareProduct(event, id) {
