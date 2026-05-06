@@ -99,8 +99,8 @@
 
 <section id="Telefon Support" class="content" style="background-color: rgba(26, 115, 232, 0.1); border: 1px solid rgba(26, 115, 232, 0.4); box-shadow: 0 10px 30px rgba(26, 115, 232, 0.15);">
   <div style="display: flex; justify-content: space-around; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-    <a href="tel:+4915206821179" id="call-btn" style="text-decoration: none; text-align: center; color: #4facfe; font-weight: bold;">📞</a>
-    <a href="mailto:opticroid@gmail.com" style="text-decoration: none; text-align: center; color: #4facfe; font-weight: bold;">📧</a>
+    <a href="tel:+4915206821179" id="call-btn" style="text-decoration: none; text-align: center; color: #4facfe; font-weight: bold;">Anrufen</a>
+    <a href="mailto:opticroid@gmail.com" style="text-decoration: none; text-align: center; color: #4facfe; font-weight: bold;">E-Mail</a>
   </div>
 
   <div style="padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); color: #ede618; font-weight: bold;"><span style="font-size: 20px;">Telefon Support</span>
@@ -171,7 +171,7 @@
 
   function launchRocket() {
     const rocket = document.createElement('div');
-    rocket.innerHTML = '🍃';
+    rocket.innerHTML = 'Online';
     rocket.style.cssText = 'position:fixed; bottom:-60px; left:50%; font-size:50px; transition:all 10s linear; z-index:1000; pointer-events:none;';
     document.body.appendChild(rocket);
     setTimeout(() => { rocket.style.transform = 'translateY(-120vh) scale(2)'; }, 100);
@@ -201,12 +201,12 @@
     } else if (isOpen) {
       let diff = today.close - currentTime;
       let closeTime = today.label.split('–')[1];
-      subText = (diff <= 1.5) ? `Schließt demnächst: ${closeTime}` : `Schließt um: ${closeTime}`;
+      subText = (diff <= 0.5) ? `Schließt demnächst: ${closeTime}` : `Schließt um: ${closeTime}`;
     } else {
       if (currentTime < today.open) {
         let diff = today.open - currentTime;
         let openTime = today.label.split('–')[0];
-        subText = (diff <= 1.5) ? `Öffnet demnächst: ${openTime}` : `Öffnet um: ${openTime}`;
+        subText = (diff <= 0.5) ? `Öffnet demnächst: ${openTime}` : `Öffnet um: ${openTime}`;
       } else {
         let tomorrow = schedule[(currentDayIdx + 1) % 7];
         subText = (tomorrow.open !== 0) ? `Öffnet morgen: ${tomorrow.label.split('–')[0]}` : "Heute geschlossen";
