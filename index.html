@@ -122,6 +122,57 @@
   </div>
 </section>
 
+<section id="tutorial" class="content" style="background-color: rgba(101, 254, 8, 0.05); border: 1px solid rgba(101, 254, 8, 0.3);">
+  <h2 style="color: #65FE08; margin-bottom: 20px;">Erklär-Tutorial</h2>
+  
+  <div id="slider-container" style="position: relative; width: 100%; overflow: hidden; border-radius: 20px; touch-action: pan-y;">
+    <div id="slider-track" style="display: flex; transition: transform 0.4s ease-out; cursor: grab;">
+      <img src="bild1.jpg" style="min-width: 100%; object-fit: contain;">
+      <img src="bild2.jpg" style="min-width: 100%; object-fit: contain;">
+      <img src="bild3.jpg" style="min-width: 100%; object-fit: contain;">
+      <img src="bild4.jpg" style="min-width: 100%; object-fit: contain;">
+      <img src="bild5.jpg" style="min-width: 100%; object-fit: contain;">
+      <img src="bild6.jpg" style="min-width: 100%; object-fit: contain;">
+    </div>
+  </div>
+
+  <div style="margin-top: 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 50px;">
+    <audio id="tutorial-audio" src="musik.mp3" controls style="width: 100%; height: 30px;"></audio>
+  </div>
+  
+  <p style="font-size: 0.8em; color: #bbb; margin-top: 10px;">← Wischen zum Blättern →</p>
+</section>
+
+<script>
+  const track = document.getElementById('slider-track');
+  const audio = document.getElementById('tutorial-audio');
+  let startX = 0;
+  let currentIndex = 0;
+
+  // Touch & Mouse Events für Wischen
+  track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; startMusic(); });
+  track.addEventListener('touchend', e => handleSwipe(e.changedTouches[0].clientX));
+  track.addEventListener('mousedown', e => { startX = e.clientX; startMusic(); });
+  track.addEventListener('mouseup', e => handleSwipe(e.clientX));
+
+  function startMusic() {
+    if (audio.paused) audio.play();
+  }
+
+  function handleSwipe(endX) {
+    const diff = startX - endX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0 && currentIndex < 5) currentIndex++;
+      else if (diff < 0 && currentIndex > 0) currentIndex--;
+      updateSlider();
+    }
+  }
+
+  function updateSlider() {
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+  }
+</script>
+
     <section id="special" class="content" style="background-color: rgba(255, 140, 0, 0.15); border: 1px solid #FF8C00; box-shadow: 0 10px 30px rgba(255, 140, 0, 0.2);">
   <div style="text-align: left; width: 100%;">
     <p style="color: #FF8C00; font-size: 12px; margin: 0; font-weight: bold;">!Special Angebot</p>
