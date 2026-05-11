@@ -114,47 +114,12 @@
   
   <div id="slider-container" style="position: relative; width: 100%; overflow: hidden; border-radius: 20px; touch-action: pan-y;">
     <div id="slider-track" style="display: flex; transition: transform 0.4s ease-out; cursor: grab;">
-      <img src="Screenshot_20260510_213321_Video Player.jpg" style="min-width: 100%; object-fit: contain;">
-      <img src="Screenshot_20260510_213330_Video Player.jpg" style="min-width: 100%; object-fit: contain;">
-      <img src="Screenshot_20260510_213338_Video Player.jpg" style="min-width: 100%; object-fit: contain;">
-      <img src="Screenshot_20260510_213349_Video Player.jpg" style="min-width: 100%; object-fit: contain;">
-      <img src="Screenshot_20260510_213402_Video Player.jpg" style="min-width: 100%; object-fit: contain;">
-      <img src="Screenshot_20260510_213414_Video Player.jpg" style="min-width: 100%; object-fit: contain;">
+      <img src="Werbe Video.mp4" style="min-width: 100%; object-fit: contain;">
     </div>
   </div>
   
-  <p style="font-size: 0.8em; color: #bbb; margin-top: 10px;">← 👐🏻 →</p>
+  <p style="font-size: 0.8em; color: #bbb; margin-top: 10px;">Tutorial</p>
 </section>
-
-<script>
-  const track = document.getElementById('slider-track');
-  const audio = document.getElementById('tutorial-audio');
-  let startX = 0;
-  let currentIndex = 0;
-
-  // Touch & Mouse Events für Wischen
-  track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; startMusic(); });
-  track.addEventListener('touchend', e => handleSwipe(e.changedTouches[0].clientX));
-  track.addEventListener('mousedown', e => { startX = e.clientX; startMusic(); });
-  track.addEventListener('mouseup', e => handleSwipe(e.clientX));
-
-  function startMusic() {
-    if (audio.paused) audio.play();
-  }
-
-  function handleSwipe(endX) {
-    const diff = startX - endX;
-    if (Math.abs(diff) > 50) {
-      if (diff > 0 && currentIndex < 5) currentIndex++;
-      else if (diff < 0 && currentIndex > 0) currentIndex--;
-      updateSlider();
-    }
-  }
-
-  function updateSlider() {
-    track.style.transform = `translateX(-${currentIndex * 100}%)`;
-  }
-</script>
   </main>
 
   <script>
