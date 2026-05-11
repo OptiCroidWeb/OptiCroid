@@ -101,9 +101,9 @@
 
   <div style="padding: 15px 0;">
   <details>
-    <summary style="cursor: pointer; list-style: none; font-weight: 900; color: #ffffff; border: 2px solid rgba(255,255,255,0.3); padding: 15px; border-radius: 20px; background: rgba(255,255,255,0.05);">
-      Öffnungszeiten: <span id="status-text">Prüfe...</span> ▼
-    </summary>
+    <summary style="cursor: pointer; list-style: none; font-weight: 900; text-align: center;">
+  <span id="status-text" style="border: 2px solid #ffffff; padding: 5px 15px; border-radius: 12px; display: inline-block;">Prüfe...</span> ▼
+</summary>
     <table id="opening-table" style="width: 100%; margin-top: 15px; color: #ffffff; font-size: 0.9em; border-collapse: collapse; text-align: left;">
     </table>
   </details>
@@ -232,7 +232,14 @@
     }
     tableEl.innerHTML = tableHtml;
 
-    // --- HIER IST DIE NEUE LOGIK FÜR DEN ANRUF-BUTTON ---
+        const statusColor = isOpen ? '#65FE08' : '#ff4d4d';
+
+    statusEl.innerHTML = `
+      <span style="color: ${statusColor}">${statusText}</span>
+      <div style="color: #268fbd; font-size: 0.9em; margin-top: 8px; font-weight: normal;">${subText}</div>
+    `;
+
+    // Die Sperre bleibt wie sie ist
     const callBtn = document.getElementById('call-btn');
     if (callBtn) {
       callBtn.onclick = function(e) {
