@@ -109,14 +109,30 @@
     </section>
 
     <!-- Tutorial Bereich (unberührt) -->
-    <section id="tutorial" class="content" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
-      <div id="slider-container" style="position: relative; width: 100%; overflow: hidden; border-radius: 20px; touch-action: pan-y;">
-        <div id="slider-track" style="display: flex; transition: transform 0.4s ease-out; cursor: grab;">
-          <img src="erklär-bild.png" style="min-width: 100%; object-fit: contain;">
-        </div>
-      </div>
-    </section>
+    <section id="tutorial" class="content" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0;">
+  <details style="width: 100%;">
+    <summary style="cursor: pointer; padding: 15px; font-weight: bold; color: #bbb; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+      <span>TUTORIAL</span>
+      <span>▼</span>
+    </summary>
+    <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); overflow: hidden;">
+      <img src="erklär-bild.png" id="tutorial-img" onclick="toggleZoom(this)" style="width: 100%; border-radius: 15px; cursor: zoom-in; transition: transform 0.3s ease;">
+    </div>
+  </details>
+</section>
   </main>
+
+  <script>
+  function toggleZoom(img) {
+    if (img.style.transform === "scale(2)") {
+      img.style.transform = "scale(1)";
+      img.style.cursor = "zoom-in";
+    } else {
+      img.style.transform = "scale(2)";
+      img.style.cursor = "zoom-out";
+    }
+  }
+</script>
 
   <script>
   // Die Daten bleiben technisch korrekt (Sonntag an Index 0)
