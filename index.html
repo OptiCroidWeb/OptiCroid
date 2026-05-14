@@ -119,52 +119,55 @@
   </main>
 
   <script>
-    const schedule = [
-      { day: "Montag", open: 13.5, close: 17.5, label: "13:30–17:30" },
-      { day: "Dienstag", open: 13.5, close: 17.5, label: "13:30–17:30" },
-      { day: "Mittwoch", open: 13.5, close: 17.5, label: "13:30–17:30" },
-      { day: "Donnerstag", open: 13.5, close: 17.5, label: "13:30-17:30" },
-      { day: "Freitag", open: 13.5, close: 17.5, label: "13:30–17:30" },
-      { day: "Samstag", open: 9.5, close: 17.5, label: "09:30–17:30" },
-      { day: "Sonntag", open: 0, close: 0, label: "geschlossen" }
-    ];
+  // Die Daten bleiben technisch korrekt (Sonntag an Index 0)
+  const schedule = [
+    { day: "Sonntag", open: 0, close: 0, label: "geschlossen" },
+    { day: "Montag", open: 13.5, close: 17.5, label: "13:30–17:30" },
+    { day: "Dienstag", open: 13.5, close: 17.5, label: "13:30–17:30" },
+    { day: "Mittwoch", open: 13.5, close: 17.5, label: "13:30–17:30" },
+    { day: "Donnerstag", open: 13.5, close: 17.5, label: "13:30–17:30" },
+    { day: "Freitag", open: 13.5, close: 17.5, label: "13:30–17:30" },
+    { day: "Samstag", open: 9.5, close: 17.5, label: "09:30–17:30" }
+  ];
 
-    function updateStatus() {
-      const now = new Date();
-      const currentTime = now.getHours() + now.getMinutes() / 60;
-      const currentDayIdx = now.getDay();
-      const today = schedule[currentDayIdx];
-      const isOpen = today.open !== 0 && currentTime >= today.open && currentTime < today.close;
-      
-      const statusEl = document.getElementById('status-text');
-      const callBtn = document.getElementById('call-btn');
+  function updateStatus() {
+    const now = new Date();
+    const currentTime = now.getHours() + now.getMinutes() / 60;
+    const currentDayIdx = now.getDay(); 
+    const today = schedule[currentDayIdx];
+    const isOpen = today.open !== 0 && currentTime >= today.open && currentTime < today.close;
+    
+    const statusEl = document.getElementById('status-text');
+    const callBtn = document.getElementById('call-btn');
 
-      // Status und Button-Farbe aktualisieren
-      if (isOpen) {
-          statusEl.innerHTML = `<span style="color: #65FE08">Geöffnet</span>`;
-          callBtn.className = "btn-green";
-          callBtn.onclick = null;
-      } else {
-          statusEl.innerHTML = `<span style="color: #ff4d4d">Geschlossen</span>`;
-          callBtn.className = "btn-red";
-          callBtn.onclick = function(e) { e.preventDefault(); alert("Aktuell geschlossen."); };
-      }
-
-      // Tabelle generieren (unberührt)
-      let tableHtml = "";
-      for (let i = 0; i < 7; i++) {
-        const item = schedule[i];
-        tableHtml += `
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); ${i === currentDayIdx ? 'background:rgba(255,255,255,0.1)' : ''}">
-            <td style="padding: 8px 10px;">${item.day}</td>
-            <td style="padding: 8px 10px; text-align: right;">${item.label}</td>
-          </tr>`;
-      }
-      document.getElementById('opening-table').innerHTML = tableHtml;
+    if (isOpen) {
+        statusEl.innerHTML = `<span style="color: #65FE08">Geöffnet</span>`;
+        callBtn.className = "btn-green";
+        callBtn.onclick = null;
+    } else {
+        statusEl.innerHTML = `<span style="color: #ff4d4d">Geschlossen</span>`;
+        callBtn.className = "btn-red";
+        callBtn.onclick = function(e) { e.preventDefault(); alert("Aktuell geschlossen."); };
     }
 
-    updateStatus();
-    setInterval(updateStatus, 60000);
-  </script>
+    // Anzeige-Reihenfolge: Montag (1) bis Samstag (6), dann Sonntag (0)
+    let displayOrder = [1, 2, 3, 4, 5, 6, 0];
+    let tableHtml = "";
+    
+    displayOrder.forEach(idx => {
+      const item = schedule[idx];
+      const isToday = idx === currentDayIdx;
+      tableHtml += `
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); ${isToday ? 'background:rgba(255,255,255,0.1)' : ''}">
+          <td style="padding: 8px 10px;">${item.day}</td>
+          <td style="padding: 8px 10px; text-align: right;">${item.label}</td>
+        </tr>`;
+    });
+    document.getElementById('opening-table').innerHTML = tableHtml;
+  }
+
+  updateStatus();
+  setInterval(updateStatus, 60000);
+</script>
 </body>
 </html>
