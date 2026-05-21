@@ -120,18 +120,11 @@
     </div>
   </details>
 
-<div id="livestream-overlay" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; padding: 20px; overflow-y: auto;">
+<div id="livestream-overlay" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; flex-direction: column; align-items: center; padding: 20px; overflow-y: auto;">
+  
+  <h2 style="color: #fff; margin-bottom: 20px; margin-top: 20px;">LIVE EVENT</h2>
 
-  <style>
-    /* Blockiert das Scrollen der restlichen Seite, wenn Overlay offen ist */
-    body:has(#livestream-overlay[style*="display: flex"]) {
-      overflow: hidden;
-    }
-  </style>
-
-  <h2 style="color: #fff; margin-bottom: 20px;">LIVE EVENT</h2>
-
-  <div style="width: 100%; max-width: 800px; aspect-ratio: 16/9;">
+  <div style="width: 100%; max-width: 800px; aspect-ratio: 16/9; flex-shrink: 0;">
     <iframe style="width: 100%; height: 100%; border-radius: 15px;" 
             src="https://player.twitch.tv/?channel=live_event31&parent=opticroidweb.github.io" 
             frameborder="0" 
@@ -139,7 +132,7 @@
     </iframe>
   </div>
 
-  <img src="Event.png" style="margin-top: 20px; max-width: 300px; border-radius: 10px;">
+  <img src="Event.png" style="margin-top: 20px; max-width: 300px; border-radius: 10px; margin-bottom: 40px;">
 </div>
 </main>
 
