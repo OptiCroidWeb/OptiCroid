@@ -149,16 +149,20 @@
 </script>
 
   <script>
-  // Die Daten bleiben technisch korrekt (Sonntag an Index 0)
+  const style = document.createElement('style');
+  style.innerHTML = '.orange { color: orange; } .normal { color: inherit; }';
+  document.head.appendChild(style);
+
   const schedule = [
     { day: "Sonntag", open: 0, close: 0, label: "geschlossen" },
-    { day: "Montag", open: 0, close: 0, label: "geschlossen" },
-    { day: "Dienstag", open: 0, close: 0, label: "geschlossen" },
-    { day: "Mittwoch", open: 0, close: 0, label: "geschlossen" },
-    { day: "Donnerstag", open: 0, close: 0, label: "geschlossen" },
+    { day: "Montag", open: 0, close: 0, label: '<span class="orange">geschlossen</span>' },
+    { day: "Dienstag", open: 0, close: 0, label: '<span class="orange">geschlossen</span>' },
+    { day: "Mittwoch", open: 0, close: 0, label: '<span class="orange">geschlossen</span>' },
+    { day: "Donnerstag", open: 0, close: 0, label: '<span class="orange">geschlossen</span>' },
     { day: "Freitag", open: 9.5, close: 18.0, label: "9:30-18:00" },
     { day: "Samstag", open: 9.5, close: 18.0, label: "9:30-18:00" }
   ];
+</script>
 
   function updateStatus() {
     const now = new Date();
