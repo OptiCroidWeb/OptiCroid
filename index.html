@@ -146,20 +146,69 @@
       img.style.cursor = "zoom-out";
     }
   }
-</script>
-
+  <script>
     function toggleZoom(img) {
-    if (img.style.transform === "scale(2)") {
-      img.style.transform = "scale(1)";
-      img.style.cursor = "zoom-in";
-    } else {
-      img.style.transform = "scale(2)";
-      img.style.cursor = "zoom-out";
+      if (img.style.transform === "scale(2)") {
+        img.style.transform = "scale(1)";
+        img.style.cursor = "zoom-in";
+      } else {
+        img.style.transform = "scale(2)";
+        img.style.cursor = "zoom-out";
+      }
     }
-  }
 
-  const style = document.createElement('style');
-</style>
+    const style = document.createElement('style');
+    style.innerHTML = '.orange { color: orange; } .normal { color: inherit; }';
+    document.head.appendChild(style);
+
+    const schedule = [
+      { day: "Sonntag", open: 0, close: 0, label: "geschlossen" },
+      { day: "Montag", open: 0, close: 0, label: '<span class="orange">geschlossen</span>' },
+      { day: "Dienstag", open: 0, close: 0, label: '<span class="orange">geschlossen</span>' },
+      { day: "Mittwoch", open: 0, close: 0, label: '<span class="orange">geschlossen</span>' },
+      { day: "Donnerstag", open: 0, close: 0, label: '<span class="orange">geschlossen</span>' },
+      { day: "Freitag", open: 9.5, close: 18.0, label: "9:30-18:00" },
+      { day: "Samstag", open: 9.5, close: 18.0, label: "9:30-18:00" }
+    ];
+
+    function updateStatus() {
+      const now = new Date();
+      const currentTime = now.getHours() + now.getMinutes() / 60;
+      const currentDayIdx = now.getDay(); 
+      const today = schedule[currentDayIdx];
+      const isOpen = today.open !== 0 && currentTime >= today.open && currentTime < today.close;
+
+      const statusEl = document.getElementById('status-text');
+      const callBtn = document.getElementById('call-btn');
+
+      if (isOpen) {
+          statusEl.innerHTML = `<span style="color: #65FE08">Geöffnet</span>`;
+          callBtn.className = "btn-green";
+          callBtn.onclick = null;
+      } else {
+          statusEl.innerHTML = `<span style="color: #ff4d4d">Geschlossen</span>`;
+          callBtn.className = "btn-red";
+          callBtn.onclick = function(e) { e.preventDefault(); alert("Aktuell geschlossen."); };
+      }
+
+      let displayOrder = [1, 2, 3, 4, 5, 6, 0];
+      let tableHtml = "";
+
+      displayOrder.forEach(idx => {
+        const item = schedule[idx];
+        const isToday = idx === currentDayIdx;
+        tableHtml += `
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); ${isToday ? 'background:rgba(255,255,255,0.1)' : ''}">
+            <td style="padding: 8px 10px;">${item.day}</td>
+            <td style="padding: 8px 10px; text-align: right;">${item.label}</td>
+          </tr>`;
+      });
+      document.getElementById('opening-table').innerHTML = tableHtml;
+    }
+
+    updateStatus();
+    setInterval(updateStatus, 60000);
+  </script>
 
   function updateStatus() {
     const now = new Date();
