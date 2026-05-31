@@ -149,13 +149,13 @@
     document.head.appendChild(style);
 
     const schedule = [
-      { day: "Sonntag", open: 0, close: 0, label: "geschlossen" },
-      { day: "Montag", open: 0, close: 0, label: '<span class="orange">geschlossen</span>' },
-      { day: "Dienstag", open: 0, close: 0, label: '<span class="orange">geschlossen</span>' },
-      { day: "Mittwoch", open: 0, close: 0, label: '<span class="orange">geschlossen</span>' },
-      { day: "Donnerstag", open: 0, close: 0, label: '<span class="orange">geschlossen</span>' },
-      { day: "Freitag", open: 9.5, close: 18.0, label: "9:30-18:00" },
-      { day: "Samstag", open: 9.5, close: 18.0, label: "9:30-18:00" }
+      { day: "Sonntag", open: 0, close: 0, label: '<span class="normal">geschlossen</span>' },
+      { day: "Montag", open: 9.5, close: 18.0, label: '<span class="normal">9:30-18:00</span>' },
+      { day: "Dienstag", open: 9.5, close: 18.0, label: '<span class="normal">9:30-18:00</span>' },
+      { day: "Mittwoch", open: 9.5, close: 18.0, label: '<span class="normal">9:30-18:00</span>' },
+      { day: "Donnerstag", open: 9.5, close: 18.0, label: '<span class="normal">9:30-18:00</span>' },
+      { day: "Freitag", open: 9.5, close: 18.0, label: '<span class="normal">9:30-18:00</span>' },
+      { day: "Samstag", open: 9.5, close: 18.0, label: '<span class="normal">9:30-18:00</span>' }
     ];
 
     function updateStatus() {
