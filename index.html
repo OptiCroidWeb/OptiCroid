@@ -64,6 +64,40 @@
     }
     .special-offer-btn:hover { transform: scale(1.05); background: #fff; }
   </style>
+
+  <style>
+    /* ... deine bisherigen Styles ... */
+
+    /* NEU: Flex-Layout für Stream und Chat nebeneinander */
+    .stream-layout {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      width: 100%;
+      max-width: 1200px;
+      justify-content: center;
+      align-items: stretch;
+    }
+    .stream-container {
+      flex: 2;
+      aspect-ratio: 16 / 9;
+      min-width: 300px;
+    }
+    .chat-container {
+      flex: 1;
+      min-width: 300px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 15px;
+      overflow: hidden;
+    }
+    @media (max-width: 768px) {
+      .stream-layout {
+        flex-direction: column;
+      }
+    }
+  </style>
+  
+  <script src="https://minnit.chat/js/embed.js?c=1772345192" defer></script>
 </head>
 <body>
 
@@ -110,18 +144,24 @@
 </p>
 
     <div id="livestream-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; flex-direction: column; align-items: center; padding: 20px; overflow-y: auto;">
-    <h2 style="color: #fff; margin-bottom: 10px; margin-top: 20px; text-align: center;">LIVE Stream<br>00:00 Intro - 00:00 Anfang</h2>
-    
-    <img src="Rock TV Logo1.png" style="max-width: 300px; border-radius: 10px; margin-bottom: 25px;" alt="Stream Info Bild">
+      <h2 style="color: #fff; margin-bottom: 10px; margin-top: 20px; text-align: center;">LIVE Stream<br>00:00 Intro - 00:00 Anfang</h2>
+      
+      <img src="Rock TV Logo1.png" style="max-width: 300px; border-radius: 10px; margin-bottom: 25px;" alt="Stream Info Bild">
 
-    <div class="stream-container">
-      <iframe style="width: 100%; height: 100%; border-radius: 15px;" 
-              src="https://player.twitch.tv/?channel=die_Goblins1&parent=opticroidweb.github.io" 
-              frameborder="0" 
-              allowfullscreen="true">
-      </iframe>
-    </div>
+      <div class="stream-layout">
+        <div class="stream-container">
+          <iframe style="width: 100%; height: 100%; border-radius: 15px;" 
+                  src="https://player.twitch.tv/?channel=die_Goblins1&parent=opticroidweb.github.io" 
+                  frameborder="0" 
+                  allowfullscreen="true">
+          </iframe>
+        </div>
+
+        <div class="chat-container">
+          <span style="display: none;" class="minnit-chat-sembed" data-chatname="https://organizations.minnit.chat/863371023870187/c/Main?embed" data-style="width:100%; height:100%; min-height:400px;" data-version="1.55">Chat</span>
+        </div>
       </div>
+    </div>
     </section>
   </main>
 
