@@ -130,20 +130,20 @@
       </div>
 
 <div style="padding: 15px 0; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-  <details>
+  <details style="position: relative;">
     <summary style="cursor: pointer; list-style: none; font-weight: 900; text-align: center;">
       <span style="border: 2px solid #ffffff; padding: 5px 15px; border-radius: 12px; display: inline-block; background: rgba(255,255,255,0.1);">Infos</span> ▼
     </summary>
-    <div style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 10px; text-align: left; color: #ffffff; font-size: 0.9em;">
+    <div style="position: absolute; left: 50%; transform: translateX(-50%); top: 100%; margin-top: 10px; padding: 10px; background: #1a334a; border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; text-align: left; color: #ffffff; font-size: 0.9em; width: 220px; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
       Zahlung auf Spendenbasis.<br>Markus Sieber - IT-Hilfe vor Ort.
     </div>
   </details>
 
-  <details>
+  <details style="position: relative;">
     <summary style="cursor: pointer; list-style: none; font-weight: 900; text-align: center;">
       <span id="status-text" style="border: 2px solid #ffffff; padding: 5px 15px; border-radius: 12px; display: inline-block;">Prüfe...</span> ▼
-    </summary>
-    <table id="opening-table" style="width: 100%; margin-top: 15px; color: #ffffff; font-size: 0.9em; border-collapse: collapse; text-align: left;">
+    </summary> 
+    <table id="opening-table" style="position: absolute; left: 50%; transform: translateX(-50%); top: 100%; margin-top: 10px; background: #1a334a; border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 10px; width: 220px; color: #ffffff; font-size: 0.9em; border-collapse: collapse; text-align: left; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
     </table>
   </details>
 </div>
