@@ -4,150 +4,276 @@
   <meta charset="UTF-8" />
   <meta name="google-site-verification" content="1h0mJmEKKiB0WFa2w9Txokx6s4TYYGrI54m2dTZAwCk" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OptiCroid</title>
-  <!-- Beschreibung für die Google-Suche (Vorschautext) -->
-  <meta name="description" content="IT Hilfe, 06989 Steingaden, Zahlung auf Spendenbasis/ Markus Sieber">
+  <title>OptiCroid - IT Hilfe</title>
+  <meta name="description" content="IT Hilfe, 06989 Steingaden, Zahlung auf Spendenbasis / Markus Sieber">
   
-  <!-- Korrigiertes Favicon für das Logo in den Suchergebnissen -->
   <link rel="icon" type="image/png" href="Logo.png">
+
   <style>
-    /* Benachrichtigungs-Stil (unberührt) */
-    #notification-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px);
-      display: none; justify-content: center; align-items: center; z-index: 2000;
-    }
-    .notification-box {
-      background: white; color: black; padding: 30px; border-radius: 25px;
-      text-align: center; width: 85%; max-width: 350px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    }
-    .notification-box button {
-      margin-top: 20px; background: #0c1a26; color: white; border: none;
-      padding: 10px 30px; border-radius: 15px; font-weight: bold; cursor: pointer;
+    /* Globales Reset & Schriftart */
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
     }
 
-    * { box-sizing: border-box; }
-    html, body { width: 100%; margin: 0; padding: 0; background-color: #0c1a26; color: #ffffff; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
+    body { 
+      width: 100%; 
+      background-color: #0f172a; /* Haupt-Blau (Dunkelblau/Slate) */
+      color: #ffffff; /* Haupt-Weiß */
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+      overflow-x: hidden; 
+    }
 
-    main { padding: 40px 10px; display: flex; flex-direction: column; align-items: center; gap: 50px; width: 100%; }
+    main { 
+      padding: 40px 15px; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      gap: 30px; 
+      width: 100%; 
+    }
 
+    /* Hauptkarte / Content Container */
     .content { 
-        display: block; 
-        text-align: center; 
-        background-color: #1a334a; 
-        width: 95%; 
-        max-width: 800px; 
-        border-radius: 30px; 
-        padding: 5%; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-        border: 1px solid rgba(255,255,255,0.05);
-        margin: 0 auto;
-        position: relative;
+      display: block; 
+      text-align: center; 
+      background-color: #1e293b; /* Kontrastierendes Dunkelblau */
+      width: 100%; 
+      max-width: 750px; 
+      border-radius: 24px; 
+      padding: 35px 25px; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin: 0 auto;
+      position: relative;
     }
 
     img { max-width: 100%; height: auto; }
 
-    /* Dynamischer Anrufen Button */
+    /* Titel & Typography */
+    .title-main {
+      color: #ffffff;
+      font-size: clamp(22px, 5vw, 36px);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .title-accent {
+      color: #ff7043; /* Accent Orange */
+    }
+
+    /* Logo Style */
+    .profile-logo {
+      width: 180px; 
+      height: 180px;
+      object-fit: cover;
+      border-radius: 50%; 
+      border: 4px solid #ff7043; /* Orange Rahmung */
+      box-shadow: 0 8px 25px rgba(255, 112, 67, 0.25);
+      margin: 20px 0;
+      transition: transform 0.3s ease;
+    }
+
+    .profile-logo:hover {
+      transform: scale(1.03);
+    }
+
+    /* Anrufen Button Styles */
     #call-btn { 
-        border: none; color: white; padding: 12px 25px; border-radius: 20px; 
-        cursor: pointer; font-weight: bold; text-decoration: none; margin: 5px; 
-        display: inline-block; transition: background 0.3s;
+      border: none; 
+      color: #ffffff; 
+      padding: 14px 35px; 
+      border-radius: 50px; 
+      cursor: pointer; 
+      font-weight: 700; 
+      font-size: 1.1rem;
+      text-decoration: none; 
+      margin: 15px 0; 
+      display: inline-block; 
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
-    .btn-green { background-color: #008000; }
-    .btn-red { background-color: #ff4d4d; }
 
-    .special-offer-btn {
-        display: inline-block; background: #FFD700; color: #000; padding: 10px 25px;
-        font-weight: 900; text-decoration: none; font-size: 16px; border-radius: 50px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-bottom: 25px; transition: transform 0.2s;
+    .btn-green { 
+      background-color: #10b981; 
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4) !important;
     }
-    .special-offer-btn:hover { transform: scale(1.05); background: #fff; }
-  </style>
 
-  <style>
-    /* ... deine bisherigen Styles ... */
+    .btn-red { 
+      background-color: #ef4444; 
+      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3) !important;
+    }
 
-    /* NEU: Flex-Layout für Stream und Chat nebeneinander */
-    .stream-layout {
+    /* Info Bar & Standorts-Box */
+    .info-card {
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      padding: 15px 20px; 
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      margin: 20px 0;
+    }
+
+    /* Features / Leistungen Tag Grid (NEU) */
+    .services-grid {
       display: flex;
-      flex-direction: row;
-      gap: 20px;
-      width: 100%;
-      max-width: 1200px;
+      flex-wrap: wrap;
       justify-content: center;
-      align-items: stretch;
+      gap: 10px;
+      margin: 20px 0;
     }
-    .stream-container {
-      flex: 2;
-      aspect-ratio: 16 / 9;
-      min-width: 300px;
+
+    .service-tag {
+      background: rgba(255, 112, 67, 0.1);
+      border: 1px solid rgba(255, 112, 67, 0.3);
+      color: #ff7043;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
     }
-    .chat-container {
-      flex: 1;
-      min-width: 300px;
-      background: rgba(0,0,0,0.2);
-      border-radius: 15px;
-      overflow: hidden;
+
+    /* Popover Details Elements */
+    details {
+      position: relative;
     }
+
+    summary {
+      cursor: pointer; 
+      list-style: none; 
+      font-weight: 700; 
+      text-align: center;
+      user-select: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .pill-btn {
+      border: 2px solid #ff7043;
+      color: #ffffff;
+      padding: 8px 20px; 
+      border-radius: 50px; 
+      display: inline-block; 
+      background: rgba(255, 112, 67, 0.15);
+      transition: background 0.3s ease;
+    }
+
+    .pill-btn:hover {
+      background: rgba(255, 112, 67, 0.3);
+    }
+
+    .dropdown-popover {
+      position: absolute; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      top: 120%; 
+      padding: 15px; 
+      background: #0f172a; 
+      border: 1px solid #ff7043; 
+      border-radius: 16px; 
+      text-align: left; 
+      color: #ffffff; 
+      font-size: 0.9em; 
+      width: 240px; 
+      z-index: 100; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+
+    /* Notification Box Overlay */
+    #notification-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px);
+      display: none; justify-content: center; align-items: center; z-index: 2000;
+    }
+
+    .notification-box {
+      background: #1e293b; color: #ffffff; padding: 30px; border-radius: 20px;
+      text-align: center; width: 85%; max-width: 350px;
+      border: 1px solid #ff7043;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    .notification-box button {
+      margin-top: 20px; background: #ff7043; color: white; border: none;
+      padding: 10px 30px; border-radius: 50px; font-weight: bold; cursor: pointer;
+    }
+
+    /* Status Farben */
+    .orange { color: #ff7043; font-weight: 600; }
+    .normal { color: inherit; }
+
     @media (max-width: 768px) {
-      .stream-layout {
-        flex-direction: column;
-      }
+      .content { padding: 25px 15px; }
     }
   </style>
-  
+
   <script src="https://minnit.chat/js/embed.js?c=1772345192" defer></script>
 </head>
 <body>
 
   <main>
-    <section id="liveBild" class="content" style="display: none;background: linear-gradient(135deg, #ff4e50, #ff9f43, #f9d423); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0;">
+    <section id="liveBild" class="content" style="display: none; background: linear-gradient(135deg, #ff7043, #0f172a); border: 1px solid rgba(255,255,255,0.2); padding: 0;">
       <details style="width: 100%;">
-        <summary style="cursor: pointer; padding: 15px; font-weight: bold; color: #000000; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+        <summary style="padding: 15px; color: #ffffff; display: flex; justify-content: space-between; align-items: center;">
           <span>Kein Eintrag</span>
           <span>▼</span>
         </summary>
-        <div style="padding: 20px; border-top: 1px solid rgba(0, 0, 0, 0.15); overflow: hidden;">
-          <img src="IMG_0002.png" id="tutorial-img" onclick="toggleZoom(this)" style="width: 100%; border-radius: 15px; cursor: zoom-in; transition: transform 0.3s ease;">
+        <div style="padding: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden;">
+          <img src="IMG_0002.png" id="tutorial-img" onclick="toggleZoom(this)" style="width: 100%; border-radius: 12px; cursor: zoom-in; transition: transform 0.3s ease;" alt="Tutorial">
         </div>
       </details>
-</section>
-    
+    </section>
+
     <section id="startseite" class="content">
-      <!-- Header in Weiß/Grau -->
-      <p style="color: #ffffff; font-size: clamp(20px, 5vw, 40px); font-weight: 900;">
-        IT <span style="color: #bbb;">Hilfe-OptiCroid</span>
-      </p>
-      <!-- Logo mit Weißem Rahmen -->
-      <img src="Logo.png" style="width:200px; border-radius: 50%; border: 4px solid #ffffff; margin: 20px 0;"/><br>
+      
+      <h1 class="title-main">
+        IT Hilfe <span class="title-accent">OptiCroid</span>
+      </h1>
+
+      <img src="Logo.png" class="profile-logo" alt="OptiCroid Logo"/><br>
 
       <a href="tel:+4915206821179" id="call-btn">Anrufen</a>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-        <div style="text-align: left;">Umkreis: Steingaden<br><small style="color: #bbb;">5 Min.</small></div>
-        <img src="Screenshot_20260420_161537_Google.jpg" alt="Standort" style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px; background: #ddd;">
+      <div class="services-grid">
+        <span class="service-tag">PC & Smartphone Hilfe</span>
+        <span class="service-tag">Spendenbasis</span>
+        <span class="service-tag">Vor-Ort-Service</span>
       </div>
 
-<div style="padding: 15px 0; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-  <details style="position: relative;">
-    <summary style="cursor: pointer; list-style: none; font-weight: 900; text-align: center;">
-      <span style="border: 2px solid #ffffff; padding: 5px 15px; border-radius: 12px; display: inline-block; background: rgba(255,255,255,0.1);">Infos</span> ▼
-    </summary>
-    <div style="position: absolute; left: 50%; transform: translateX(-50%); top: 100%; margin-top: 10px; padding: 10px; background: #1a334a; border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; text-align: left; color: #ffffff; font-size: 0.9em; width: 220px; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
-      Betriebs Urlaub:<br>03.08.2026 - 14.08.2026
+      <div class="info-card">
+        <div style="text-align: left;">
+          <strong style="color: #ffffff;">Umkreis:</strong> Steingaden<br>
+          <small style="color: #ff7043; font-weight: 600;">~ 5 Min. Anfahrt</small>
+        </div>
+        <img src="Screenshot_20260420_161537_Google.jpg" alt="Standortkarte" style="width: 75px; height: 55px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);">
+      </div>
 
-    </div>
-  </details>
+      <div style="padding: 10px 0; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+        
+        <details>
+          <summary>
+            <span class="pill-btn">Infos ▼</span>
+          </summary>
+          <div class="dropdown-popover">
+            <strong style="color: #ff7043;">Betriebsurlaub:</strong><br>
+            03.08.2026 - 14.08.2026
+          </div>
+        </details>
 
-  <details style="position: relative;">
-    <summary style="cursor: pointer; list-style: none; font-weight: 900; text-align: center;">
-      <span id="status-text" style="border: 2px solid #ffffff; padding: 5px 15px; border-radius: 12px; display: inline-block;">Prüfe...</span> ▼
-    </summary> 
-    <table id="opening-table" style="position: absolute; left: 50%; transform: translateX(-50%); top: 100%; margin-top: 10px; background: #1a334a; border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 10px; width: 220px; color: #ffffff; font-size: 0.9em; border-collapse: collapse; text-align: left; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
-    </table>
-  </details>
-</div>
+        <details>
+          <summary>
+            <span id="status-text" class="pill-btn">Prüfe... ▼</span>
+          </summary> 
+          <table id="opening-table" class="dropdown-popover" style="width: 240px; border-collapse: collapse;">
+          </table>
+        </details>
+
+      </div>
     </section>
   </main>
 
@@ -161,10 +287,6 @@
         img.style.cursor = "zoom-out";
       }
     }
-
-    const style = document.createElement('style');
-    style.innerHTML = '.orange { color: orange; } .normal { color: inherit; }';
-    document.head.appendChild(style);
 
     const schedule = [
       { day: "Sonntag", open: 0, close: 0, label: '<span class="orange">geschlossen</span>' },
@@ -187,11 +309,11 @@
       const callBtn = document.getElementById('call-btn');
 
       if (isOpen) {
-          statusEl.innerHTML = `<span style="color: #65FE08">Geöffnet</span>`;
+          statusEl.innerHTML = `<span style="color: #10b981">Geöffnet</span> ▼`;
           callBtn.className = "btn-green";
           callBtn.onclick = null;
       } else {
-          statusEl.innerHTML = `<span style="color: #ff4d4d">Geschlossen</span>`;
+          statusEl.innerHTML = `<span style="color: #ef4444">Geschlossen</span> ▼`;
           callBtn.className = "btn-red";
           callBtn.onclick = function(e) { e.preventDefault(); alert("Aktuell geschlossen."); };
       }
@@ -203,9 +325,9 @@
         const item = schedule[idx];
         const isToday = idx === currentDayIdx;
         tableHtml += `
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); ${isToday ? 'background:rgba(255,255,255,0.1)' : ''}">
-            <td style="padding: 8px 10px;">${item.day}</td>
-            <td style="padding: 8px 10px; text-align: right;">${item.label}</td>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.08); ${isToday ? 'background:rgba(255,112,67,0.15)' : ''}">
+            <td style="padding: 8px 6px;">${item.day}</td>
+            <td style="padding: 8px 6px; text-align: right;">${item.label}</td>
           </tr>`;
       });
       document.getElementById('opening-table').innerHTML = tableHtml;
@@ -215,18 +337,16 @@
     setInterval(updateStatus, 60000);
   </script>
   
-  <!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/6a44090f82c4e81d44ac7a3b/1jscs6p7m';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-<!--End of Tawk.to Script-->
+  <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/6a44090f82c4e81d44ac7a3b/1jscs6p7m';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+  </script>
 </body>
 </html>
