@@ -8,22 +8,25 @@
   
   <link rel="icon" type="image/png" href="Logo.png">
 
+  <link rel="stylesheet" href="seasonal.css">
+  <script src="seasonal.js" defer></script>
+
   <style>
     /* Globales Reset & Schriftart */
     * { 
       box-sizing: border-box; 
       margin: 0; 
       padding: 0; 
-      border: none; /* Umrandungen global entfernt */
+      border: none;
       outline: none;
     }
 
     body { 
       width: 100%; 
-      background-color: #0f172a; /* Haupt-Blau */
+      background-color: #0f172a; 
       color: #ffffff; 
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
-      overflow-x: hidden; 
+      overflow-x: hidden;
     }
 
     main { 
@@ -61,11 +64,12 @@
 
     .title-accent {
       color: #ff7043; /* Accent Orange */
+      transition: color 0.4s ease;
     }
 
     /* Logo Style */
     .profile-logo {
-      width: 180px; 
+      width: 180px;
       height: 180px;
       object-fit: cover;
       border-radius: 50%; 
@@ -116,7 +120,7 @@
 
     /* Features / Leistungen Tag Grid */
     .services-grid {
-      display: flex;
+      display: flex; 
       flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
@@ -130,11 +134,12 @@
       border-radius: 20px;
       font-size: 0.9rem;
       font-weight: 600;
+      transition: all 0.4s ease;
     }
 
-    /* Ausklappbare Abschnitte (Untereinander & Breit) */
+    /* Ausklappbare Abschnitte */
     .accordion-container {
-      display: flex;
+      display: flex; 
       flex-direction: column;
       gap: 12px;
       width: 100%;
@@ -142,7 +147,7 @@
     }
 
     details {
-      width: 100%;
+      width: 100%; 
       background: rgba(255, 112, 67, 0.15);
       border-radius: 16px;
       overflow: hidden;
@@ -157,7 +162,7 @@
       cursor: pointer; 
       list-style: none; 
       font-weight: 700; 
-      text-align: center;
+      text-align: center; 
       user-select: none;
       padding: 14px 20px;
       color: #ffffff;
@@ -171,7 +176,7 @@
 
     /* Inhalt beim Ausklappen */
     .accordion-content {
-      padding: 15px 20px;
+      padding: 15px 20px; 
       background: #0f172a;
       text-align: center;
       color: #ffffff;
@@ -179,7 +184,7 @@
     }
 
     .opening-table {
-      width: 100%;
+      width: 100%; 
       max-width: 300px;
       margin: 0 auto;
       border-collapse: collapse;
@@ -303,7 +308,6 @@
 
       let displayOrder = [1, 2, 3, 4, 5, 6, 0];
       let tableHtml = "";
-
       displayOrder.forEach(idx => {
         const item = schedule[idx];
         const isToday = idx === currentDayIdx;
