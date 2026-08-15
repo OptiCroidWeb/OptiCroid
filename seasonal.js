@@ -1,10 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
   const now = new Date();
   const day = now.getDate();
-  const month = now.getMonth() + 1; // 1 = Jan, 12 = Dez
+  const month = now.getMonth() + 1;
   const year = now.getFullYear();
 
-  // Gaußsche Osterformel
   function getEasterSunday(y) {
     const a = y % 19, b = Math.floor(y / 100), c = y % 100;
     const d = Math.floor(b / 4), e = b % 4;
@@ -39,7 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.body.classList.add("theme-" + theme);
 
-  // Erstelle Canvas für die Animation
   const canvas = document.createElement("canvas");
   canvas.id = "seasonal-canvas";
   document.body.prepend(canvas);
@@ -53,16 +51,15 @@ document.addEventListener("DOMContentLoaded", function () {
     height = canvas.height = window.innerHeight;
   });
 
-  // Partikel-System
-  const particleCount = width < 600 ? 35 : 65;
+  const particleCount = width < 600 ? 45 : 85;
   const particles = [];
 
   for (let i = 0; i < particleCount; i++) {
     particles.push({
       x: Math.random() * width,
       y: Math.random() * height,
-      size: Math.random() * 3 + 1.5,
-      speedY: Math.random() * 1.2 + 0.5,
+      size: Math.random() * 3.5 + 1.2,
+      speedY: Math.random() * 1.1 + 0.4,
       speedX: Math.random() * 0.8 - 0.4,
       step: Math.random() * 100,
       stepSize: Math.random() * 0.02 + 0.01,
@@ -75,11 +72,11 @@ document.addEventListener("DOMContentLoaded", function () {
   function getRandomColor(t) {
     if (t === "winter" || t === "weihnachten") return "rgba(255, 255, 255, 0.85)";
     if (t === "herbst") {
-      const colors = ["rgba(251, 133, 0, 0.7)", "rgba(217, 119, 6, 0.7)", "rgba(180, 83, 9, 0.7)"];
+      const colors = ["rgba(251, 133, 0, 0.75)", "rgba(217, 119, 6, 0.75)", "rgba(245, 158, 11, 0.7)"];
       return colors[Math.floor(Math.random() * colors.length)];
     }
-    if (t === "fruehling" || t === "ostern") return "rgba(244, 114, 182, 0.75)";
-    return "rgba(255, 214, 10, 0.65)"; // Sommer Sparkles
+    if (t === "fruehling" || t === "ostern") return "rgba(244, 114, 182, 0.8)";
+    return "rgba(255, 214, 10, 0.7)";
   }
 
   function drawParticle(p) {
@@ -87,34 +84,30 @@ document.addEventListener("DOMContentLoaded", function () {
     ctx.translate(p.x, p.y);
 
     if (theme === "winter" || theme === "weihnachten") {
-      // Schnee (Weich gezeichnete Flocken)
       ctx.beginPath();
       ctx.arc(0, 0, p.size, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
-      ctx.shadowBlur = 6;
-      ctx.shadowColor = "rgba(255,255,255,0.8)";
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = "rgba(255,255,255,0.9)";
       ctx.fill();
     } else if (theme === "herbst") {
-      // Laubblätter (Ovale mit Drehung)
       ctx.rotate((p.rotation * Math.PI) / 180);
       ctx.beginPath();
       ctx.ellipse(0, 0, p.size * 2.5, p.size * 1.2, 0, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
       ctx.fill();
     } else if (theme === "fruehling" || theme === "ostern") {
-      // Blütenblätter
       ctx.rotate((p.rotation * Math.PI) / 180);
       ctx.beginPath();
-      ctx.ellipse(0, 0, p.size * 2, p.size * 1.5, Math.PI / 4, 0, Math.PI * 2);
+      ctx.ellipse(0, 0, p.size * 2.2, p.size * 1.4, Math.PI / 4, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
       ctx.fill();
     } else {
-      // Sommer Sparkles
       ctx.beginPath();
-      ctx.arc(0, 0, p.size * 1.2, 0, Math.PI * 2);
+      ctx.arc(0, 0, p.size * 1.3, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = "rgba(255, 183, 3, 0.8)";
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = "rgba(255, 183, 3, 0.85)";
       ctx.fill();
     }
 
@@ -128,9 +121,8 @@ document.addEventListener("DOMContentLoaded", function () {
       p.step += p.stepSize;
       p.rotation += p.rotSpeed;
 
-      // Dynamische Bewegung (Seitlicher Sumpf/Wind)
       if (theme === "sommer") {
-        p.y -= p.speedY * 0.5; // Sommer-Sparkles steigen sanft auf
+        p.y -= p.speedY * 0.5;
         p.x += Math.sin(p.step) * 0.6;
         if (p.y < -10) { p.y = height + 10; p.x = Math.random() * width; }
       } else {
