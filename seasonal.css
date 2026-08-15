@@ -1,69 +1,141 @@
-/* Datum/Saison-Anzeige oben links */
-.date-season-badge {
+/* Animation Canvas im Hintergrund */
+#seasonal-canvas {
   position: fixed;
-  top: 12px;
-  left: 12px;
-  z-index: 1000;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #e2e8f0;
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
+  z-index: 1;
 }
 
-/* Sommer: Sonniger, warmer Touch */
+/* Sicherstellen, dass der Inhalt vor der Animation liegt */
+main {
+  position: relative;
+  z-index: 2;
+}
+
+/* --------------------------------------------------------
+   Saisonale Farbthemen (Dezent & modern)
+   -------------------------------------------------------- */
+
+/* Sommer */
 body.theme-sommer .title-accent {
   color: #ffb703 !important;
 }
 body.theme-sommer .service-tag {
-  background: rgba(255, 183, 3, 0.15) !important;
+  background: rgba(255, 183, 3, 0.12) !important;
   color: #ffb703 !important;
 }
 
-/* Herbst: Winke von Blättern & warme Erdtöne */
+/* Herbst */
 body.theme-herbst .title-accent {
   color: #fb8500 !important;
 }
 body.theme-herbst .service-tag {
-  background: rgba(251, 133, 0, 0.15) !important;
+  background: rgba(251, 133, 0, 0.12) !important;
   color: #fb8500 !important;
 }
 
-/* Winter & Weihnachten: Subtiler Schnee-/Eis-Look */
+/* Winter & Weihnachten */
 body.theme-winter .title-accent,
 body.theme-weihnachten .title-accent {
   color: #38bdf8 !important;
 }
 body.theme-winter .service-tag,
 body.theme-weihnachten .service-tag {
-  background: rgba(56, 189, 248, 0.15) !important;
+  background: rgba(56, 189, 248, 0.12) !important;
   color: #38bdf8 !important;
 }
 
-/* Frühling & Ostern: Frisches Grün / Blüte */
+/* Frühling & Ostern */
 body.theme-fruehling .title-accent,
 body.theme-ostern .title-accent {
   color: #4ade80 !important;
 }
 body.theme-fruehling .service-tag,
 body.theme-ostern .service-tag {
-  background: rgba(74, 222, 128, 0.15) !important;
+  background: rgba(74, 222, 128, 0.12) !important;
   color: #4ade80 !important;
 }
 
+/* --------------------------------------------------------
+   Kompaktere Größen & Mobile Optimierung
+   -------------------------------------------------------- */
+
+/* Reduzierte Paddings für ein schlankeres Layout */
+main {
+  padding: 20px 10px !important;
+  gap: 15px !important;
+}
+
+.content {
+  max-width: 580px !important;
+  padding: 22px 18px !important;
+  border-radius: 18px !important;
+}
+
+/* Kleineres Logo */
+.profile-logo {
+  width: 120px !important;
+  height: 120px !important;
+  margin: 12px 0 !important;
+}
+
+/* Schlankerer Anrufen-Button */
+#call-btn {
+  padding: 10px 24px !important;
+  font-size: 0.95rem !important;
+  margin: 10px 0 !important;
+}
+
+/* Kompakte Tags */
+.services-grid {
+  gap: 6px !important;
+  margin: 12px 0 !important;
+}
+
+.service-tag {
+  padding: 5px 12px !important;
+  font-size: 0.8rem !important;
+}
+
+/* Info-Card (Standort) flexibel halten */
+.info-card {
+  padding: 10px 14px !important;
+  margin: 12px 0 !important;
+  border-radius: 12px !important;
+  font-size: 0.85rem !important;
+}
+
+.info-card img {
+  width: 60px !important;
+  height: 45px !important;
+  border-radius: 8px !important;
+}
+
+/* Akkordeons schmaler */
+summary {
+  padding: 10px 14px !important;
+  font-size: 0.9rem !important;
+}
+
+.accordion-content {
+  padding: 10px 14px !important;
+  font-size: 0.85rem !important;
+}
+
+/* Handy-Optimierungen */
 @media (max-width: 480px) {
-  .date-season-badge {
-    top: 8px;
-    left: 8px;
-    font-size: 0.75rem;
-    padding: 5px 10px;
+  .title-main {
+    font-size: 1.5rem !important;
+  }
+  
+  .content {
+    padding: 18px 12px !important;
+  }
+  
+  .info-card {
+    gap: 8px;
   }
 }
