@@ -27,13 +27,13 @@ document.addEventListener("DOMContentLoaded", function () {
     theme = "ostern";
   } else if (month === 12 && day <= 26) {
     theme = "weihnachten";
-  } else if ((month === 12 && day > 26) || month === 1 || month === 2) {
+  } else if ((month === 12 && day > 26) || month === 1 || month === 2 || month === 11) {
     theme = "winter";
   } else if (month >= 3 && month <= 5) {
     theme = "fruehling";
   } else if (month >= 6 && month <= 8) {
     theme = "sommer";
-  } else if (month >= 9 && month <= 11) {
+  } else if (month >= 9 && month <= 10) {
     theme = "herbst";
   }
 
