@@ -30,51 +30,51 @@
     }
 
     main { 
-      padding: 40px 15px; 
+      padding: 20px 10px; 
       display: flex; 
       flex-direction: column; 
       align-items: center; 
-      gap: 30px; 
+      gap: 15px; 
       width: 100%; 
     }
 
-    /* Hauptkarte / Content Container */
+    /* Hauptkarte (kompakter gestaltet) */
     .content { 
       display: block; 
       text-align: center; 
       background-color: #1e293b; 
       width: 100%; 
-      max-width: 750px; 
-      border-radius: 24px; 
-      padding: 35px 25px; 
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+      max-width: 580px; 
+      border-radius: 18px; 
+      padding: 22px 18px; 
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
       margin: 0 auto;
       position: relative;
     }
 
     img { max-width: 100%; height: auto; }
 
-    /* Titel & Typography */
+    /* Titel */
     .title-main {
       color: #ffffff;
-      font-size: clamp(22px, 5vw, 36px);
+      font-size: clamp(20px, 4.5vw, 30px);
       font-weight: 800;
       letter-spacing: -0.5px;
     }
 
     .title-accent {
-      color: #ff7043; /* Accent Orange */
+      color: #ff7043;
       transition: color 0.4s ease;
     }
 
-    /* Logo Style */
+    /* Logo (deutlich verkleinert) */
     .profile-logo {
-      width: 180px;
-      height: 180px;
+      width: 120px;
+      height: 120px;
       object-fit: cover;
       border-radius: 50%; 
-      box-shadow: 0 8px 25px rgba(255, 112, 67, 0.25);
-      margin: 20px 0;
+      box-shadow: 0 6px 20px rgba(255, 112, 67, 0.2);
+      margin: 12px 0;
       transition: transform 0.3s ease;
     }
 
@@ -82,40 +82,40 @@
       transform: scale(1.03);
     }
 
-    /* Anrufen Button Styles */
+    /* Anrufen Button */
     #call-btn { 
       color: #ffffff; 
-      padding: 14px 35px; 
+      padding: 10px 26px; 
       border-radius: 50px; 
       cursor: pointer; 
       font-weight: 700; 
-      font-size: 1.1rem;
+      font-size: 0.95rem;
       text-decoration: none; 
-      margin: 15px 0; 
+      margin: 10px 0; 
       display: inline-block; 
       transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
     .btn-green { 
       background-color: #10b981; 
-      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4) !important;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4) !important;
     }
 
     .btn-red { 
       background-color: #ef4444; 
-      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3) !important;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3) !important;
     }
 
-    /* Info Bar & Standorts-Box */
+    /* Info Bar / Standort */
     .info-card {
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
-      padding: 15px 20px; 
+      padding: 10px 14px; 
       background: rgba(255, 255, 255, 0.05);
-      border-radius: 16px;
-      margin: 20px 0;
+      border-radius: 12px;
+      margin: 12px 0;
+      font-size: 0.85rem;
     }
 
     /* Features / Leistungen Tag Grid */
@@ -123,16 +123,16 @@
       display: flex; 
       flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
-      margin: 20px 0;
+      gap: 6px;
+      margin: 12px 0;
     }
 
     .service-tag {
       background: rgba(255, 112, 67, 0.15);
       color: #ff7043;
-      padding: 8px 16px;
+      padding: 5px 12px;
       border-radius: 20px;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       font-weight: 600;
       transition: all 0.4s ease;
     }
@@ -141,15 +141,15 @@
     .accordion-container {
       display: flex; 
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       width: 100%;
-      margin-top: 15px;
+      margin-top: 10px;
     }
 
     details {
       width: 100%; 
       background: rgba(255, 112, 67, 0.15);
-      border-radius: 16px;
+      border-radius: 12px;
       overflow: hidden;
       transition: background 0.3s ease;
     }
@@ -164,10 +164,11 @@
       font-weight: 700; 
       text-align: center; 
       user-select: none;
-      padding: 14px 20px;
+      padding: 10px 14px;
       color: #ffffff;
       width: 100%;
       display: block;
+      font-size: 0.9rem;
     }
 
     summary::-webkit-details-marker {
@@ -176,29 +177,31 @@
 
     /* Inhalt beim Ausklappen */
     .accordion-content {
-      padding: 15px 20px; 
+      padding: 10px 14px; 
       background: #0f172a;
       text-align: center;
       color: #ffffff;
-      font-size: 0.95em;
+      font-size: 0.85em;
     }
 
     .opening-table {
       width: 100%; 
-      max-width: 300px;
+      max-width: 280px;
       margin: 0 auto;
       border-collapse: collapse;
     }
 
     .opening-table td {
-      padding: 8px;
+      padding: 6px;
     }
 
     /* Status Farben */
     .orange { color: #ff7043; font-weight: 600; }
+    .normal { color: #ffffff; }
 
-    @media (max-width: 768px) {
-      .content { padding: 25px 15px; }
+    @media (max-width: 480px) {
+      .content { padding: 18px 12px; }
+      .info-card { gap: 8px; }
     }
   </style>
 
@@ -209,12 +212,12 @@
   <main>
     <section id="liveBild" class="content" style="display: none; background: linear-gradient(135deg, #ff7043, #0f172a); padding: 0;">
       <details style="width: 100%;">
-        <summary style="padding: 15px; color: #ffffff; display: flex; justify-content: space-between; align-items: center;">
+        <summary style="padding: 12px; color: #ffffff; display: flex; justify-content: space-between; align-items: center;">
           <span>Kein Eintrag</span>
           <span>▼</span>
         </summary>
-        <div style="padding: 20px; overflow: hidden;">
-          <img src="IMG_0002.png" id="tutorial-img" onclick="toggleZoom(this)" style="width: 100%; border-radius: 12px; cursor: zoom-in; transition: transform 0.3s ease;" alt="Tutorial">
+        <div style="padding: 15px; overflow: hidden;">
+          <img src="IMG_0002.png" id="tutorial-img" onclick="toggleZoom(this)" style="width: 100%; border-radius: 10px; cursor: zoom-in; transition: transform 0.3s ease;" alt="Tutorial">
         </div>
       </details>
     </section>
@@ -240,7 +243,7 @@
           <strong style="color: #ffffff;">Umkreis:</strong> Steingaden<br>
           <small style="color: #ff7043; font-weight: 600;">~ 5 Min. Anfahrt</small>
         </div>
-        <img src="Screenshot_20260420_161537_Google.jpg" alt="Stansdortkarte" style="width: 75px; height: 55px; object-fit: cover; border-radius: 10px;">
+        <img src="Screenshot_20260420_161537_Google.jpg" alt="Standortkarte" style="width: 60px; height: 45px; object-fit: cover; border-radius: 8px;">
       </div>
 
       <div class="accordion-container">
