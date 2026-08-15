@@ -4,15 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="google-site-verification" content="1h0mJmEKKiB0WFa2w9Txokx6s4TYYGrI54m2dTZAwCk" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Hilfe-OptiCroid</title>
+  <title>IT Hilfe - OptiCroid</title>
   
   <link rel="icon" type="image/png" href="Logo.png">
-
   <link rel="stylesheet" href="seasonal.css">
   <script src="seasonal.js" defer></script>
 
   <style>
-    /* Globales Reset & Schriftart */
     * { 
       box-sizing: border-box; 
       margin: 0; 
@@ -23,33 +21,10 @@
 
     body { 
       width: 100%; 
-      background-color: #0f172a; 
       color: #ffffff; 
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
       overflow-x: hidden;
-    }
-
-    main { 
-      padding: 20px 10px; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      gap: 15px; 
-      width: 100%; 
-    }
-
-    /* Hauptkarte (kompakter gestaltet) */
-    .content { 
-      display: block; 
-      text-align: center; 
-      background-color: #1e293b; 
-      width: 100%; 
-      max-width: 580px; 
-      border-radius: 18px; 
-      padding: 22px 18px; 
-      box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
-      margin: 0 auto;
-      position: relative;
+      min-height: 100vh;
     }
 
     img { max-width: 100%; height: auto; }
@@ -57,53 +32,49 @@
     /* Titel */
     .title-main {
       color: #ffffff;
-      font-size: clamp(20px, 4.5vw, 30px);
+      font-size: clamp(24px, 5vw, 34px);
       font-weight: 800;
       letter-spacing: -0.5px;
+      margin-bottom: 5px;
     }
 
-    .title-accent {
-      color: #ff7043;
-      transition: color 0.4s ease;
-    }
-
-    /* Logo (deutlich verkleinert) */
+    /* Logo mit Umrandungs-Glow */
     .profile-logo {
-      width: 120px;
-      height: 120px;
+      width: 140px;
+      height: 140px;
       object-fit: cover;
       border-radius: 50%; 
-      box-shadow: 0 6px 20px rgba(255, 112, 67, 0.2);
-      margin: 12px 0;
+      margin: 15px 0;
       transition: transform 0.3s ease;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     }
 
     .profile-logo:hover {
-      transform: scale(1.03);
+      transform: scale(1.04);
     }
 
-    /* Anrufen Button */
+    /* Call Button */
     #call-btn { 
       color: #ffffff; 
-      padding: 10px 26px; 
+      padding: 12px 32px; 
       border-radius: 50px; 
       cursor: pointer; 
       font-weight: 700; 
-      font-size: 0.95rem;
+      font-size: 1rem;
       text-decoration: none; 
-      margin: 10px 0; 
+      margin: 12px 0; 
       display: inline-block; 
       transition: all 0.3s ease;
     }
 
     .btn-green { 
       background-color: #10b981; 
-      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4) !important;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4) !important;
     }
 
     .btn-red { 
       background-color: #ef4444; 
-      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3) !important;
+      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3) !important;
     }
 
     /* Info Bar / Standort */
@@ -111,51 +82,45 @@
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
-      padding: 10px 14px; 
+      padding: 12px 18px; 
       background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      margin: 12px 0;
-      font-size: 0.85rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      margin: 16px 0;
+      font-size: 0.9rem;
     }
 
-    /* Features / Leistungen Tag Grid */
+    /* Services Tag Grid */
     .services-grid {
       display: flex; 
       flex-wrap: wrap;
       justify-content: center;
-      gap: 6px;
-      margin: 12px 0;
+      gap: 8px;
+      margin: 16px 0;
     }
 
     .service-tag {
-      background: rgba(255, 112, 67, 0.15);
-      color: #ff7043;
-      padding: 5px 12px;
+      padding: 7px 15px;
       border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       font-weight: 600;
       transition: all 0.4s ease;
     }
 
-    /* Ausklappbare Abschnitte */
+    /* Akkordeon Element */
     .accordion-container {
       display: flex; 
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       width: 100%;
-      margin-top: 10px;
+      margin-top: 15px;
     }
 
     details {
       width: 100%; 
-      background: rgba(255, 112, 67, 0.15);
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
-      transition: background 0.3s ease;
-    }
-
-    details[open] {
-      background: rgba(255, 112, 67, 0.2);
+      transition: all 0.3s ease;
     }
 
     summary {
@@ -164,29 +129,28 @@
       font-weight: 700; 
       text-align: center; 
       user-select: none;
-      padding: 10px 14px;
+      padding: 12px 18px;
       color: #ffffff;
       width: 100%;
       display: block;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
 
     summary::-webkit-details-marker {
       display: none;
     }
 
-    /* Inhalt beim Ausklappen */
     .accordion-content {
-      padding: 10px 14px; 
-      background: #0f172a;
+      padding: 12px 18px; 
+      background: rgba(0, 0, 0, 0.25);
       text-align: center;
       color: #ffffff;
-      font-size: 0.85em;
+      font-size: 0.9em;
     }
 
     .opening-table {
       width: 100%; 
-      max-width: 280px;
+      max-width: 300px;
       margin: 0 auto;
       border-collapse: collapse;
     }
@@ -195,14 +159,7 @@
       padding: 6px;
     }
 
-    /* Status Farben */
-    .orange { color: #ff7043; font-weight: 600; }
     .normal { color: #ffffff; }
-
-    @media (max-width: 480px) {
-      .content { padding: 18px 12px; }
-      .info-card { gap: 8px; }
-    }
   </style>
 
   <script src="https://minnit.chat/js/embed.js?c=1772345192" defer></script>
@@ -210,18 +167,6 @@
 <body>
 
   <main>
-    <section id="liveBild" class="content" style="display: none; background: linear-gradient(135deg, #ff7043, #0f172a); padding: 0;">
-      <details style="width: 100%;">
-        <summary style="padding: 12px; color: #ffffff; display: flex; justify-content: space-between; align-items: center;">
-          <span>Kein Eintrag</span>
-          <span>▼</span>
-        </summary>
-        <div style="padding: 15px; overflow: hidden;">
-          <img src="IMG_0002.png" id="tutorial-img" onclick="toggleZoom(this)" style="width: 100%; border-radius: 10px; cursor: zoom-in; transition: transform 0.3s ease;" alt="Tutorial">
-        </div>
-      </details>
-    </section>
-
     <section id="startseite" class="content">
       
       <h1 class="title-main">
@@ -241,9 +186,9 @@
       <div class="info-card">
         <div style="text-align: left;">
           <strong style="color: #ffffff;">Umkreis:</strong> Steingaden<br>
-          <small style="color: #ff7043; font-weight: 600;">~ 5 Min. Anfahrt</small>
+          <small class="accent-color" style="font-weight: 600;">~ 5 Min. Anfahrt</small>
         </div>
-        <img src="Screenshot_20260420_161537_Google.jpg" alt="Standortkarte" style="width: 60px; height: 45px; object-fit: cover; border-radius: 8px;">
+        <img src="Screenshot_20260420_161537_Google.jpg" alt="Standortkarte" style="width: 65px; height: 48px; object-fit: cover; border-radius: 8px;">
       </div>
 
       <div class="accordion-container">
@@ -251,7 +196,7 @@
         <details>
           <summary>Infos ▼</summary>
           <div class="accordion-content">
-            <strong style="color: #ff7043;"></strong><br>
+            <strong class="accent-color"></strong><br>
             
           </div>
         </details>
@@ -269,16 +214,6 @@
   </main>
 
   <script>
-    function toggleZoom(img) {
-      if (img.style.transform === "scale(2)") {
-        img.style.transform = "scale(1)";
-        img.style.cursor = "zoom-in";
-      } else {
-        img.style.transform = "scale(2)";
-        img.style.cursor = "zoom-out";
-      }
-    }
-
     const schedule = [
       { day: "Sonntag", open: 0, close: 0, label: '<span class="normal">geschlossen</span>' },
       { day: "Montag", open: 9.5, close: 18, label: '<span class="normal">9:30 - 18:00</span>' },
@@ -315,7 +250,7 @@
         const item = schedule[idx];
         const isToday = idx === currentDayIdx;
         tableHtml += `
-          <tr style="${isToday ? 'background:rgba(255,112,67,0.15); border-radius: 6px;' : ''}">
+          <tr style="${isToday ? 'background:rgba(255,255,255,0.1); border-radius: 6px;' : ''}">
             <td style="text-align: left;">${item.day}</td>
             <td style="text-align: right;">${item.label}</td>
           </tr>`;
@@ -325,18 +260,6 @@
 
     updateStatus();
     setInterval(updateStatus, 60000);
-  </script>
-  
-  <script type="text/javascript">
-    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-    (function(){
-    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-    s1.async=true;
-    s1.src='https://embed.tawk.to/6a44090f82c4e81d44ac7a3b/1jscs6p7m';
-    s1.charset='UTF-8';
-    s1.setAttribute('crossorigin','*');
-    s0.parentNode.insertBefore(s1,s0);
-    })();
   </script>
 </body>
 </html>
