@@ -1,4 +1,4 @@
-/* Animation Canvas im Hintergrund */
+/* Animation Canvas leicht über/unter den Ebenen */
 #seasonal-canvas {
   position: fixed;
   top: 0;
@@ -9,133 +9,110 @@
   z-index: 1;
 }
 
-/* Sicherstellen, dass der Inhalt vor der Animation liegt */
 main {
   position: relative;
   z-index: 2;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 15px;
 }
 
-/* --------------------------------------------------------
-   Saisonale Farbthemen (Dezent & modern)
-   -------------------------------------------------------- */
-
-/* Sommer */
-body.theme-sommer .title-accent {
-  color: #ffb703 !important;
-}
-body.theme-sommer .service-tag {
-  background: rgba(255, 183, 3, 0.12) !important;
-  color: #ffb703 !important;
-}
-
-/* Herbst */
-body.theme-herbst .title-accent {
-  color: #fb8500 !important;
-}
-body.theme-herbst .service-tag {
-  background: rgba(251, 133, 0, 0.12) !important;
-  color: #fb8500 !important;
-}
-
-/* Winter & Weihnachten */
-body.theme-winter .title-accent,
-body.theme-weihnachten .title-accent {
-  color: #38bdf8 !important;
-}
-body.theme-winter .service-tag,
-body.theme-weihnachten .service-tag {
-  background: rgba(56, 189, 248, 0.12) !important;
-  color: #38bdf8 !important;
-}
-
-/* Frühling & Ostern */
-body.theme-fruehling .title-accent,
-body.theme-ostern .title-accent {
-  color: #4ade80 !important;
-}
-body.theme-fruehling .service-tag,
-body.theme-ostern .service-tag {
-  background: rgba(74, 222, 128, 0.12) !important;
-  color: #4ade80 !important;
-}
-
-/* --------------------------------------------------------
-   Kompaktere Größen & Mobile Optimierung
-   -------------------------------------------------------- */
-
-/* Reduzierte Paddings für ein schlankeres Layout */
-main {
-  padding: 20px 10px !important;
-  gap: 15px !important;
-}
-
+/* Base Card mit Modularem Glassmorphism */
 .content {
-  max-width: 580px !important;
-  padding: 22px 18px !important;
-  border-radius: 18px !important;
+  width: 100%;
+  max-width: 620px;
+  border-radius: 28px;
+  padding: 35px 28px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: all 0.5s ease;
 }
 
-/* Kleineres Logo */
-.profile-logo {
-  width: 120px !important;
-  height: 120px !important;
-  margin: 12px 0 !important;
+/* --------------------------------------------------------
+   Dynamische Jahreszeiten-Themes (Farben & Layout)
+   -------------------------------------------------------- */
+
+/* Sommer Theme */
+body.theme-sommer {
+  background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%);
+}
+body.theme-sommer .content {
+  background: rgba(30, 41, 59, 0.75);
+  border: 1px solid rgba(255, 183, 3, 0.25);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 183, 3, 0.15);
+}
+body.theme-sommer .title-accent, 
+body.theme-sommer .accent-color { color: #ffb703 !important; }
+body.theme-sommer .service-tag,
+body.theme-sommer details {
+  background: rgba(255, 183, 3, 0.1) !important;
+  border: 1px solid rgba(255, 183, 3, 0.2);
+  color: #ffc300 !important;
 }
 
-/* Schlankerer Anrufen-Button */
-#call-btn {
-  padding: 10px 24px !important;
-  font-size: 0.95rem !important;
-  margin: 10px 0 !important;
+/* Herbst Theme */
+body.theme-herbst {
+  background: radial-gradient(circle at top, #2b1810 0%, #0f172a 100%);
+}
+body.theme-herbst .content {
+  background: rgba(43, 24, 16, 0.65);
+  border: 1px solid rgba(251, 133, 0, 0.25);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(251, 133, 0, 0.15);
+}
+body.theme-herbst .title-accent,
+body.theme-herbst .accent-color { color: #fb8500 !important; }
+body.theme-herbst .service-tag,
+body.theme-herbst details {
+  background: rgba(251, 133, 0, 0.1) !important;
+  border: 1px solid rgba(251, 133, 0, 0.2);
+  color: #ffb703 !important;
 }
 
-/* Kompakte Tags */
-.services-grid {
-  gap: 6px !important;
-  margin: 12px 0 !important;
+/* Winter & Weihnachten Theme */
+body.theme-winter, body.theme-weihnachten {
+  background: radial-gradient(circle at top, #0f2b48 0%, #080e1a 100%);
+}
+body.theme-winter .content, body.theme-weihnachten .content {
+  background: rgba(15, 43, 72, 0.65);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 35px rgba(56, 189, 248, 0.2);
+}
+body.theme-winter .title-accent, body.theme-weihnachten .title-accent,
+body.theme-winter .accent-color, body.theme-weihnachten .accent-color { color: #38bdf8 !important; }
+body.theme-winter .service-tag, body.theme-weihnachten .service-tag,
+body.theme-winter details, body.theme-weihnachten details {
+  background: rgba(56, 189, 248, 0.1) !important;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  color: #a5f3fc !important;
 }
 
-.service-tag {
-  padding: 5px 12px !important;
-  font-size: 0.8rem !important;
+/* Frühling & Ostern Theme */
+body.theme-fruehling, body.theme-ostern {
+  background: radial-gradient(circle at top, #132e27 0%, #0f172a 100%);
+}
+body.theme-fruehling .content, body.theme-ostern .content {
+  background: rgba(19, 46, 39, 0.65);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(74, 222, 128, 0.15);
+}
+body.theme-fruehling .title-accent, body.theme-ostern .title-accent,
+body.theme-fruehling .accent-color, body.theme-ostern .accent-color { color: #4ade80 !important; }
+body.theme-fruehling .service-tag, body.theme-ostern .service-tag,
+body.theme-fruehling details, body.theme-ostern details {
+  background: rgba(74, 222, 128, 0.1) !important;
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  color: #86efac !important;
 }
 
-/* Info-Card (Standort) flexibel halten */
-.info-card {
-  padding: 10px 14px !important;
-  margin: 12px 0 !important;
-  border-radius: 12px !important;
-  font-size: 0.85rem !important;
-}
-
-.info-card img {
-  width: 60px !important;
-  height: 45px !important;
-  border-radius: 8px !important;
-}
-
-/* Akkordeons schmaler */
-summary {
-  padding: 10px 14px !important;
-  font-size: 0.9rem !important;
-}
-
-.accordion-content {
-  padding: 10px 14px !important;
-  font-size: 0.85rem !important;
-}
-
-/* Handy-Optimierungen */
-@media (max-width: 480px) {
-  .title-main {
-    font-size: 1.5rem !important;
-  }
-  
+/* Responsisches Layout */
+@media (max-width: 600px) {
   .content {
-    padding: 18px 12px !important;
-  }
-  
-  .info-card {
-    gap: 8px;
+    padding: 24px 18px;
+    border-radius: 22px;
   }
 }
