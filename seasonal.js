@@ -38,6 +38,50 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.body.classList.add("theme-" + theme);
 
+  /* --------------------------------------------------------
+     Berechnung für Tag & Nacht (Dämmerung 18:00 - 20:00 Uhr)
+     -------------------------------------------------------- */
+  function updateDayNightCycle() {
+    const date = new Date();
+    const hours = date.getHours() + date.getMinutes() / 60;
+    let nightOpacity = 0;
+
+    // Dämmerung abends (18:00 - 20:00)
+    if (hours >= 18 && hours < 20) {
+      nightOpacity = (hours - 18) / 2 * 0.72; // Bis max 72% Abdunkelung
+    } 
+    // Die Nacht durch (20:00 - 06:00)
+    else if (hours >= 20 || hours < 6) {
+      nightOpacity = 0.72;
+    } 
+    // Morgendämmerung (06:00 - 08:00)
+    else if (hours >= 6 && hours < 8) {
+      nightOpacity = (1 - (hours - 6) / 2) * 0.72;
+    } 
+    // Tag (08:00 - 18:00)
+    else {
+      nightOpacity = 0;
+    }
+
+    document.documentElement.style.setProperty("--night-opacity", nightOpacity);
+
+    if (nightOpacity > 0.3) {
+      document.body.classList.add("is-night");
+    } else {
+      document.body.classList.remove("is-night");
+    }
+
+    return nightOpacity;
+  }
+
+  let currentNightOpacity = updateDayNightCycle();
+  setInterval(function() {
+    currentNightOpacity = updateDayNightCycle();
+  }, 60000); // Jede Minute aktualisieren
+
+  /* --------------------------------------------------------
+     Canvas & Partikel
+     -------------------------------------------------------- */
   const canvas = document.createElement("canvas");
   canvas.id = "seasonal-canvas";
   document.body.prepend(canvas);
@@ -70,24 +114,29 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function getRandomColor(t) {
-    if (t === "winter" || t === "weihnachten") return "rgba(255, 255, 255, 0.9)";
+    if (t === "winter" || t === "weihnachten") return "rgba(255, 255, 255, 0.95)";
     if (t === "herbst") {
-      const colors = ["rgba(254, 240, 138, 0.85)", "rgba(253, 186, 116, 0.85)", "rgba(255, 255, 255, 0.7)"];
+      const colors = ["rgba(254, 240, 138, 0.9)", "rgba(253, 186, 116, 0.85)", "rgba(251, 146, 60, 0.85)"];
       return colors[Math.floor(Math.random() * colors.length)];
     }
-    if (t === "fruehling" || t === "ostern") return "rgba(255, 255, 255, 0.85)";
-    return "rgba(254, 240, 138, 0.85)";
+    if (t === "fruehling" || t === "ostern") {
+      const colors = ["rgba(255, 255, 255, 0.9)", "rgba(244, 114, 182, 0.85)", "rgba(167, 243, 208, 0.85)"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+    return "rgba(254, 240, 138, 0.9)";
   }
 
   function drawParticle(p) {
     ctx.save();
     ctx.translate(p.x, p.y);
 
+    const isNight = currentNightOpacity > 0.3;
+
     if (theme === "winter" || theme === "weihnachten") {
       ctx.beginPath();
       ctx.arc(0, 0, p.size, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
-      ctx.shadowBlur = 10;
+      ctx.shadowBlur = isNight ? 14 : 6;
       ctx.shadowColor = "rgba(255,255,255,1)";
       ctx.fill();
     } else if (theme === "herbst") {
@@ -95,18 +144,26 @@ document.addEventListener("DOMContentLoaded", function () {
       ctx.beginPath();
       ctx.ellipse(0, 0, p.size * 2.2, p.size * 1.1, 0, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
+      if (isNight) {
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = "rgba(251, 146, 60, 0.8)";
+      }
       ctx.fill();
     } else if (theme === "fruehling" || theme === "ostern") {
       ctx.rotate((p.rotation * Math.PI) / 180);
       ctx.beginPath();
       ctx.ellipse(0, 0, p.size * 2, p.size * 1.3, Math.PI / 4, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
+      if (isNight) {
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = "rgba(244, 114, 182, 0.8)";
+      }
       ctx.fill();
     } else {
       ctx.beginPath();
       ctx.arc(0, 0, p.size * 1.4, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
-      ctx.shadowBlur = 12;
+      ctx.shadowBlur = isNight ? 16 : 8;
       ctx.shadowColor = "rgba(254, 240, 138, 0.9)";
       ctx.fill();
     }
