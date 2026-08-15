@@ -94,3 +94,28 @@ body.theme-fruehling details, body.theme-ostern details {
     border-radius: 24px;
   }
 }
+
+/* Abdunkelungsschicht für die Nacht */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #030712; /* Sehr dunkles Blau-Schwarz */
+  opacity: var(--night-opacity, 0); /* Wird dynamisch per JS gesteuert */
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 2s ease;
+}
+
+/* Lesbarkeit im Nachtmodus sicherstellen */
+body.is-night .content {
+  background: rgba(15, 23, 42, 0.55) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+}
+
+body.is-night .title-main {
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.4) !important;
+}
