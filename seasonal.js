@@ -37,29 +37,22 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   document.body.classList.add("theme-" + theme);
+  const seasonTextEl = document.getElementById("season-name");
+  if (seasonTextEl) seasonTextEl.innerText = theme;
 
-  /* --------------------------------------------------------
-     Berechnung für Tag & Nacht (Dämmerung 18:00 - 20:00 Uhr)
-     -------------------------------------------------------- */
+  /* Tag & Nacht Berechnung */
   function updateDayNightCycle() {
     const date = new Date();
     const hours = date.getHours() + date.getMinutes() / 60;
     let nightOpacity = 0;
 
-    // Dämmerung abends (18:00 - 20:00)
     if (hours >= 18 && hours < 20) {
-      nightOpacity = (hours - 18) / 2 * 0.72; // Bis max 72% Abdunkelung
-    } 
-    // Die Nacht durch (20:00 - 06:00)
-    else if (hours >= 20 || hours < 6) {
+      nightOpacity = (hours - 18) / 2 * 0.72;
+    } else if (hours >= 20 || hours < 6) {
       nightOpacity = 0.72;
-    } 
-    // Morgendämmerung (06:00 - 08:00)
-    else if (hours >= 6 && hours < 8) {
+    } else if (hours >= 6 && hours < 8) {
       nightOpacity = (1 - (hours - 6) / 2) * 0.72;
-    } 
-    // Tag (08:00 - 18:00)
-    else {
+    } else {
       nightOpacity = 0;
     }
 
@@ -75,13 +68,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   let currentNightOpacity = updateDayNightCycle();
-  setInterval(function() {
-    currentNightOpacity = updateDayNightCycle();
-  }, 60000); // Jede Minute aktualisieren
+  setInterval(updateDayNightCycle, 60000);
 
-  /* --------------------------------------------------------
-     Canvas & Partikel
-     -------------------------------------------------------- */
+  /* Canvas & Partikel (Fokus von der rechten oberen Ecke) */
   const canvas = document.createElement("canvas");
   canvas.id = "seasonal-canvas";
   document.body.prepend(canvas);
@@ -95,16 +84,16 @@ document.addEventListener("DOMContentLoaded", function () {
     height = canvas.height = window.innerHeight;
   });
 
-  const particleCount = width < 600 ? 35 : 70;
+  const particleCount = width < 600 ? 25 : 45;
   const particles = [];
 
   for (let i = 0; i < particleCount; i++) {
     particles.push({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: Math.random() * 4 + 1.5,
-      speedY: Math.random() * 0.9 + 0.3,
-      speedX: Math.random() * 0.6 - 0.3,
+      x: width - Math.random() * 300,
+      y: Math.random() * 200,
+      size: Math.random() * 3.5 + 1.5,
+      speedY: Math.random() * 0.8 + 0.2,
+      speedX: -(Math.random() * 0.8 + 0.2),
       step: Math.random() * 100,
       stepSize: Math.random() * 0.015 + 0.008,
       rotation: Math.random() * 360,
@@ -114,57 +103,32 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function getRandomColor(t) {
-    if (t === "winter" || t === "weihnachten") return "rgba(255, 255, 255, 0.95)";
+    if (t === "winter" || t === "weihnachten") return "rgba(255, 255, 255, 0.85)";
     if (t === "herbst") {
-      const colors = ["rgba(254, 240, 138, 0.9)", "rgba(253, 186, 116, 0.85)", "rgba(251, 146, 60, 0.85)"];
+      const colors = ["rgba(254, 240, 138, 0.85)", "rgba(253, 186, 116, 0.8)", "rgba(251, 146, 60, 0.8)"];
       return colors[Math.floor(Math.random() * colors.length)];
     }
     if (t === "fruehling" || t === "ostern") {
-      const colors = ["rgba(255, 255, 255, 0.9)", "rgba(244, 114, 182, 0.85)", "rgba(167, 243, 208, 0.85)"];
+      const colors = ["rgba(255, 255, 255, 0.85)", "rgba(244, 114, 182, 0.8)", "rgba(167, 243, 208, 0.8)"];
       return colors[Math.floor(Math.random() * colors.length)];
     }
-    return "rgba(254, 240, 138, 0.9)";
+    return "rgba(254, 240, 138, 0.85)";
   }
 
   function drawParticle(p) {
     ctx.save();
     ctx.translate(p.x, p.y);
 
-    const isNight = currentNightOpacity > 0.3;
-
     if (theme === "winter" || theme === "weihnachten") {
       ctx.beginPath();
       ctx.arc(0, 0, p.size, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
-      ctx.shadowBlur = isNight ? 14 : 6;
-      ctx.shadowColor = "rgba(255,255,255,1)";
-      ctx.fill();
-    } else if (theme === "herbst") {
-      ctx.rotate((p.rotation * Math.PI) / 180);
-      ctx.beginPath();
-      ctx.ellipse(0, 0, p.size * 2.2, p.size * 1.1, 0, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
-      if (isNight) {
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = "rgba(251, 146, 60, 0.8)";
-      }
-      ctx.fill();
-    } else if (theme === "fruehling" || theme === "ostern") {
-      ctx.rotate((p.rotation * Math.PI) / 180);
-      ctx.beginPath();
-      ctx.ellipse(0, 0, p.size * 2, p.size * 1.3, Math.PI / 4, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
-      if (isNight) {
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = "rgba(244, 114, 182, 0.8)";
-      }
       ctx.fill();
     } else {
+      ctx.rotate((p.rotation * Math.PI) / 180);
       ctx.beginPath();
-      ctx.arc(0, 0, p.size * 1.4, 0, Math.PI * 2);
+      ctx.ellipse(0, 0, p.size * 1.8, p.size * 1, 0, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
-      ctx.shadowBlur = isNight ? 16 : 8;
-      ctx.shadowColor = "rgba(254, 240, 138, 0.9)";
       ctx.fill();
     }
 
@@ -178,14 +142,12 @@ document.addEventListener("DOMContentLoaded", function () {
       p.step += p.stepSize;
       p.rotation += p.rotSpeed;
 
-      if (theme === "sommer") {
-        p.y -= p.speedY * 0.4;
-        p.x += Math.sin(p.step) * 0.5;
-        if (p.y < -10) { p.y = height + 10; p.x = Math.random() * width; }
-      } else {
-        p.y += p.speedY;
-        p.x += Math.sin(p.step) * 1.0 + p.speedX;
-        if (p.y > height + 10) { p.y = -10; p.x = Math.random() * width; }
+      p.y += p.speedY;
+      p.x += Math.sin(p.step) * 0.6 + p.speedX;
+
+      if (p.y > height + 10 || p.x < -10) {
+        p.y = Math.random() * 100 - 20;
+        p.x = width - Math.random() * 250;
       }
 
       drawParticle(p);
