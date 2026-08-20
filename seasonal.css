@@ -1,27 +1,4 @@
-/* Seasonal Widget in der oberen rechten Ecke */
-#seasonal-widget {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 10;
-  pointer-events: none;
-}
-
-#widget-badge {
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #ffffff;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-  text-transform: capitalize;
-}
-
-/* Vollflächiges Canvas im Hintergrund */
+/* Background & Seasonal Canvas Base */
 #seasonal-canvas {
   position: fixed;
   top: 0;
@@ -32,43 +9,74 @@
   z-index: 1;
 }
 
-/* Jahreszeiten-Hintergründe */
-body.theme-sommer {
-  background: linear-gradient(135deg, #0284c7 0%, #38bdf8 50%, #f59e0b 100%);
+/* Season Indicator Badge (Top Header) */
+#season-badge {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
-body.theme-sommer .accent-color { color: #fef08a !important; }
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--season-accent, #38bdf8);
+  box-shadow: 0 0 8px var(--season-accent, #38bdf8);
+}
+
+/* Theme Seasonal Colors */
+body.theme-sommer {
+  --season-accent: #f59e0b;
+  --season-glow: rgba(245, 158, 11, 0.4);
+  background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0b0f17 70%);
+}
 
 body.theme-herbst {
-  background: linear-gradient(135deg, #ea580c 0%, #d97706 50%, #7c2d12 100%);
+  --season-accent: #f97316;
+  --season-glow: rgba(249, 115, 22, 0.4);
+  background: radial-gradient(circle at 50% 0%, #2e1065 0%, #0b0f17 70%);
 }
-body.theme-herbst .accent-color { color: #fef08a !important; }
 
 body.theme-winter, body.theme-weihnachten {
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #0f172a 100%);
+  --season-accent: #38bdf8;
+  --season-glow: rgba(56, 189, 248, 0.4);
+  background: radial-gradient(circle at 50% 0%, #0c4a6e 0%, #0b0f17 70%);
 }
-body.theme-winter .accent-color, body.theme-weihnachten .accent-color { color: #38bdf8 !important; }
 
 body.theme-fruehling, body.theme-ostern {
-  background: linear-gradient(135deg, #059669 0%, #10b981 50%, #0284c7 100%);
+  --season-accent: #10b981;
+  --season-glow: rgba(16, 185, 129, 0.4);
+  background: radial-gradient(circle at 50% 0%, #064e3b 0%, #0b0f17 70%);
 }
-body.theme-fruehling .accent-color, body.theme-ostern .accent-color { color: #a7f3d0 !important; }
 
-/* Dynamic Night Layer */
+.accent-color {
+  color: var(--season-accent, #38bdf8) !important;
+}
+
+/* Night Layer Overlay */
 body::before {
   content: "";
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background-color: #030712;
   opacity: var(--night-opacity, 0);
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
   transition: opacity 2s ease;
-}
-
-body.is-night .info-card,
-body.is-night details {
-  background: rgba(15, 23, 42, 0.45) !important;
 }
