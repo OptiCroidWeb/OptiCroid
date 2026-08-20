@@ -29,91 +29,156 @@
 
     img { max-width: 100%; height: auto; }
 
+    /* Layout-Anpassungen */
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .content-wrapper {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* Überschrift mit Dynamic Accent Glow */
     .title-main {
       color: #ffffff;
-      font-size: clamp(26px, 5.5vw, 36px);
+      font-size: clamp(32px, 6vw, 48px);
       font-weight: 800;
       letter-spacing: -0.5px;
-      margin-bottom: 8px;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      margin-bottom: 12px;
+      position: relative;
+      display: inline-block;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    /* Eiseffekt/Glanz auf Akzent-Text */
+    .title-accent {
+      position: relative;
+      background: linear-gradient(90deg, #ffffff, #38bdf8, #ffffff);
+      background-size: 200% auto;
+      color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: shine 4s linear infinite;
+    }
+
+    @keyframes shine {
+      to { background-position: 200% center; }
     }
 
     .profile-logo {
-      width: 135px;
-      height: 135px;
+      width: 140px;
+      height: 140px;
       object-fit: cover;
       border-radius: 50%; 
-      margin: 15px 0;
-      transition: transform 0.3s ease;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      margin: 20px 0;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
     }
 
     .profile-logo:hover {
-      transform: scale(1.05);
+      transform: scale(1.08) rotate(2deg);
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35);
     }
 
     #call-btn { 
       color: #ffffff; 
-      padding: 14px 36px; 
+      padding: 16px 42px; 
       border-radius: 50px; 
       cursor: pointer; 
       font-weight: 700; 
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       text-decoration: none; 
-      margin: 14px 0; 
+      margin: 16px 0; 
       display: inline-block; 
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #call-btn:hover {
+      transform: translateY(-3px);
     }
 
     .btn-green { 
       background-color: #10b981; 
-      box-shadow: 0 6px 25px rgba(16, 185, 129, 0.45);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
+    }
+    .btn-green:hover {
+      box-shadow: 0 12px 30px rgba(16, 185, 129, 0.6);
     }
 
     .btn-red { 
       background-color: #ef4444; 
-      box-shadow: 0 6px 25px rgba(239, 68, 68, 0.35);
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.35);
     }
 
     .info-card {
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
-      padding: 14px 20px; 
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 20px;
-      margin: 18px 0;
+      width: 100%;
+      max-width: 500px;
+      padding: 16px 24px; 
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      margin: 20px 0;
       font-size: 0.95rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     }
 
     .services-grid {
       display: flex; 
       flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
-      margin: 18px 0;
+      gap: 12px;
+      margin: 20px 0;
+      max-width: 600px;
     }
 
     .service-tag {
-      padding: 8px 18px;
+      padding: 10px 22px;
       border-radius: 30px;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       font-weight: 600;
-      backdrop-filter: blur(8px);
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .service-tag:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.22);
     }
 
     .accordion-container {
       display: flex; 
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
       width: 100%;
-      margin-top: 18px;
+      max-width: 500px;
+      margin-top: 10px;
     }
 
     details {
       width: 100%; 
-      border-radius: 18px;
+      border-radius: 20px;
       overflow: hidden;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       transition: all 0.3s ease;
     }
 
@@ -123,61 +188,85 @@
       font-weight: 700; 
       text-align: center; 
       user-select: none;
-      padding: 14px 20px;
+      padding: 16px 20px;
       color: #ffffff;
       width: 100%;
       display: block;
-      font-size: 0.98rem;
+      font-size: 1rem;
     }
 
-    summary::-webkit-details-marker {
-      display: none;
-    }
+    summary::-webkit-details-marker { display: none; }
 
     .accordion-content {
-      padding: 14px 20px; 
-      background: rgba(0, 0, 0, 0.12);
+      padding: 16px 20px; 
+      background: rgba(0, 0, 0, 0.15);
       text-align: center;
       color: #ffffff;
-      font-size: 0.92em;
+      font-size: 0.95em;
     }
 
     .opening-table {
       width: 100%; 
-      max-width: 320px;
+      max-width: 340px;
       margin: 0 auto;
       border-collapse: collapse;
     }
 
-    .opening-table td {
-      padding: 7px;
+    .opening-table td { padding: 8px; }
+    .normal { color: #ffffff; }
+
+    /* Einblende-Animationen (Staggered Fade-In) */
+    .animate-item {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    .normal { color: #ffffff; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 
   <script src="https://minnit.chat/js/embed.js?c=1772345192" defer></script>
 </head>
 <body>
 
+  <!-- Jahreszeiten Edge Widget -->
+  <div id="seasonal-widget">
+    <div id="widget-badge"><span id="season-name">Winter</span></div>
+  </div>
+
   <main>
-    <section id="startseite" class="content">
+    <div class="content-wrapper">
       
-      <h1 class="title-main">
+      <h1 class="title-main animate-item delay-1">
         IT Hilfe <span class="title-accent">OptiCroid</span>
       </h1>
 
-      <img src="Logo.png" class="profile-logo" alt="OptiCroid Logo"/><br>
+      <div class="animate-item delay-2">
+        <img src="Logo.png" class="profile-logo" alt="OptiCroid Logo"/>
+      </div>
 
-      <a href="tel:+4915206821179" id="call-btn">Anrufen</a>
+      <div class="animate-item delay-3">
+        <a href="tel:+4915206821179" id="call-btn">Anrufen</a>
+      </div>
 
-      <div class="services-grid">
+      <div class="services-grid animate-item delay-4">
         <span class="service-tag">PC & Komplexe Systeme</span>
         <span class="service-tag">Spendenbasis</span>
         <span class="service-tag">Vor-Ort-Service</span>
       </div>
 
-      <div class="info-card">
+      <div class="info-card animate-item delay-5">
         <div style="text-align: left;">
           <strong style="color: #ffffff;">Umkreis:</strong> Steingaden<br>
           <small class="accent-color" style="font-weight: 700;">~ 5 Min. Anfahrt</small>
@@ -185,26 +274,23 @@
         <img src="Screenshot_20260420_161537_Google.jpg" alt="Standortkarte" style="width: 68px; height: 50px; object-fit: cover; border-radius: 12px;">
       </div>
 
-      <div class="accordion-container">
-        
+      <div class="accordion-container animate-item delay-5">
         <details>
           <summary>Infos ▼</summary>
           <div class="accordion-content">
             <strong class="accent-color"></strong><br>
-            
           </div>
         </details>
 
         <details>
           <summary id="status-text">Prüfe... ▼</summary>
           <div class="accordion-content">
-            <table id="opening-table" class="opening-table">
-            </table>
+            <table id="opening-table" class="opening-table"></table>
           </div>
         </details>
-
       </div>
-    </section>
+
+    </div>
   </main>
 
   <script>
