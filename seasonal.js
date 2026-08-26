@@ -37,9 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   document.body.classList.add("theme-" + theme);
-  
-  const seasonTextEl = document.getElementById("season-text");
-  if (seasonTextEl) seasonTextEl.innerText = theme.toUpperCase();
 
   /* Day / Night Calculation */
   function updateDayNightCycle() {
