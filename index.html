@@ -32,6 +32,9 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
+      /* Inhalt auf 90% skaliert */
+      transform: scale(0.9);
+      transform-origin: top center;
     }
 
     /* Container Spacing */
@@ -43,7 +46,7 @@
       flex-direction: column;
       align-items: center;
       gap: 24px;
-      margin: 40px 0;
+      margin: 20px 0;
     }
 
     /* Header Section */
@@ -52,11 +55,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
     }
 
     .title-main {
-      font-size: clamp(28px, 6vw, 42px);
+      font-size: clamp(30px, 6vw, 46px);
       font-weight: 800;
       letter-spacing: -1px;
       color: #ffffff;
@@ -68,39 +71,39 @@
       background: linear-gradient(135deg, var(--season-accent, #38bdf8), #ffffff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 12px var(--season-glow, rgba(56, 189, 248, 0.4)));
+      filter: drop-shadow(0 0 16px var(--season-glow, rgba(56, 189, 248, 0.5)));
     }
 
     /* Avatar / Logo Glow Container */
     .logo-wrapper {
       position: relative;
-      margin: 8px 0;
+      margin: 10px 0;
     }
 
     .logo-wrapper::before {
       content: '';
       position: absolute;
-      inset: -4px;
+      inset: -6px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--season-accent, #38bdf8), transparent);
-      opacity: 0.6;
-      filter: blur(12px);
+      opacity: 0.7;
+      filter: blur(16px);
       transition: opacity 0.4s ease;
     }
 
     .profile-logo {
       position: relative;
-      width: 120px;
-      height: 120px;
+      width: 125px;
+      height: 125px;
       object-fit: cover;
       border-radius: 50%; 
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .profile-logo:hover {
-      transform: scale(1.06) rotate(3deg);
+      transform: scale(1.08) rotate(3deg);
     }
 
     /* Primary Action Button */
@@ -109,11 +112,11 @@
       align-items: center;
       gap: 10px;
       color: #ffffff; 
-      padding: 16px 48px; 
+      padding: 16px 52px; 
       border-radius: 100px; 
       cursor: pointer; 
       font-weight: 700; 
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       text-decoration: none; 
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
@@ -124,33 +127,34 @@
     .btn-green { 
       background: linear-gradient(135deg, #10b981, #059669);
       box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.25);
     }
 
     .btn-green:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 35px rgba(16, 185, 129, 0.5);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(16, 185, 129, 0.55);
     }
 
     .btn-red { 
       background: linear-gradient(135deg, #ef4444, #dc2626);
       box-shadow: 0 8px 25px rgba(239, 68, 68, 0.25);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.25);
     }
 
     /* Modern Glass Cards */
     .glass-card {
       background: rgba(15, 23, 42, 0.65);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-      transition: transform 0.3s ease, border-color 0.3s ease;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
     }
 
     .glass-card:hover {
-      border-color: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
     }
 
     /* Services Grid */
@@ -163,21 +167,22 @@
     }
 
     .service-tag {
-      padding: 10px 20px;
+      padding: 10px 22px;
       border-radius: 100px;
       font-size: 0.88rem;
       font-weight: 600;
       color: #cbd5e1;
       background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       transition: all 0.25s ease;
     }
 
     .service-tag:hover {
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.15);
       color: #ffffff;
       transform: translateY(-2px);
+      border-color: var(--season-accent, #38bdf8);
     }
 
     /* Info Bar (Umkreis & Map) */
@@ -186,15 +191,20 @@
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
-      padding: 16px 24px; 
+      padding: 18px 26px; 
     }
 
     .map-thumbnail {
-      width: 64px; 
-      height: 52px; 
+      width: 68px; 
+      height: 54px; 
       object-fit: cover; 
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .map-thumbnail:hover {
+      transform: scale(1.05);
     }
 
     /* Accordion Custom Styling */
@@ -230,12 +240,12 @@
     summary::-webkit-details-marker { display: none; }
 
     summary:hover {
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255, 255, 255, 0.05);
     }
 
     .accordion-content {
       padding: 16px 20px; 
-      background: rgba(0, 0, 0, 0.25);
+      background: rgba(0, 0, 0, 0.3);
       text-align: center;
       color: #94a3b8;
       font-size: 0.9rem;
@@ -285,7 +295,7 @@
 
     /* Mobile Tweaks */
     @media (max-width: 480px) {
-      body { padding: 12px; }
+      body { padding: 10px; }
       #call-btn { width: 100%; justify-content: center; }
       .info-card { padding: 14px 18px; }
     }
@@ -294,12 +304,6 @@
   <script src="https://minnit.chat/js/embed.js?c=1772345192" defer></script>
 </head>
 <body>
-
-  <!-- Minimalist Season Badge -->
-  <div id="season-badge">
-    <span class="badge-dot"></span>
-    <span id="season-text">SYSTEM ACTIVE</span>
-  </div>
 
   <main>
     <!-- Hero Header -->
@@ -408,18 +412,19 @@
     updateStatus();
     setInterval(updateStatus, 60000);
   </script>
+
   <!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/6a44090f82c4e81d44ac7a3b/1jscs6p7m';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-<!--End of Tawk.to Script-->
+  <script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='https://embed.tawk.to/6a44090f82c4e81d44ac7a3b/1jscs6p7m';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
+  <!--End of Tawk.to Script-->
 </body>
 </html>
