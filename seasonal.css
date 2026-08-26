@@ -9,42 +9,42 @@
   z-index: 1;
 }
 
-/* Theme Seasonal Colors */
+/* Theme Seasonal Colors (Warm Light Mode Palette) */
 body.theme-sommer {
-  --season-accent: #f59e0b;
-  --season-glow: rgba(245, 158, 11, 0.4);
-  background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0b0f17 70%);
+  --season-accent: #f97316;
+  --season-glow: rgba(249, 115, 22, 0.25);
+  background: radial-gradient(circle at 50% 0%, #fff7ed 0%, #fff 70%);
 }
 
 body.theme-herbst {
-  --season-accent: #f97316;
-  --season-glow: rgba(249, 115, 22, 0.4);
-  background: radial-gradient(circle at 50% 0%, #2e1065 0%, #0b0f17 70%);
+  --season-accent: #ea580c;
+  --season-glow: rgba(234, 88, 12, 0.25);
+  background: radial-gradient(circle at 50% 0%, #ffedd5 0%, #fff 70%);
 }
 
 body.theme-winter, body.theme-weihnachten {
-  --season-accent: #38bdf8;
-  --season-glow: rgba(56, 189, 248, 0.4);
-  background: radial-gradient(circle at 50% 0%, #0c4a6e 0%, #0b0f17 70%);
+  --season-accent: #0284c7;
+  --season-glow: rgba(2, 132, 199, 0.25);
+  background: radial-gradient(circle at 50% 0%, #e0f2fe 0%, #fff 70%);
 }
 
 body.theme-fruehling, body.theme-ostern {
-  --season-accent: #10b981;
-  --season-glow: rgba(16, 185, 129, 0.4);
-  background: radial-gradient(circle at 50% 0%, #064e3b 0%, #0b0f17 70%);
+  --season-accent: #059669;
+  --season-glow: rgba(5, 150, 105, 0.25);
+  background: radial-gradient(circle at 50% 0%, #d1fae5 0%, #fff 70%);
 }
 
 .accent-color {
-  color: var(--season-accent, #38bdf8) !important;
+  color: var(--season-accent, #ea580c) !important;
 }
 
-/* Night Layer Overlay */
+/* Subtile Nacht-Überlagerung für das helle Theme */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background-color: #030712;
-  opacity: var(--night-opacity, 0);
+  background-color: #0f172a;
+  opacity: calc(var(--night-opacity, 0) * 0.15);
   pointer-events: none;
   z-index: 1;
   transition: opacity 2s ease;
