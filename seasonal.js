@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
   updateDayNightCycle();
   setInterval(updateDayNightCycle, 60000);
 
-  /* Interaktives Tech-Partikelnetzwerk (Canvas) */
+  /* Interaktives Tech-Partikelnetzwerk (Canvas) - angepasst an helle Farben */
   const canvas = document.createElement("canvas");
   canvas.id = "seasonal-canvas";
   document.body.prepend(canvas);
@@ -84,28 +84,28 @@ document.addEventListener("DOMContentLoaded", function () {
     height = canvas.height = window.innerHeight;
   });
 
-  /* Theme Color Palette Mapping */
+  /* Theme Color Palette Mapping für Partikel */
   function getThemeRGB(t) {
     switch(t) {
       case "winter":
-      case "weihnachten": return "56, 189, 248";  // Blue/Cyan
-      case "herbst": return "249, 115, 22";       // Orange
+      case "weihnachten": return "2, 132, 199";   // Cyan/Blue
+      case "herbst": return "234, 88, 12";        // Deep Orange
       case "fruehling":
-      case "ostern": return "16, 185, 129";      // Emerald
-      default: return "245, 158, 11";             // Gold/Amber
+      case "ostern": return "5, 150, 105";       // Emerald
+      default: return "249, 115, 22";             // Bright Warm Orange
     }
   }
 
   const baseRGB = getThemeRGB(theme);
-  const particleCount = Math.min(Math.floor(width / 18), 50);
+  const particleCount = Math.min(Math.floor(width / 22), 40);
   const particles = [];
 
   for (let i = 0; i < particleCount; i++) {
     particles.push({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.6,
-      vy: (Math.random() - 0.5) * 0.6,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
       size: Math.random() * 2 + 1
     });
   }
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Draw Node
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${baseRGB}, 0.7)`;
+      ctx.fillStyle = `rgba(${baseRGB}, 0.5)`;
       ctx.fill();
 
       // Connect Nodes with Lines
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(p2.x, p2.y);
-          ctx.strokeStyle = `rgba(${baseRGB}, ${0.25 - dist / 440})`;
+          ctx.strokeStyle = `rgba(${baseRGB}, ${0.2 - dist / 550})`;
           ctx.lineWidth = 0.8;
           ctx.stroke();
         }
@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `rgba(${baseRGB}, ${0.4 - dist / (mouse.radius * 2.5)})`;
+          ctx.strokeStyle = `rgba(${baseRGB}, ${0.35 - dist / (mouse.radius * 2.5)})`;
           ctx.lineWidth = 1;
           ctx.stroke();
         }
