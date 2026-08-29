@@ -343,6 +343,19 @@
       line-height: 1.6;
       text-align: left;
       margin-top: 10px;
+      width: 100%;
+    }
+
+    /* NEU: Styling für das zweite runde Bild unten auf der Unterseite */
+    .subpage-bottom-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      margin: 20px auto 10px auto;
+      border: 2px solid #fdba74;
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
     }
 
     .back-btn {
@@ -394,7 +407,6 @@
 <body>
 
   <main>
-    <!-- Hero Header -->
     <header class="hero-header fade-in delay-1">
       <h1 class="title-main">
         IT Hilfe <span class="title-accent">OptiCroid</span>
@@ -405,21 +417,18 @@
       </div>
     </header>
 
-    <!-- Main Call Button -->
     <div class="fade-in delay-2" style="width: 100%; text-align: center;">
       <a href="tel:+4915206821179" id="call-btn">
         <span>Anrufen</span>
       </a>
     </div>
 
-    <!-- Subpage Toggle Button (Ersetzt die 3 Service Tags) -->
     <div class="fade-in delay-3" style="width: 100%; text-align: center;">
       <button class="nav-subpage-btn" onclick="openSubpage()">
-        <span>🫆Profil</span>
+        <span>Impressum</span>
       </button>
     </div>
 
-    <!-- Location Card -->
     <div class="info-card glass-card fade-in delay-4">
       <div style="text-align: left;">
         <div style="color: #9a3412; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Standort</div>
@@ -429,7 +438,6 @@
       <img src="Screenshot_20260420_161537_Google.jpg" alt="Standortkarte" class="map-thumbnail">
     </div>
 
-    <!-- Accordion Info & Opening Hours -->
     <div class="accordion-container fade-in delay-4">
       
       <details class="glass-card">
@@ -452,14 +460,13 @@
     </div>
   </main>
 
-  <!-- Vollbild Unterseite: Inhaber & Kontakt -->
   <section id="contact-subpage" class="fullscreen-subpage">
     <div class="subpage-container glass-card">
       
       <div class="subpage-profile-row">
         <img src="IMG_0346.jpeg" class="subpage-avatar" alt="Inhaber Profilbild" />
         <div class="subpage-titles">
-          <h2 class="subpage-owner-name">Profil</h2>
+          <h2 class="subpage-owner-name">Impressum</h2>
           <span class="subpage-brand-name">IT Hilfe - OptiCroid</span>
         </div>
       </div>
@@ -470,6 +477,8 @@
         <p>Egal ob Systemoptimierungen oder schnelle Hilfe bei Problemen: Sie erreichen mich einfach per Telefon oder über den Kunden-Chat auf der Website oben links.</p><br><br>
         <p><strong>Inhaber</strong> Markus Sieber</p>
         <p><strong>email</strong> tickets@it-hilfe-opticroid.p.tawk.email</p><br>
+        
+        <img src="IMG_0346.jpeg" class="subpage-bottom-avatar" alt="Profilbild Zusatz" />
       </div>
 
       <button class="back-btn" onclick="closeSubpage()">← Zurück zur Startseite</button>
@@ -538,7 +547,6 @@
     setInterval(updateStatus, 60000);
   </script>
 
-  <!--Start of Tawk.to Script-->
   <script type="text/javascript">
   var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
   (function(){
@@ -550,6 +558,5 @@
   s0.parentNode.insertBefore(s1,s0);
   })();
   </script>
-  <!--End of Tawk.to Script-->
-</body>
+  </body>
 </html>
