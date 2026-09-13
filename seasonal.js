@@ -1,64 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const now = new Date();
-  const day = now.getDate();
-  const month = now.getMonth() + 1;
-  const year = now.getFullYear();
 
-  function getEasterSunday(y) {
-    const a = y % 19, b = Math.floor(y / 100), c = y % 100;
-    const d = Math.floor(b / 4), e = b % 4;
-    const f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3);
-    const h = (19 * a + b - d - g + 15) % 30;
-    const i = Math.floor(c / 4), k = c % 4;
-    const l = (32 + 2 * e + 2 * i - h - k) % 7;
-    const m = Math.floor((a + 11 * h + 22 * l) / 451);
-    const easterMonth = Math.floor((h + l - 7 * m + 114) / 31);
-    const easterDay = ((h + l - 7 * m + 114) % 31) + 1;
-    return new Date(y, easterMonth - 1, easterDay);
-  }
-
-  const easter = getEasterSunday(year);
-  const easterStart = new Date(easter); easterStart.setDate(easter.getDate() - 2);
-  const easterEnd = new Date(easter); easterEnd.setDate(easter.getDate() + 1);
-
-  let theme = "sommer";
-  if (now >= easterStart && now <= easterEnd) {
-    theme = "ostern";
-  } else if (month === 12 && day <= 26) {
-    theme = "weihnachten";
-  } else if ((month === 12 && day > 26) || month === 1 || month === 2 || month === 11) {
-    theme = "winter";
-  } else if (month >= 3 && month <= 5) {
-    theme = "fruehling";
-  } else if (month >= 6 && month <= 8) {
-    theme = "sommer";
-  } else if (month >= 9 && month <= 10) {
-    theme = "herbst";
-  }
-
-  document.body.classList.add("theme-" + theme);
-
-  /* Day / Night Calculation */
-  function updateDayNightCycle() {
-    const date = new Date();
-    const hours = date.getHours() + date.getMinutes() / 60;
-    let nightOpacity = 0;
-
-    if (hours >= 18 && hours < 20) {
-      nightOpacity = ((hours - 18) / 2) * 0.6;
-    } else if (hours >= 20 || hours < 6) {
-      nightOpacity = 0.6;
-    } else if (hours >= 6 && hours < 8) {
-      nightOpacity = (1 - (hours - 6) / 2) * 0.6;
-    }
-
-    document.documentElement.style.setProperty("--night-opacity", nightOpacity);
-  }
-
-  updateDayNightCycle();
-  setInterval(updateDayNightCycle, 60000);
-
-  /* Interaktives Tech-Partikelnetzwerk (Canvas) - angepasst an helle Farben */
+  /* Interaktives Schnelles Gold-Partikelnetzwerk (Canvas) */
   const canvas = document.createElement("canvas");
   canvas.id = "seasonal-canvas";
   document.body.prepend(canvas);
@@ -67,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);
 
-  let mouse = { x: null, y: null, radius: 120 };
+  let mouse = { x: null, y: null, radius: 140 };
 
   window.addEventListener("mousemove", function (e) {
     mouse.x = e.x;
@@ -84,29 +26,17 @@ document.addEventListener("DOMContentLoaded", function () {
     height = canvas.height = window.innerHeight;
   });
 
-  /* Theme Color Palette Mapping für Partikel */
-  function getThemeRGB(t) {
-    switch(t) {
-      case "winter":
-      case "weihnachten": return "2, 132, 199";   // Cyan/Blue
-      case "herbst": return "234, 88, 12";        // Deep Orange
-      case "fruehling":
-      case "ostern": return "5, 150, 105";       // Emerald
-      default: return "249, 115, 22";             // Bright Warm Orange
-    }
-  }
-
-  const baseRGB = getThemeRGB(theme);
-  const particleCount = Math.min(Math.floor(width / 22), 40);
+  const baseRGB = "251, 191, 36"; // Gold Accent
+  const particleCount = Math.min(Math.floor(width / 18), 55);
   const particles = [];
 
   for (let i = 0; i < particleCount; i++) {
     particles.push({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      size: Math.random() * 2 + 1
+      vx: (Math.random() - 0.5) * 1.8,
+      vy: (Math.random() - 0.5) * 1.8,
+      size: Math.random() * 2.5 + 1
     });
   }
 
@@ -125,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Draw Node
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${baseRGB}, 0.5)`;
+      ctx.fillStyle = `rgba(${baseRGB}, 0.6)`;
       ctx.fill();
 
       // Connect Nodes with Lines
@@ -135,12 +65,12 @@ document.addEventListener("DOMContentLoaded", function () {
         let dy = p.y - p2.y;
         let dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < 110) {
+        if (dist < 120) {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(p2.x, p2.y);
-          ctx.strokeStyle = `rgba(${baseRGB}, ${0.2 - dist / 550})`;
-          ctx.lineWidth = 0.8;
+          ctx.strokeStyle = `rgba(\({baseRGB},\){0.3 - dist / 400})`;
+          ctx.lineWidth = 1;
           ctx.stroke();
         }
       }
@@ -154,8 +84,8 @@ document.addEventListener("DOMContentLoaded", function () {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `rgba(${baseRGB}, ${0.35 - dist / (mouse.radius * 2.5)})`;
-          ctx.lineWidth = 1;
+          ctx.strokeStyle = `rgba(\({baseRGB},\){0.5 - dist / (mouse.radius * 2)})`;
+          ctx.lineWidth = 1.2;
           ctx.stroke();
         }
       }
