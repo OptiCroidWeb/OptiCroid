@@ -111,38 +111,72 @@
     }
 
     /* Primary Action Button */
-    #call-btn { 
+    #call-btn {
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      color: #ffffff; 
-      padding: 12px 30px; 
-      border-radius: 100px; 
-      cursor: pointer; 
-      font-weight: 700; 
+      color: #ffffff;
+      padding: 12px 30px;
+      border-radius: 100px;
+      cursor: pointer;
+      font-weight: 700;
       font-size: 1rem;
-      text-decoration: none; 
+      text-decoration: none;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
       letter-spacing: 0.5px;
+      background: linear-gradient(
+        110deg,
+        #b8860b 0%,
+        #d4af37 22%,
+        #fff3a3 45%,
+        #d4af37 68%,
+        #b8860b 100%
+      );
+      background-size: 220% 100%;
+      border: 1px solid rgba(255, 245, 190, 0.9);
+      box-shadow: 0 8px 25px rgba(184, 134, 11, 0.35);
+      animation: goldShine 3.2s linear infinite;
     }
 
-    .btn-green { 
-      background: linear-gradient(135deg, #10b981, #059669);
-      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+    #call-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 45%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.65),
+        transparent
+      );
+      transform: skewX(-20deg);
+      animation: goldGlint 3.2s ease-in-out infinite;
+      pointer-events: none;
     }
 
-    .btn-green:hover {
+    #call-btn:hover {
       transform: translateY(-3px);
-      box-shadow: 0 12px 30px rgba(16, 185, 129, 0.45);
+      box-shadow: 0 12px 30px rgba(184, 134, 11, 0.5);
     }
 
-    .btn-red { 
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.25);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+    @keyframes goldShine {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    @keyframes goldGlint {
+      0%, 35% { left: -75%; }
+      65%, 100% { left: 135%; }
+    }
+
+    .btn-green,
+    .btn-red {
+      /* Alte Status-Klassen bleiben ohne Farbwechsel erhalten. */
+      background: inherit;
     }
 
     /* Anrufen + Jitsi */
@@ -571,11 +605,11 @@
     </header>
 
     <div class="fade-in delay-2 action-row">
-      <a href="tel:+4915206821179" id="call-btn">
+      <a href="tel:+4915206821179" id="call-btn" aria-label="Anrufen">
         <span>Anrufen</span>
       </a>
 
-      <button class="jitsi-btn" type="button" onclick="openSubpage('jitsi-subpage')"
+      <button class="jitsi-btn" id="jitsi-btn" type="button" onclick="openSubpage('jitsi-subpage')"
               aria-label="Jitsi Meet öffnen" title="Jitsi Meet öffnen">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h6A2.5 2.5 0 0 1 15 7.5v1.1l4.1-2.2A1.2 1.2 0 0 1 21 7.45v9.1a1.2 1.2 0 0 1-1.9 1.05L15 15.4v1.1a2.5 2.5 0 0 1-2.5 2.5h-6A2.5 2.5 0 0 1 4 16.5z"/>
@@ -696,7 +730,7 @@
 
     const schedule = [
       { day: "Sonntag", open: 0, close: 0, label: '<span style="color:#64748b">Ruhetag</span>' },
-      { day: "Montag", open: 13.5, close: 18.0, label: '<span style="color:#e6411c">9:30 - 18:00</span>' },
+      { day: "Montag", open: 9.5, close: 18.0, label: '<span style="color:#e6411c">9:30 - 18:00</span>' },
       { day: "Dienstag", open: 13.5, close: 18.0, label: '13:30 - 18:00' },
       { day: "Mittwoch", open: 13.5, close: 18.0, label: '13:30 - 18:00' },
       { day: "Donnerstag", open: 13.5, close: 18.0, label: '13:30 - 18:00' },
@@ -713,15 +747,25 @@
 
       const statusEl = document.getElementById('status-text');
       const callBtn = document.getElementById('call-btn');
+      const jitsiBtn = document.getElementById('jitsi-btn');
+
+      function showClosedMessage(e) {
+        if (e) e.preventDefault();
+        alert("Wir haben aktuell geschlossen, aber geben Sie uns gerne Ihre Kontaktdaten über den Kunden-Chat!");
+      }
 
       if (isOpen) {
           statusEl.innerHTML = `<span class="pulse-dot" style="background:#10b981; color:#10b981;"></span><span style="color: #059669; font-weight:700;">Aktiv</span> <small style="color:#94a3b8; margin-left:4px;">▼</small>`;
-          callBtn.className = "btn-green";
           callBtn.onclick = null;
+          callBtn.removeAttribute('aria-disabled');
+          jitsiBtn.onclick = function() { openSubpage('jitsi-subpage'); };
+          jitsiBtn.removeAttribute('aria-disabled');
       } else {
           statusEl.innerHTML = `<span class="pulse-dot" style="background:#ef4444; color:#ef4444;"></span><span style="color: #dc2626; font-weight:700;">Inaktiv</span> <small style="color:#94a3b8; margin-left:4px;">▼</small>`;
-          callBtn.className = "btn-red";
-          callBtn.onclick = function(e) { e.preventDefault(); alert("Wir haben aktuell geschlossen, aber geben Sie uns gerne Ihre Kontaktdaten über den Kunden-Chat!"); };
+          callBtn.onclick = showClosedMessage;
+          callBtn.setAttribute('aria-disabled', 'true');
+          jitsiBtn.onclick = showClosedMessage;
+          jitsiBtn.setAttribute('aria-disabled', 'true');
       }
 
       let displayOrder = [1, 2, 3, 4, 5, 6, 0];
