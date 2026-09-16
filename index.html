@@ -329,13 +329,19 @@
       background: rgba(249, 115, 22, 0.05);
     }
 
+        /* DIESEN NEUEN BLOCK EINFÜGEN: */
     .accordion-content {
       padding: 16px 20px; 
-      background: rgba(255, 255, 255, 0.6);
+      background-image: url('DeinBild.jpg'); 
+      background-size: 100% auto;          /* Passt das Bild exakt an die Breite an */
+      background-position: center top;      /* Richtet das Bild oben mittig aus */
+      background-repeat: no-repeat;
       text-align: center;
-      color: #475569;
+      color: #ffffff;                       /* Weiße Schrift für gute Lesbarkeit */
       font-size: 0.9rem;
       border-top: 1px solid rgba(251, 146, 60, 0.15);
+      position: relative;                   /* Sichert den Text im Vordergrund */
+      z-index: 1;
     }
 
     .opening-table {
