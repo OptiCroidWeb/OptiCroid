@@ -2,7 +2,8 @@
 <html lang="de" class="scroll-smooth">
 <head>
     <script>
-  const active = false; // false = aus, true = an
+  if (!location.search.includes('v=')) location.replace('?v=' + Date.now());
+  const active = false; // true = An, false = Aus
   if (active && !location.search.includes('bypass')) fetch('wartung.html?' + Date.now(), {method: 'HEAD'}).then(r => r.ok && location.assign('wartung.html'));
 </script>
     <meta charset="UTF-8">
