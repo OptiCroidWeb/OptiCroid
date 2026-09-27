@@ -152,7 +152,7 @@
                             </div>
                             <h3 class="font-semibold text-slate-900 mb-2">Kurzfristig Geschlossen</h3>
                             <p class="text-slate-600 text-sm leading-relaxed mb-4">
-                                --
+                                Sa. <fett>03.10.2026</fett> geschlossen
                             </p>
                             <a href="#kontakt" onclick="switchTab('kontakt')" class="text-xs font-bold text-amber-600 hover:text-amber-700 inline-flex items-center gap-1">
                                 Öffnungszeiten ansehen <i class="fa-solid fa-arrow-right"></i>
@@ -624,7 +624,7 @@
             }
             // Sa (6): 09:30 (570 min) - 18:00 (1080 min)
             else if (day === 6) {
-                if (currentMinutes >= 570 && currentMinutes < 1080) isOpen = true;
+                if (currentMinutes >= 0 && currentMinutes < 0) isOpen = true;
             }
 
             if (isOpen) {
