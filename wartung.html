@@ -2,14 +2,9 @@
 <html lang="de">
 <head>
   <script>
-  // Prüft direkt bei der index.html, ob die Wartung noch an ist
-  fetch('index.html?' + Date.now())
-    .then(r => r.text())
-    .then(html => {
-      if (html.includes('const active = false;')) {
-        window.location.href = 'index.html';
-      }
-    });
+  if (location.search.includes('bypass')) {
+    // Verhindert, dass man auf der Wartungsseite hängen bleibt
+  }
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
