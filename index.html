@@ -2,7 +2,7 @@
 <html lang="de" class="scroll-smooth">
 <head>
     <script>
-  const active = false; // true = An | false = Aus
+  const active = true; // true = An | false = Aus
 
   if (active && !location.search.includes('bypass')) {
     sessionStorage.setItem('wartung_active', 'true');
@@ -57,6 +57,17 @@
             color: #d97706;
             border-bottom: 2px solid #d97706;
             font-weight: 700;
+        }
+
+        /* Hacker-Canvas Styling */
+        #hacker-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -114,9 +125,11 @@
 
         <!-- REITER 1: STARTSEITE -->
         <section id="tab-startseite" class="tab-content active">
-            <!-- Hero Section -->
-            <div class="relative bg-slate-900 text-white py-20 lg:py-24 overflow-hidden">
-                <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <!-- Hero Section mit Hacker-Hintergrund -->
+            <div class="relative bg-black text-white py-20 lg:py-24 overflow-hidden">
+                <!-- Dynamisches Canvas für Hacker-Code -->
+                <canvas id="hacker-canvas"></canvas>
+
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div class="max-w-3xl">
                         <!-- Heading without top eyebrow banner -->
@@ -647,6 +660,74 @@
         }
     </script>
 
+    <!-- Hacker Background Animation Script -->
+    <script>
+    (function() {
+        const canvas = document.getElementById('hacker-canvas');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/{}[]=$#%&*+-;';
+        const fontSize = 14;
+        let columns = Math.floor(canvas.width / fontSize);
+        
+        let drops = [];
+        let delays = [];
+        
+        function initDrops() {
+            columns = Math.floor(canvas.width / fontSize);
+            drops = [];
+            delays = [];
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.floor(Math.random() * -20);
+                delays[i] = Math.floor(Math.random() * 4);
+            }
+        }
+        initDrops();
+        window.addEventListener('resize', initDrops);
+
+        let frameCount = 0;
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                if (frameCount % (delays[i] + 1) === 0) {
+                    const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                    
+                    ctx.fillStyle = '#00FF66';
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                    ctx.fillStyle = '#008800';
+                    ctx.fillText(text, i * fontSize, (drops[i] - 1) * fontSize);
+
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                        delays[i] = Math.floor(Math.random() * 5);
+                    }
+
+                    drops[i]++;
+                }
+            }
+            frameCount++;
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    })();
+    </script>
+
     <!-- Tawk.to Live Chat Script -->
     <script type="text/javascript">
         var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
@@ -670,14 +751,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const now = new Date();
 
-        // JavaScript:
-        // 0 = Sonntag
-        // 1 = Montag
-        // 2 = Dienstag
-        // 3 = Mittwoch
-        // 4 = Donnerstag
-        // 5 = Freitag
-        // 6 = Samstag
         const day = now.getDay();
 
         const currentMinutes =
@@ -686,10 +759,8 @@ document.addEventListener("DOMContentLoaded", function () {
         let openingMinutes = null;
         let closingMinutes = null;
 
-        // Öffnungszeiten aus deiner Kontaktseite
         switch (day) {
 
-            // Montag, Donnerstag, Freitag
             case 1:
             case 4:
             case 5:
@@ -697,20 +768,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 closingMinutes = 18 * 60;      // 18:00
                 break;
 
-            // Dienstag & Mittwoch
             case 2:
             case 3:
                 openingMinutes = 16 * 60;      // 16:00
                 closingMinutes = 19 * 60;      // 19:00
                 break;
 
-            // Samstag
             case 6:
                 openingMinutes = 9 * 60 + 30;  // 09:30
                 closingMinutes = 18 * 60;      // 18:00
                 break;
 
-            // Sonntag
             default:
                 openingMinutes = null;
                 closingMinutes = null;
@@ -721,23 +789,15 @@ document.addEventListener("DOMContentLoaded", function () {
             currentMinutes >= openingMinutes &&
             currentMinutes < closingMinutes;
 
-
-        // ==========================================
-        // GEÖFFNET
-        // ==========================================
-
         if (isOpen) {
 
-            // Status-Badge
             statusBadge.textContent = "Jetzt geöffnet";
 
             statusBadge.className =
                 "text-xs px-2.5 py-1 rounded-full font-semibold bg-green-100 text-green-700";
 
-            // Telefonstatus
             phoneStatus.textContent = "Telefonisch erreichbar";
 
-            // Button aktivieren
             phoneButton.href = "tel:+4915206821179";
 
             phoneButton.className =
@@ -748,26 +808,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
-
-        // ==========================================
-        // GESCHLOSSEN
-        // ==========================================
-
         else {
 
-            // Status-Badge
             statusBadge.textContent = "Geschlossen";
 
             statusBadge.className =
                 "text-xs px-2.5 py-1 rounded-full font-semibold bg-red-100 text-red-700";
 
-            // Telefonstatus
             phoneStatus.textContent = "Derzeit nicht telefonisch erreichbar";
 
-            // Link entfernen
             phoneButton.removeAttribute("href");
 
-            // Button deaktivieren
             phoneButton.className =
                 "mt-2 inline-flex items-center gap-2 bg-slate-300 text-slate-500 text-xs font-bold px-4 py-2 rounded-lg cursor-not-allowed opacity-60";
 
@@ -776,12 +827,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Sofort beim Laden prüfen
     updateOpeningStatus();
 
-    // Alle 30 Sekunden erneut prüfen
-    // Dadurch wird der Button automatisch aktiv/deaktiviert,
-    // wenn sich die Öffnungszeit ändert.
     setInterval(updateOpeningStatus, 30000);
 
 });
