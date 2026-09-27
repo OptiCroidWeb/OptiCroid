@@ -2,7 +2,7 @@
 <html lang="de" class="scroll-smooth">
 <head>
     <script>
-  const active = true; // false = aus, true = an
+  const active = true; // false = an, true = aus
   if (active && !location.search.includes('bypass')) fetch('wartung.html?' + Date.now(), {method: 'HEAD'}).then(r => r.ok && location.assign('wartung.html'));
 </script>
     <meta charset="UTF-8">
