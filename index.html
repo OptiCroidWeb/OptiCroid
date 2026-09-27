@@ -2,8 +2,8 @@
 <html lang="de" class="scroll-smooth">
 <head>
     <script>
-  const active = true; // false = deaktivieren - true = aktivieren
-  if (active && !location.search.includes('bypass')) fetch('wartung.html', {method: 'HEAD'}).then(r => r.ok && location.assign('wartung.html'));
+  const active = false; // false = aus, true = an
+  if (active && !location.search.includes('bypass')) fetch('wartung.html?' + Date.now(), {method: 'HEAD'}).then(r => r.ok && location.assign('wartung.html'));
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
