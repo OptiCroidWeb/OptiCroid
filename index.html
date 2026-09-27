@@ -2,9 +2,13 @@
 <html lang="de" class="scroll-smooth">
 <head>
     <script>
-  const active = false; // true = An, false = Aus
+  const active = false; // true = An | false = Aus
+
   if (active && !location.search.includes('bypass')) {
+    sessionStorage.setItem('wartung_active', 'true');
     location.replace('wartung.html');
+  } else {
+    sessionStorage.removeItem('wartung_active');
   }
 </script>
     <meta charset="UTF-8">
