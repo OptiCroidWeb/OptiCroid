@@ -2,7 +2,7 @@
 <html lang="de" class="scroll-smooth">
 <head>
     <script>
-  const active = true; // true = An | false = Aus
+  const active = false; // true = An | false = Aus
 
   if (active && !location.search.includes('bypass')) {
     sessionStorage.setItem('wartung_active', 'true');
@@ -148,7 +148,7 @@
                             </div>
                             <h3 class="font-semibold text-slate-900 mb-2">Kurzfristig Geschlossen</h3>
                             <p class="text-slate-600 text-sm leading-relaxed mb-4">
-                                Sa. <strong>03.10.2026</strong> geschlossen
+                                • Sa. <strong>03.10.2026</strong> geschlossen
                             </p>
                             <a href="#kontakt" onclick="switchTab('kontakt')" class="text-xs font-bold text-amber-600 hover:text-amber-700 inline-flex items-center gap-1">
                                 Öffnungszeiten ansehen <i class="fa-solid fa-arrow-right"></i>
@@ -165,7 +165,7 @@
                             <p class="text-slate-600 text-sm leading-relaxed mb-4">
                                 --
                             </p>
-                            <a href="#leistungen" onclick="switchTab('leistungen')" class="text-xs font-bold text-amber-600 hover:text-amber-700 inline-flex items-center gap-1">
+                            <a href="#name" onclick="switchTab('name')" class="text-xs font-bold text-amber-600 hover:text-amber-700 inline-flex items-center gap-1">
                                 Optionen <i class="fa-solid fa-arrow-right"></i>
                             </a>
                         </div>
@@ -195,7 +195,7 @@
                             <i class="fa-solid fa-house-laptop"></i>
                         </div>
                         <h3 class="font-bold text-slate-900 mb-2">Online oder vor Ort</h3>
-                        <p class="text-slate-600 text-sm">Schnelle Fernwartung per Online-Support oder qualifizierter Vor-Ort-Service in Steingaden.</p>
+                        <p class="text-slate-600 text-sm">Schnelle Fernwartung per Online-Support oder qualifizierter Vor-Ort-Service rund um Steingaden.</p>
                     </div>
                 </div>
 
@@ -210,9 +210,6 @@
                         <div class="flex flex-wrap justify-center md:justify-start gap-4">
                             <a href="#ueber-uns" onclick="switchTab('ueber-uns')" class="bg-amber-600 hover:bg-amber-700 text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition-colors">
                                 Mehr über uns
-                            </a>
-                            <a href="#kontakt" onclick="switchTab('kontakt')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-5 py-2.5 rounded-lg font-semibold text-sm border border-slate-700 transition-colors">
-                                Kontakt aufnehmen
                             </a>
                         </div>
                     </div>
