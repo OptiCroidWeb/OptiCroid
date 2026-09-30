@@ -54,17 +54,58 @@
             opacity: 1;
         }
 
-        /* Schicker animierter Hero-Hintergrund */
-        .hero-animated-bg {
-            background: linear-gradient(-45deg, #0f172a, #1e293b, #3b82f6, #d97706);
-            background-size: 400% 400%;
-            animation: gradientAnimation 12s ease infinite;
+        /* Milchstraßen- & Kometen-Hintergrund */
+        .hero-space-bg {
+            background: radial-gradient(ellipse at bottom, #1e293b 0%, #0f172a 100%);
+            position: relative;
+            overflow: hidden;
         }
 
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .stars-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(217, 119, 6, 0.8), rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.8), rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, rgba(217, 119, 6, 0.6), rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, rgba(255, 255, 255, 0.9), rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: starsMove 20s linear infinite;
+        }
+
+        @keyframes starsMove {
+            from { transform: translateY(0); }
+            to { transform: translateY(-200px); }
+        }
+
+        .comet {
+            position: absolute;
+            top: -50px;
+            width: 2px;
+            height: 80px;
+            background: linear-gradient(to bottom, rgba(217,119,6,0), rgba(217,119,6,1));
+            animation: cometFall 6s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        .comet-1 { left: 20%; animation-delay: 0s; }
+        .comet-2 { left: 60%; animation-delay: 2.5s; }
+        .comet-3 { left: 85%; animation-delay: 4.5s; }
+
+        @keyframes cometFall {
+            0% { transform: translateY(0) rotate(45deg); opacity: 0; }
+            10% { opacity: 1; }
+            30% { transform: translateY(600px) rotate(45deg); opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        /* Aktiver Navigationslink Highlight */
+        .mobile-nav-link.nav-active {
+            background-color: #fef3c7;
+            color: #d97706;
+            font-weight: 700;
         }
     </style>
 </head>
@@ -75,12 +116,12 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 
-                <!-- Logo Links (Ohne Hintergrund & Schrift) -->
+                <!-- Logo Links -->
                 <a href="#startseite" onclick="switchTab('startseite')" class="flex items-center">
                     <img src="Logo.png" alt="OptiCroid Logo" class="h-10 w-auto object-contain" onerror="this.src='https://placehold.co/100x100/transparent/d97706?text=Logo'">
                 </a>
 
-                <!-- Rechte Navigationsleiste (Menü-Button für Dropdown) -->
+                <!-- Rechte Navigationsleiste -->
                 <div class="flex items-center gap-2">
                     <span class="text-xs text-slate-500 font-medium">Navigation</span>
                     <button id="mobile-menu-btn" type="button" class="text-slate-700 p-2 rounded-lg hover:bg-slate-100 focus:outline-none" aria-label="Menü öffnen">
@@ -90,7 +131,7 @@
             </div>
         </div>
 
-        <!-- Ausklappbares Navigationsmenü (Inklusive Angebote) -->
+        <!-- Ausklappbares Navigationsmenü -->
         <div id="mobile-menu" class="hidden bg-white border-b border-slate-200 px-4 pt-2 pb-4 space-y-2">
             <a href="#startseite" data-tab="startseite" onclick="switchTab('startseite')" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-amber-50 hover:text-amber-600">Startseite</a>
             <a href="#leistungen" data-tab="leistungen" onclick="switchTab('leistungen')" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-amber-50 hover:text-amber-600">Leistungen</a>
@@ -105,8 +146,13 @@
 
         <!-- REITER 1: STARTSEITE -->
         <section id="tab-startseite" class="tab-content active">
-            <!-- Hero Section mit modernem Gradient-Animationshintergrund -->
-            <div class="relative hero-animated-bg text-white py-20 lg:py-24 overflow-hidden">
+            <!-- Hero Section mit Milchstraßen- & Kometen-Animation -->
+            <div class="relative hero-space-bg text-white py-20 lg:py-24 overflow-hidden">
+                <div class="stars-container"></div>
+                <div class="comet comet-1"></div>
+                <div class="comet comet-2"></div>
+                <div class="comet comet-3"></div>
+
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div class="max-w-3xl">
                         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight">
@@ -127,10 +173,9 @@
                 </div>
             </div>
 
-            <!-- Startseite News & Schnellübersicht (Weißer Hintergrund) -->
+            <!-- Startseite News & Schnellübersicht -->
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12 bg-white">
                 
-                <!-- Aktuell: Neuigkeiten & Wichtige Infos -->
                 <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="p-3 bg-amber-100 text-amber-700 rounded-xl">
@@ -143,7 +188,6 @@
                     </div>
 
                     <div class="grid md:grid-cols-2 gap-6">
-                        <!-- News Card 1 -->
                         <div class="p-5 rounded-xl bg-slate-50 border border-slate-200 hover:border-amber-400 transition-colors">
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">Kalenderhinweis</span>
@@ -158,7 +202,6 @@
                             </a>
                         </div>
 
-                        <!-- News Card 2 -->
                         <div class="p-5 rounded-xl bg-slate-50 border border-slate-200 hover:border-amber-400 transition-colors">
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">Servicemeldung</span>
@@ -175,7 +218,6 @@
                     </div>
                 </div>
 
-                <!-- Schnellüberblick -->
                 <div class="grid md:grid-cols-3 gap-6">
                     <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
                         <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
@@ -202,7 +244,6 @@
                     </div>
                 </div>
 
-                <!-- Teaser Inhaber Markus Sieber -->
                 <div class="bg-slate-900 text-white rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center gap-8 shadow-md">
                     <img src="IMG_0346.jpeg" alt="Markus Sieber" class="w-32 h-32 rounded-full object-cover border-4 border-amber-500 shadow-lg flex-shrink-0" onerror="this.src='https://placehold.co/150x150/1e293b/d97706?text=Markus+Sieber'">
                     <div class="text-center md:text-left flex-grow">
@@ -233,10 +274,8 @@
             </div>
 
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12 bg-white">
-                <!-- Leistungskarten -->
                 <div class="grid md:grid-cols-3 gap-8">
                     
-                    <!-- Card 1 -->
                     <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                         <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-xl font-bold mb-6">
                             <i class="fa-solid fa-desktop"></i>
@@ -262,7 +301,6 @@
                         </ul>
                     </div>
 
-                    <!-- Card 2 -->
                     <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                         <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-xl font-bold mb-6">
                             <i class="fa-solid fa-network-wired"></i>
@@ -288,7 +326,6 @@
                         </ul>
                     </div>
 
-                    <!-- Card 3 -->
                     <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                         <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-xl font-bold mb-6">
                             <i class="fa-solid fa-headset"></i>
@@ -316,7 +353,6 @@
 
                 </div>
 
-                <!-- Hilfebereich Card -->
                 <div class="bg-amber-50 rounded-2xl p-8 border border-amber-200/80 flex flex-col md:flex-row items-center justify-between gap-6">
                     <div>
                         <h3 class="text-xl font-bold text-slate-900 mb-2">Sie wissen nicht genau, was Sie benötigen?</h3>
@@ -342,7 +378,6 @@
 
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 bg-white">
                 
-                <!-- Vorstellung Inhaber -->
                 <div class="grid md:grid-cols-12 gap-8 items-center bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
                     <div class="md:col-span-4 flex justify-center">
                         <img src="IMG_0346.jpeg" alt="Markus Sieber - Inhaber OptiCroid" class="w-60 h-60 rounded-2xl object-cover border-4 border-amber-500 shadow-md" onerror="this.src='https://placehold.co/300x300/1e293b/d97706?text=Markus+Sieber'">
@@ -357,7 +392,6 @@
                             Mit Sitz in Steingaden biete ich schnelle Hilfe bei technischen Problemen, durchdachte Systemlösungen und vertrauensvolle Beratung an.
                         </p>
                         
-                        <!-- Badges -->
                         <div class="flex flex-wrap gap-3">
                             <span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-lg">
                                 <i class="fa-solid fa-check text-amber-600"></i> Persönlicher Ansprechpartner
@@ -372,7 +406,6 @@
                     </div>
                 </div>
 
-                <!-- Philosophie / So arbeiten wir -->
                 <div>
                     <h2 class="text-2xl font-bold text-slate-900 mb-8 text-center">So arbeiten wir</h2>
                     <div class="grid md:grid-cols-3 gap-8">
@@ -421,10 +454,8 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-white">
                 <div class="grid lg:grid-cols-12 gap-8">
                     
-                    <!-- Kontaktdetails Left -->
                     <div class="lg:col-span-5 space-y-6">
                         
-                        <!-- Status-Box Öffnungszeiten -->
                         <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
                             <h3 class="font-bold text-slate-900 mb-3 flex items-center justify-between">
                                 <span>Öffnungszeiten</span>
@@ -453,9 +484,7 @@
                             </ul>
                         </div>
 
-                        <!-- Direkte Kontaktdaten -->
                         <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
-                            <!-- E-Mail -->
                             <div class="flex items-start gap-4">
                                 <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center shrink-0">
                                     <i class="fa-solid fa-envelope"></i>
@@ -468,7 +497,6 @@
                                 </div>
                             </div>
 
-                            <!-- Telefon -->
                             <div class="flex items-start gap-4 pt-2 border-t border-slate-100">
                                 <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center shrink-0">
                                     <i class="fa-solid fa-phone"></i>
@@ -493,7 +521,6 @@
                             </div>
                         </div>
 
-                        <!-- Standort Steingaden -->
                         <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-sm flex items-center gap-4">
                             <img src="IMG_0346.jpeg" alt="Markus Sieber" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500 shrink-0" onerror="this.src='https://placehold.co/100x100/1e293b/d97706?text=M.S.'">
                             <div>
@@ -505,7 +532,6 @@
 
                     </div>
 
-                    <!-- Karte Right -->
                     <div class="lg:col-span-7 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
                         <h3 class="font-bold text-slate-900 mb-3 px-2">Standort Steingaden</h3>
                         <div class="relative w-full flex-grow min-h-[350px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
@@ -548,6 +574,16 @@
                 targetContent.classList.add('active');
             }
 
+            // Aktiven Navigations-Link automatisch hervorheben
+            const navLinks = document.querySelectorAll('.mobile-nav-link');
+            navLinks.forEach(link => {
+                if (link.getAttribute('data-tab') === tabId) {
+                    link.classList.add('nav-active');
+                } else {
+                    link.classList.remove('nav-active');
+                }
+            });
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             const mobileMenu = document.getElementById('mobile-menu');
@@ -556,7 +592,6 @@
             }
         }
 
-        // Immer Startseite als Standard beim Aufruf oder Neuladen erzwingen
         window.addEventListener('DOMContentLoaded', () => {
             switchTab('startseite');
             window.location.hash = 'startseite';
@@ -572,7 +607,7 @@
         }
     </script>
 
-    <!-- Live Öffnungszeiten Status Script (Sekundengenaue Aktualisierung) -->
+    <!-- Live Öffnungszeiten Status Script -->
     <script>
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -645,10 +680,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Sofort ausführen
     updateOpeningStatus();
-
-    // Jede Sekunde (1000 ms) prüfen, damit die Umschaltung exakt nach Erreichen der Sekunde erfolgt
     setInterval(updateOpeningStatus, 1000);
 });
 </script>
