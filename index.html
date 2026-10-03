@@ -607,48 +607,67 @@
         }
     </script>
 
-    <!-- Live Öffnungszeiten Status Script -->
-    <script>
+    
+<!-- Live Öffnungszeiten Status Script -->
+<script>
 document.addEventListener("DOMContentLoaded", function () {
-
     const statusBadge = document.getElementById("opening-status-badge");
     const phoneButton = document.getElementById("phone-button");
     const phoneStatus = document.getElementById("phone-status");
 
+    // Reguläre Öffnungszeiten in deutscher Ortszeit
     function updateOpeningStatus() {
         if (!statusBadge) return;
 
         const now = new Date();
+
+        // Lokales Datum und lokale Uhrzeit des Besuchers
         const day = now.getDay();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+        const dateKey =
+            now.getFullYear() + "-" +
+            String(now.getMonth() + 1).padStart(2, "0") + "-" +
+            String(now.getDate()).padStart(2, "0");
+
+        // Einmalige kurzfristige Schließung
+        const temporarilyClosedDates = [
+            "2026-10-03"
+        ];
 
         let openingMinutes = null;
         let closingMinutes = null;
 
-        switch (day) {
-    case 1: // Montag
-    case 4: // Donnerstag
-    case 5: // Freitag
-        openingMinutes = 13 * 60 + 30; // 13:30
-        closingMinutes = 18 * 60;      // 18:00
-        break;
+        // Sonder-Schließtage haben Vorrang
+        if (temporarilyClosedDates.includes(dateKey)) {
+            openingMinutes = null;
+            closingMinutes = null;
+        } else {
+            switch (day) {
+                case 1: // Montag
+                case 4: // Donnerstag
+                case 5: // Freitag
+                    openingMinutes = 13 * 60 + 30;
+                    closingMinutes = 18 * 60;
+                    break;
 
-    case 2: // Dienstag
-    case 3: // Mittwoch
-        openingMinutes = 16 * 60;      // 16:00
-        closingMinutes = 19 * 60;      // 19:00
-        break;
+                case 2: // Dienstag
+                case 3: // Mittwoch
+                    openingMinutes = 16 * 60;
+                    closingMinutes = 19 * 60;
+                    break;
 
-    case 6: // Samstag kurzfristig geschlossen
-    case 0: // Sonntag geschlossen
-    default:
-        openingMinutes = null;
-        closingMinutes = null;
-        break;
-}
-            default:
-                openingMinutes = null;
-                closingMinutes = null;
+                case 6: // Samstag
+                    openingMinutes = 9 * 60 + 30;
+                    closingMinutes = 18 * 60;
+                    break;
+
+                case 0: // Sonntag
+                default:
+                    openingMinutes = null;
+                    closingMinutes = null;
+                    break;
+            }
         }
 
         const isOpen =
@@ -661,7 +680,10 @@ document.addEventListener("DOMContentLoaded", function () {
             statusBadge.className =
                 "text-xs px-2.5 py-1 rounded-full font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200";
 
-            if (phoneStatus) phoneStatus.textContent = "Telefonisch erreichbar";
+            if (phoneStatus) {
+                phoneStatus.textContent = "Telefonisch erreichbar";
+            }
+
             if (phoneButton) {
                 phoneButton.href = "tel:+4915206821179";
                 phoneButton.className =
@@ -674,7 +696,11 @@ document.addEventListener("DOMContentLoaded", function () {
             statusBadge.className =
                 "text-xs px-2.5 py-1 rounded-full font-semibold bg-red-100 text-red-700 border border-red-200";
 
-            if (phoneStatus) phoneStatus.textContent = "Derzeit nicht telefonisch erreichbar";
+            if (phoneStatus) {
+                phoneStatus.textContent =
+                    "Derzeit nicht telefonisch erreichbar";
+            }
+
             if (phoneButton) {
                 phoneButton.removeAttribute("href");
                 phoneButton.className =
@@ -686,7 +712,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     updateOpeningStatus();
-    setInterval(updateOpeningStatus, 1000);
+
+    // Aktualisierung einmal pro Minute reicht aus
+    setInterval(updateOpeningStatus, 60000);
 });
 </script>
 
