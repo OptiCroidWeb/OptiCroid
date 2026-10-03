@@ -626,21 +626,23 @@ document.addEventListener("DOMContentLoaded", function () {
         let closingMinutes = null;
 
         switch (day) {
-            case 1:
-            case 4:
-            case 5:
-                openingMinutes = 13 * 60 + 30; // 13:30
-                closingMinutes = 18 * 60;      // 18:00
-                break;
-            case 2:
-            case 3:
-                openingMinutes = 16 * 60;      // 16:00
-                closingMinutes = 19 * 60;      // 19:00
-                break;
-            case 6:
-                openingMinutes = 0 * 0 + 0;  // 09:30
-                closingMinutes = 0 * 0;      // 18:00
-                break;
+    case 1:
+    case 4:
+    case 5:
+        openingMinutes = 13 * 60 + 30; // 13:30
+        closingMinutes = 18 * 60;      // 18:00
+        break;
+    case 2:
+    case 3:
+        openingMinutes = 16 * 60;      // 16:00
+        closingMinutes = 19 * 60;      // 19:00
+        break;
+    case 6: // Samstag geschlossen
+    default: // z. B. Sonntag geschlossen
+        openingMinutes = null;
+        closingMinutes = null;
+        break;
+}
             default:
                 openingMinutes = null;
                 closingMinutes = null;
